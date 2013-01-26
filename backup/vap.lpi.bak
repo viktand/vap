@@ -1,0 +1,336 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <General>
+      <Flags>
+        <AlwaysBuild Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <Title Value="view_and_print"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
+      <Language Value="0419"/>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1" Active="Default">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="Printer4Lazarus"/>
+        <MinVersion Minor="5" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="12">
+      <Unit0>
+        <Filename Value="vap.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="vap"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="35" Y="16"/>
+        <UsageCount Value="175"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="start.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="start"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1203"/>
+        <CursorPos X="4" Y="1230"/>
+        <UsageCount Value="175"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="Ab.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form2"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ab"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="100" Y="19"/>
+        <UsageCount Value="153"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/include/menuitem.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="43"/>
+        <CursorPos X="1" Y="75"/>
+        <UsageCount Value="3"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="myprinters.pas"/>
+        <UnitName Value="MyPrinters"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="13"/>
+        <CursorPos X="44" Y="883"/>
+        <UsageCount Value="7"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/include/buttoncontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="43"/>
+        <CursorPos X="1" Y="62"/>
+        <UsageCount Value="5"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/printers.pas"/>
+        <UnitName Value="Printers"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="939"/>
+        <CursorPos X="24" Y="963"/>
+        <UsageCount Value="6"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="/usr/lib/lazarus/0.9.30.4/components/printers/design/printers4lazide.pas"/>
+        <UnitName Value="printers4lazide"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="5"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="/usr/lib/lazarus/0.9.30.4/components/printers/printersdlgs.pp"/>
+        <UnitName Value="PrintersDlgs"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="46"/>
+        <CursorPos X="55" Y="57"/>
+        <UsageCount Value="7"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/lclrescache.pas"/>
+        <UnitName Value="LCLResCache"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="347"/>
+        <CursorPos X="27" Y="367"/>
+        <UsageCount Value="6"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="easyprint.pas"/>
+        <UnitName Value="EasyPrint"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="39" Y="15"/>
+        <UsageCount Value="30"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="C:/lazarus/lcl/printers.pas"/>
+        <UnitName Value="Printers"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="30"/>
+        <CursorPos X="53" Y="305"/>
+        <UsageCount Value="14"/>
+      </Unit11>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="start.pas"/>
+        <Caret Line="680" Column="3" TopLine="674"/>
+      </Position1>
+      <Position2>
+        <Filename Value="start.pas"/>
+        <Caret Line="1188" Column="83" TopLine="1177"/>
+      </Position2>
+      <Position3>
+        <Filename Value="start.pas"/>
+        <Caret Line="1181" Column="25" TopLine="1162"/>
+      </Position3>
+      <Position4>
+        <Filename Value="start.pas"/>
+        <Caret Line="1182" Column="50" TopLine="1162"/>
+      </Position4>
+      <Position5>
+        <Filename Value="start.pas"/>
+        <Caret Line="1185" Column="7" TopLine="1163"/>
+      </Position5>
+      <Position6>
+        <Filename Value="start.pas"/>
+        <Caret Line="1181" Column="46" TopLine="1164"/>
+      </Position6>
+      <Position7>
+        <Filename Value="start.pas"/>
+        <Caret Line="1184" Column="82" TopLine="1165"/>
+      </Position7>
+      <Position8>
+        <Filename Value="start.pas"/>
+        <Caret Line="1185" Column="19" TopLine="1166"/>
+      </Position8>
+      <Position9>
+        <Filename Value="start.pas"/>
+        <Caret Line="200" Column="59" TopLine="177"/>
+      </Position9>
+      <Position10>
+        <Filename Value="start.pas"/>
+        <Caret Line="9" Column="52" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="start.pas"/>
+        <Caret Line="183" Column="4" TopLine="166"/>
+      </Position11>
+      <Position12>
+        <Filename Value="start.pas"/>
+        <Caret Line="1195" Column="12" TopLine="1175"/>
+      </Position12>
+      <Position13>
+        <Filename Value="start.pas"/>
+        <Caret Line="1194" Column="12" TopLine="1174"/>
+      </Position13>
+      <Position14>
+        <Filename Value="start.pas"/>
+        <Caret Line="1193" Column="12" TopLine="1173"/>
+      </Position14>
+      <Position15>
+        <Filename Value="start.pas"/>
+        <Caret Line="1190" Column="39" TopLine="1173"/>
+      </Position15>
+      <Position16>
+        <Filename Value="start.pas"/>
+        <Caret Line="282" Column="53" TopLine="253"/>
+      </Position16>
+      <Position17>
+        <Filename Value="start.pas"/>
+        <Caret Line="277" Column="16" TopLine="250"/>
+      </Position17>
+      <Position18>
+        <Filename Value="start.pas"/>
+        <Caret Line="278" Column="1" TopLine="262"/>
+      </Position18>
+      <Position19>
+        <Filename Value="start.pas"/>
+        <Caret Line="277" Column="1" TopLine="261"/>
+      </Position19>
+      <Position20>
+        <Filename Value="start.pas"/>
+        <Caret Line="262" Column="11" TopLine="244"/>
+      </Position20>
+      <Position21>
+        <Filename Value="start.pas"/>
+        <Caret Line="266" Column="55" TopLine="246"/>
+      </Position21>
+      <Position22>
+        <Filename Value="start.pas"/>
+        <Caret Line="1272" Column="78" TopLine="1266"/>
+      </Position22>
+      <Position23>
+        <Filename Value="start.pas"/>
+        <Caret Line="1218" Column="7" TopLine="1196"/>
+      </Position23>
+      <Position24>
+        <Filename Value="start.pas"/>
+        <Caret Line="1222" Column="42" TopLine="1215"/>
+      </Position24>
+      <Position25>
+        <Filename Value="start.pas"/>
+        <Caret Line="1209" Column="2" TopLine="1190"/>
+      </Position25>
+      <Position26>
+        <Filename Value="start.pas"/>
+        <Caret Line="671" Column="25" TopLine="654"/>
+      </Position26>
+      <Position27>
+        <Filename Value="start.pas"/>
+        <Caret Line="672" Column="25" TopLine="655"/>
+      </Position27>
+      <Position28>
+        <Filename Value="start.pas"/>
+        <Caret Line="671" Column="25" TopLine="654"/>
+      </Position28>
+      <Position29>
+        <Filename Value="start.pas"/>
+        <Caret Line="655" Column="83" TopLine="610"/>
+      </Position29>
+      <Position30>
+        <Filename Value="start.pas"/>
+        <Caret Line="145" Column="134" TopLine="117"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="9"/>
+    <Target>
+      <Filename Value="vap"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <SmartLinkUnit Value="True"/>
+      <Optimizations>
+        <OptimizationLevel Value="3"/>
+      </Optimizations>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <StripSymbols Value="True"/>
+        <UseExternalDbgSyms Value="True"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Source Value="ab.lfm"/>
+        <Line Value="1"/>
+      </Item1>
+    </BreakPoints>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
