@@ -16,6 +16,7 @@ type
     Button1: TButton;
     Button10: TButton;
     Button11: TButton;
+    Button12: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -72,6 +73,7 @@ type
     TrackBar3: TTrackBar;
      procedure Button10Click(Sender: TObject);
      procedure Button11Click(Sender: TObject);
+     procedure Button12Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -143,6 +145,8 @@ type
      procedure SetPg(p: string); // Установить формат бумаги из командной строки при запуске программы
      procedure SetPg2(p: string); // -//- для пользовательского формата
      procedure SetComp(p: string); // установка начальной компоновки из командной строки
+     procedure SetLng; // Установка языка
+     procedure SetWords; // Заготовки фраз на разных языках
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -172,7 +176,7 @@ type
     num: integer; // временная переменная для передачи параметров
     pol, tmp_pol: integer; // Ширина полей
     orn: integer; // ориентация 0 - книжная, 1 - альбомная
-    frm: integer; // формат листа 0 - А4, 1 - A6
+    frm: integer; // формат листа 0 - А4, 1 - A5
     ver, gor: integer; // текущие размеры листа
     lists, curlist: integer; // всего листов и текущий лист
     frms: array[0..5,0..3] of integer; // массив размеров: первый индекс - формат А4, А6 ... (frm)
@@ -197,13 +201,16 @@ type
     MovX, MovY: integer; // предыдущие координаты мышки (для рачета перемещения)
     imindex: integer; // индекс картинки, на image которой нажали кнопку мышки
     fl: boolean; // просто флаг для промежуточных операций
-    sc: string;
+    sc: string;  // используется для загрузки предустановленной компоновки
+    lng: integer; // 0 - русский язык, 1 - английский язык
+    lngn: array[0..1,0..100] of string; // массив надписей рус/анг
+    labs: array[0..9] of string; // массив заготовок подписей под выбранной компоновкой
 
 implementation
 
 {$R *.lfm}
 
-uses ab;
+uses ab, opt;
 
 { TForm1 }
 
@@ -211,6 +218,7 @@ procedure TForm1.FormCreate(Sender: TObject); // Начало
 var
   i: integer;
 begin
+  sc:='';
   form1.BorderStyle:=bsSingle;
   flagmove:=false;
   showindex := 0;
@@ -223,17 +231,22 @@ begin
   ver := 594;
   gor := 420;
   fl:=true;
-  image11.Visible:=false;
-  combobox1.Text:='Лист A4 21х29.7';
-  combobox1.Items.Add('Лист A4 21х29.7');
-  combobox1.Items.Add('Лист A5 14.8х21');
-  combobox1.Items.Add('Лист A6 10.5x14.8');
-  combobox1.Items.Add('Фоторгафия 10x15');
-  combobox1.Items.Add('Фоторгафия 15x20');
-  combobox1.Items.Add('Произвольный размер');
-  label2.Caption := '1 в центре';
-  label5.Caption:='Лист 0 из 0';
+  lng:=0;
+  comp:=0;
   buf := 0;
+  setwords;
+  setlng;
+  // labs[0] и labs[1] присваиваются в процедуре setlng
+  labs[2]:='1 x 2';
+  labs[3]:='1 x 3';
+  labs[4]:='2 x 2';
+  labs[5]:='2 x 3';
+  labs[6]:='2 x 4';
+  labs[7]:='3 x 3';
+  labs[8]:='3 x 5';
+  labs[9]:='4 x 5';
+  image11.Visible:=false;
+  label2.Caption := labs[comp-1];
   // поддерживаемые размеры (книжная ориентация) (может быть потом будет смысл вынести во внешний файл)
   frms[0][0]:=210; frms[0][1]:=297; frms[0][2]:=2; // A4
   frms[1][0]:=148; frms[1][1]:=210; frms[1][2]:=3; // A5
@@ -241,21 +254,19 @@ begin
   frms[3][0]:=100; frms[3][1]:=150; frms[3][2]:=4; // Фото 10х15
   frms[4][0]:=150; frms[4][1]:=200; frms[4][2]:=3; // Фото 15х20
   frms[5][0]:=0; frms[5][1]:=0; frms[5][2]:=0; // Users format
-  // Надписи
-  capt[0]:='Лист А4 21 х 29.7';
-  capt[1]:='Лист А5 14.8 х 21';
-  capt[2]:='Лист А6 10.5 х 14.8';
-  capt[3]:='Фотография 10 х 15';
-  capt[4]:='Фотография 15 x 20';
-  capt[5]:='Произвольный размер';
-  if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
   label3.Caption:='X = ' + inttostr(scalex) + '%';
   trackbar1.Position := scalex;
   label4.Caption:='Y = ' + inttostr(scaley) + '%';
   trackbar2.Position := scaley;
+  if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
+  TrackBar1.Position:=scalex;
+  TrackBar2.Position:=scaley;
   for i := 0 to 19 do ex[i] := false;
-  image1click(image1);
+  setcomp(sc); // установить компоновку
+  if orn=1 then panel4click(panel4);
+  if lng=1 then setlng;
 end;
+
 
 procedure tform1.LoadFiles;
 var
@@ -275,27 +286,7 @@ begin
        pr:=pr+' '+paramstr(i);
      end;
      if pr<>'' then addpict(pr);
-
-     exit;
-
-   fl:=false;
-   for i:=1 to ParamCount do
-     begin
-        fl:=pos(#13, paramstr(i))>0;
-        if fl then break;
-     end;
-   if fl then  // Nautilus и т.п.
-      begin
-       pr:='';
-       for i:=1 to ParamCount do pr:=pr+paramstr(i);
-       repeat
-         j:= pos(#13, pr);
-         addpict(copy(pr, 1, length(pr)-(j+1)));
-         pr:=copy(pr, j+1, length(pr)-j);
-       until pr='';
-      end else for i := 1 to ParamCount do addpict(paramstr(i)); // для Dolphin и т.п
-   if buf = 0 then showmessage ('Файлов, пригодных для печати не обнаружено');
-end;
+ end;
 
 procedure tform1.GetUserSize;
 // установить произвольный размер бумаги (открыть панель приема размера)
@@ -380,9 +371,9 @@ begin
   if buf mod i > 0 then inc(lists);
   curlist := (showindex div i) + 1;
   if lists > 0 then
-     label5.Caption:='Лист ' + inttostr(curlist) + ' из ' + inttostr(lists)
+     label5.Caption:=lngn[lng,5] + inttostr(curlist) + lngn[lng,6] + inttostr(lists)
     else
-     label5.Caption:= 'Файлы для печати не загружены';
+     label5.Caption:= lngn[lng,4];
 end;
 
 procedure tform1.SetPos(im: timage);
@@ -602,6 +593,11 @@ begin
   endfrms;
 end;
 
+procedure TForm1.Button12Click(Sender: TObject);
+begin
+  form3.show;
+end;
+
 
 procedure tform1.drawlist(index: integer);
 // подготовка страницы к печати, т.е. рисование image, который пойдет на принтер
@@ -698,16 +694,16 @@ begin
                addpict(sdd1.FileName+'/'+sr.Name);
           until findnext(sr) <> 0;
       findclose(sr);
-      if buf = 0 then showmessage ('В этой папке допустимых файлов изображений нет.')
+      if buf = 0 then showmessage (lngn[lng,2])
          else begin
-           label2.Caption := '1 в центре';
+           label2.Caption := lngn[lng,0];
            comp := 1;
            endclick(image1);
          end;
       label6.Visible:=false;
       exit;
     end;
-  showmessage ('Вы отказались открыть папку.');
+  showmessage (lngn[lng,3]);
 
 end;
 
@@ -1125,14 +1121,14 @@ end;
 
 procedure TForm1.Image1Click(Sender: TObject);
 begin
-  label2.Caption := '1 в центре';
   comp := 1;
+  label2.Caption := labs[comp-1]; //lngn[lng, 0];
   endclick(sender as timage);
 end;
 
 procedure TForm1.Image2Click(Sender: TObject);
 begin
-  label2.Caption := '1 сверху';
+  label2.Caption := lngn[lng, 1];
   comp := 2;
   endclick(sender as timage);
 end;
@@ -1186,6 +1182,14 @@ begin
    endclick(sender as timage);
 end;
 
+procedure TForm1.Image12Click(Sender: TObject);
+begin
+  label2.Caption := '4 х 5';
+  comp := 10;
+  endclick(sender as timage);
+  panel1.visible:=true;
+end;
+
 procedure TForm1.LabeledEdit1Change(Sender: TObject);
 var
   a: char;
@@ -1235,20 +1239,12 @@ begin
   refreshscreen;
 end;
 
-procedure TForm1.Image12Click(Sender: TObject);
-begin
-  label2.Caption := '4 х 5';
-  comp := 10;
-  endclick(sender as timage);
-  panel1.visible:=true;
-end;
-
 procedure TForm1.Panel3Click(Sender: TObject);
 begin
   panel3.Caption:='\/';
   panel4.Caption:='';
   orn:=0;
-  ComboBox1Change(Sender);
+  ComboBox1Change(ComboBox1);
   RefreshScreen;
 end;
 
@@ -1257,7 +1253,7 @@ begin
   panel4.Caption:='\/';
   panel3.Caption:='';
   orn:=1;
-  ComboBox1Change(Sender);
+  ComboBox1Change(ComboBox1);
   RefreshScreen;
 end;
 
@@ -1276,7 +1272,7 @@ begin
   if p='*PA6' then combobox1.ItemIndex:=2;
   if p='*P10X15' then combobox1.ItemIndex:=3;
   if p='*P15X20' then combobox1.ItemIndex:=4;
-  combobox1change(nil);
+  combobox1change( combobox1);
   if copy(p,1,3)='*PX' then setpg2(p);
 end;
 
@@ -1327,6 +1323,17 @@ var
   s: string;
 begin
   p:=trim(p);
+  if (copy(p, 1, 3)='*oL') or (copy(p, 1, 3)='*ol') or (copy(p, 1, 3)='*Ol') or
+      (copy(p, 1, 3)='*OL') then
+        begin
+          orn:=1;
+          exit;
+        end;
+  if (p='*i') or (p='*I') then
+        begin
+          lng:=1;
+          exit;
+        end;
   if (copy(p, 1, 2)='*c') or
       (copy(p, 1, 2)='*C') then
         begin
@@ -1374,6 +1381,144 @@ begin
     end;
 end;
 
+procedure tform1.SetLng;
+begin
+  capt[0]:=lngn[lng, 8];
+  capt[1]:=lngn[lng, 9];
+  capt[2]:=lngn[lng, 10];;
+  capt[3]:=lngn[lng, 11];
+  capt[4]:=lngn[lng, 12];
+  capt[5]:=lngn[lng, 13];
+  labs[0]:=lngn[lng, 0];
+  labs[1]:=lngn[lng, 1];
+  combobox1.Clear;
+  combobox1.Items.Add(lngn[lng, 8]);
+  combobox1.Items.Add(lngn[lng, 9]);
+  combobox1.Items.Add(lngn[lng, 10]);
+  combobox1.Items.Add(lngn[lng, 11]);
+  combobox1.Items.Add(lngn[lng, 12]);
+  combobox1.Items.Add(lngn[lng, 13]);
+  combobox1.Text:=combobox1.Items[frm];
+  label2.Caption:=labs[comp-1];
+  panel1.Caption:=capt[frm];
+  if lists > 0 then label5.Caption:=lngn[lng,5] + inttostr(curlist) + lngn[lng,6] + inttostr(lists)
+     else label5.Caption:=lngn[lng, 4];
+  case lng of
+    0: begin
+         button5.Caption:='Открыть файл';
+         button5.Hint:='Открыть один файл (или добавить его к списку уже открытых)';
+         button4.Caption:='Открыть папку';
+         button4.Hint:='Выбрать папку и загрузить все картинки из нее (или добавить их к списку уже открытых)';
+         button1.Hint:='Листать выбранные картинки назад';
+         button2.Hint:='Листать выбранные картинки вперед';
+         button4.Caption:='Печать';
+         button4.Hint:='Отправить на печать все картинки в соответствии с выбранной компоновкой';
+         button12.Caption:='Настройки';
+         button12.Hint:='Настройки программы';
+         button7.Caption:='О программе';
+         label1.Caption:='Выбрано';
+         GroupBox1.Caption:='Компоновка';
+         Label7.Caption:='Формат листа';
+         Label8.Caption:='Ориентация листа';
+         CheckBox2.Caption:='Не увеличивать мелкие';
+         CheckBox2.Hint:='Если снять эту галочку, то изначально мелкие картинки будут растягиваться до максимального возможного размера в соответствии с выбранной компоновкой.';
+         CheckBox1.Caption:='Синхронно';
+         button6.Caption:='Масштаб';
+         button6.Hint:='Масштаб печати. Увеличить или уменьшить общую картинку. Все, что не влезет на лист А4 от верхнего левого угла, будет потеряно.';
+         CheckBox3.Caption:='Заполнить';
+         CheckBox3.Hint:='Расчитать поля отдельно для каждой картинки для полного заполнения ее места с учетом компоновки';
+         StaticText2.Hint:='Точное значение полей зависит от соотношения сторон картинки';
+         StaticText2.Caption:='Поля между'+#13+'миниатюр, mm';
+         button8.Hint:='Точное значение полей зависит от соотношения сторон картинки';
+         button9.Hint:='Точное значение полей зависит от соотношения сторон картинки';
+         label12.Hint:='Точное значение полей зависит от соотношения сторон картинки';
+         label6.Caption:='Думаю...';
+         Form1.Caption:='Быстрая печать';
+         labelededit1.EditLabel.Caption:='Горизонтальный размер';
+         labelededit2.EditLabel.Caption:='Вертикальный размер';
+         StaticText1.Caption:='Укажите размер Вашего листа в миллиметрах.'+#13+'Не рекомендуется превышать размер бумаги Вашего принтера.'
+                                       +#13+'Используйте портретную (книжную) ориентацию.';
+         button10.Caption:='Установить';
+         button11.Caption:='Отклонить';
+         labelededit3.EditLabel.Caption:='Масштаб предпросмотра - только на экране.';
+         label9.Caption:='<--Только цифры! -->';
+         label13.Caption:='<--Только цифры!';
+       end;
+    1: begin
+         button5.Caption:='Open file';
+         button5.Hint:='Open one file (or add it to the list is open)';
+         button4.Caption:='Open folder';
+         button4.Hint:='Select a folder and upload all the pictures of it (or add them to the list is open)';
+         button1.Hint:='Flipping selected images back';
+         button2.Hint:='Flipping selected images forward';
+         button3.Caption:='Print';
+         button3.Hint:='Send to print all the pictures on the selected layout';
+         button12.Caption:='Settings';
+         button12.Hint:='Program settings';
+         button7.Caption:='About';
+         label1.Caption:='Selected';
+         GroupBox1.Caption:='Composition';
+         Label7.Caption:='Page format';
+         Label8.Caption:='Page orientation';
+         CheckBox2.Caption:='Not increase';
+         CheckBox2.Hint:='If you clear the check box, then the initially small image will be stretched to the maximum possible size according to the selected layout.';
+         CheckBox1.Caption:='Synchronously';
+         button6.Caption:='Scale';
+         button6.Hint:='Print Scale. Increase or decrease the overall picture. Everything that does not fit on A4 paper from the top left corner will be lost.';
+         CheckBox3.Caption:='Fill';
+         CheckBox3.Hint:='Calculate field separately for each picture to completely fill its place with the layout';
+         StaticText2.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
+         StaticText2.Caption:='Field between'+#13+'miniatures, mm';
+         button8.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
+         button9.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
+         label12.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
+         label6.Caption:='I think...';
+         form1.Caption:='Quick print';
+         labelededit1.EditLabel.Caption:='Horizontal size';
+         labelededit2.EditLabel.Caption:='Vertical size';
+         StaticText1.Caption:='Enter the size of your paper in millimeters.'+#13+'Do not exceed the paper size of your printer.'
+                                       +#13+'Use portrait (like a book) orientation.';
+         button10.Caption:='Ок';
+         button11.Caption:='Cancel';
+         labelededit3.EditLabel.Caption:='The scale of the preview - only on the screen.';
+         label9.Caption:='<--Only numbers! -->';
+         label13.Caption:='<--Only numbers!';
+    end;
+  end;
+end;
+
+procedure tform1.setwords;
+begin
+   lngn[0, 0]:='1 в центре';
+   lngn[1, 0]:='1 in the center';
+   lngn[0, 1]:='1 сверху';
+   lngn[1, 1]:='1 top';
+   lngn[0, 2]:='В этой папке допустимых файлов изображений нет.';
+   lngn[1, 2]:='In this folder, there is no valid image file.';
+   lngn[0, 3]:='Вы отказались открыть папку.';
+   lngn[1, 3]:='You refused to open the folder.';
+   lngn[0, 4]:='Файлы для печати не загружены';
+   lngn[1, 4]:='Print files are not loaded';
+   lngn[0, 5]:='Лист ';
+   lngn[1, 5]:='Page ';
+   lngn[0, 6]:=' из ';
+   lngn[1, 6]:=' of ';
+   lngn[0, 7]:='Файлов, пригодных для печати не обнаружено';
+   lngn[1, 7]:='File suitable for printing is not detected';
+   lngn[0, 8]:='Лист А4 21 х 29.7';
+   lngn[1, 8]:='Page А4 21 х 29.7';
+   lngn[0, 9]:='Лист А5 14.8 х 21';
+   lngn[1, 9]:='Page А5 14.8 х 21';
+   lngn[0,10]:='Лист А6 10.5 х 14.8';
+   lngn[1,10]:='Page А6 10.5 х 14.8';
+   lngn[0,11]:='Фотография 10 х 15';
+   lngn[1,11]:='Photo 10 х 15';
+   lngn[0,12]:='Фотография 15 x 20';
+   lngn[1,12]:='Photo 15 x 20';
+   lngn[0,13]:='Произвольный размер';
+   lngn[1,13]:='Custom size';
+
+end;
 
 {
 function tform1.Rotor(im: tImage; g: integer): tImage; // вращение picture вправо

@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 507
+  Left = 152
   Height = 716
-  Top = 140
+  Top = 275
   Width = 773
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -8531,7 +8531,7 @@ object Form1: TForm1
       ParentColor = False
     end
     object Label8: TLabel
-      Left = 38
+      Left = 31
       Height = 18
       Top = 505
       Width = 128
@@ -8572,8 +8572,8 @@ object Form1: TForm1
     object CheckBox2: TCheckBox
       Left = 10
       Height = 24
-      Hint = 'Если снять эту галочку, то изначально мелкие картинки будут растягиваться до макимального возможного размера в соответствии с выбранной компоновкой.'
-      Top = 603
+      Hint = 'Если снять эту галочку, то изначально мелкие картинки будут растягиваться до максимального возможного размера в соответствии с выбранной компоновкой.'
+      Top = 599
       Width = 168
       Caption = 'Не увеличивать мелкие'
       Checked = True
@@ -8587,9 +8587,9 @@ object Form1: TForm1
     end
   end
   object Image8: TImage
-    Left = 212
+    Left = 224
     Height = 120
-    Top = 76
+    Top = 72
     Width = 84
     Proportional = True
     Stretch = True
@@ -8598,7 +8598,7 @@ object Form1: TForm1
     Left = 210
     Height = 35
     Hint = 'Листать выбранные картинки назад'
-    Top = -1
+    Top = 0
     Width = 51
     Caption = '<<'
     OnClick = Button1Click
@@ -8610,7 +8610,7 @@ object Form1: TForm1
     Left = 260
     Height = 35
     Hint = 'Листать выбранные картинки вперед'
-    Top = -1
+    Top = 0
     Width = 51
     Caption = '>>'
     OnClick = Button2Click
@@ -8619,10 +8619,10 @@ object Form1: TForm1
     TabOrder = 3
   end
   object Button3: TButton
-    Left = 310
+    Left = 311
     Height = 35
     Hint = 'Отправить на печать все картинки в соответствии с выбранной компоновкой'
-    Top = -1
+    Top = 0
     Width = 106
     Caption = 'Печать'
     Font.Height = -11
@@ -8636,7 +8636,7 @@ object Form1: TForm1
     Left = 105
     Height = 35
     Hint = 'Выбрать папку и загрузить все картинки из нее (или добавить их к списку уже открытых)'
-    Top = -1
+    Top = 0
     Width = 106
     Caption = 'Открыть папку'
     Font.Height = -11
@@ -8650,7 +8650,7 @@ object Form1: TForm1
     Left = 201
     Height = 18
     Top = 48
-    Width = 111
+    Width = 128
     Alignment = taCenter
     AutoSize = False
     Caption = 'Выбрано'
@@ -8660,7 +8660,7 @@ object Form1: TForm1
     Left = 198
     Height = 18
     Top = 200
-    Width = 124
+    Width = 131
     Alignment = taCenter
     AutoSize = False
     Caption = 'Label2'
@@ -8670,7 +8670,7 @@ object Form1: TForm1
     Left = 0
     Height = 35
     Hint = 'Открыть один файл (или добавить его к списку уже открытых)'
-    Top = -1
+    Top = 0
     Width = 106
     Caption = 'Открыть файл'
     Font.Height = -11
@@ -8696,8 +8696,8 @@ object Form1: TForm1
   end
   object TrackBar1: TTrackBar
     Left = 208
-    Height = 39
-    Top = 553
+    Height = 46
+    Top = 545
     Width = 106
     Frequency = 5
     Max = 300
@@ -8710,7 +8710,7 @@ object Form1: TForm1
   object Label3: TLabel
     Left = 208
     Height = 16
-    Top = 536
+    Top = 526
     Width = 106
     Alignment = taCenter
     AutoSize = False
@@ -8721,7 +8721,7 @@ object Form1: TForm1
   object Label4: TLabel
     Left = 208
     Height = 16
-    Top = 596
+    Top = 593
     Width = 106
     Alignment = taCenter
     AutoSize = False
@@ -8753,9 +8753,9 @@ object Form1: TForm1
     ParentColor = False
   end
   object Button7: TButton
-    Left = 415
+    Left = 521
     Height = 35
-    Top = -1
+    Top = 0
     Width = 106
     Caption = 'О программе'
     Font.Height = -11
@@ -8775,9 +8775,9 @@ object Form1: TForm1
     TabOrder = 11
   end
   object Label6: TLabel
-    Left = 536
+    Left = 632
     Height = 24
-    Top = -1
+    Top = 8
     Width = 87
     Caption = 'Думаю...'
     Font.Color = clRed
@@ -8877,13 +8877,13 @@ object Form1: TForm1
     object LabeledEdit1: TLabeledEdit
       Left = 33
       Height = 25
-      Top = 88
+      Top = 87
       Width = 81
       EditLabel.AnchorSideLeft.Control = LabeledEdit1
       EditLabel.AnchorSideBottom.Control = LabeledEdit1
       EditLabel.Left = 33
       EditLabel.Height = 16
-      EditLabel.Top = 69
+      EditLabel.Top = 68
       EditLabel.Width = 163
       EditLabel.Caption = 'Горизонтальный размер'
       EditLabel.ParentColor = False
@@ -8992,6 +8992,18 @@ object Form1: TForm1
     Caption = 'Поля между'#10'миниатюр, mm'
     ShowHint = True
     TabOrder = 17
+  end
+  object Button12: TButton
+    Left = 416
+    Height = 35
+    Hint = 'Настройки программы'
+    Top = 0
+    Width = 106
+    Caption = 'Настройки'
+    Font.Height = -11
+    OnClick = Button12Click
+    ParentFont = False
+    TabOrder = 18
   end
   object SDD1: TSelectDirectoryDialog
     left = 296
