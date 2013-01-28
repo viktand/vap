@@ -17,6 +17,9 @@ type
     Button10: TButton;
     Button11: TButton;
     Button12: TButton;
+    Button13: TButton;
+    Button14: TButton;
+    Button15: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -29,6 +32,7 @@ type
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     ComboBox1: TComboBox;
+    ComboBox2: TComboBox;
     GroupBox1: TGroupBox;
     Image1: TImage;
     Image10: TImage;
@@ -43,6 +47,8 @@ type
     Image8: TImage;
     Image9: TImage;
     Label1: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
     Label12: TLabel;
     Label13: TLabel;
     Label2: TLabel;
@@ -64,7 +70,10 @@ type
     Panel3: TPanel;
     Panel4: TPanel;
     Panel5: TPanel;
+    Panel6: TPanel;
     PopupMenu1: TPopupMenu;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
     SDD1: TSelectDirectoryDialog;
     StaticText1: TStaticText;
     StaticText2: TStaticText;
@@ -74,6 +83,9 @@ type
      procedure Button10Click(Sender: TObject);
      procedure Button11Click(Sender: TObject);
      procedure Button12Click(Sender: TObject);
+     procedure Button13Click(Sender: TObject);
+     procedure Button14Click(Sender: TObject);
+     procedure Button15Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -147,6 +159,11 @@ type
      procedure SetComp(p: string); // установка начальной компоновки из командной строки
      procedure SetLng; // Установка языка
      procedure SetWords; // Заготовки фраз на разных языках
+     procedure SaveSett(Key, Word: string); // Сщхранить в файле конфигурации значение word c ключем key
+     function ReadSett: tStringList; // прочитать существующий файл конфигурации
+     Procedure WriteSett(st: tStringList); // записать новые значения в файл конфигурации
+     function LoadSett(key: string):string; // получить значение ключа key
+     procedure LoadConfig; // загрузить конфигурацию из файла
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -205,6 +222,9 @@ type
     lng: integer; // 0 - русский язык, 1 - английский язык
     lngn: array[0..1,0..100] of string; // массив надписей рус/анг
     labs: array[0..9] of string; // массив заготовок подписей под выбранной компоновкой
+    userprinter: string; // Выбранный принтер
+    config: tstringlist; // копия конфига в памяти - чтобы не читать диск каждый раз
+    confflag: boolean;  // признак необходимости прочитать конфиг с диска
 
 implementation
 
@@ -219,6 +239,9 @@ var
   i: integer;
 begin
   sc:='';
+  confflag:=false; // файл конфига не прочитан
+  config := tstringlist.Create;
+  userprinter:=loadsett('printer');
   form1.BorderStyle:=bsSingle;
   flagmove:=false;
   showindex := 0;
@@ -258,6 +281,7 @@ begin
   trackbar1.Position := scalex;
   label4.Caption:='Y = ' + inttostr(scaley) + '%';
   trackbar2.Position := scaley;
+  loadconfig;
   if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
   TrackBar1.Position:=scalex;
   TrackBar2.Position:=scaley;
@@ -267,6 +291,38 @@ begin
   if lng=1 then setlng;
 end;
 
+procedure tform1.LoadConfig; // загрузить конфигурацию из файла
+var
+  s, lin: string;
+  x, y: integer;
+begin
+  lin:='';
+  s:=loadsett('paper');
+  if s<>'' then addpict('*p'+s);
+  s:=loadsett('comp');
+  if s<>'' then addpict('*c'+s);
+  s:=loadsett('orn');
+  if s<>'' then addpict('*o'+s);
+  s:=loadsett('lang');
+  if s<>'' then addpict('*'+s);
+  s:=loadsett('scale');
+  if s<>'' then
+    begin
+       x:=pos('x>', s);
+       y:=pos('y>', s);
+       x:=strtoint(copy(s, x+2, y-(x+2)));
+       y:=strtoint(copy(s, y+2, length(s)));
+       addpict('*x='+inttostr(x));
+       addpict('*y='+inttostr(y));
+       if x<>y then addpict('*ns');
+    end;
+  s:=loadsett('mrg');
+  if s<>'' then pol:=strtoint(s);
+  s:=loadsett('fill');
+  CheckBox3.Checked:=(s<>'');
+  s:=loadsett('sml');
+  CheckBox2.Checked:=(s='');
+end;
 
 procedure tform1.LoadFiles;
 var
@@ -288,11 +344,83 @@ begin
      if pr<>'' then addpict(pr);
  end;
 
+procedure tform1.SaveSett(Key, Word: string); // Сохранить в файле конфигурации значение word c ключем key
+var
+  st: tStringList;
+  s: string;
+  i: integer;
+begin
+  s:='';
+  for i:=1 to length(word) do if word[i]<>' ' then s:=s+word[i] else s:=s+'#'; // заменить пробeлы на #
+  word:=s;
+  st:=tStringList.Create;
+  st:=readsett; // прочитать существующий файл
+  st.Values[key]:=word;  // Поменять (добавить) значение ключа
+  writesett(st); // записать новые значения в файл конфигурации
+end;
+
+
+function tform1.LoadSett(key: string):string; // получить значение ключа key
+var
+  st: tStringList;
+  s: string;
+  i: integer;
+begin
+  result:='';
+  st:=tStringList.Create;
+  st:=readsett; // прочитать существующий файл
+  s:=st.Values[key];
+  for i:=1 to length(s) do if s[i]<>'#' then result:=result+s[i] else result:=result+' '; // заменить # на ' '
+  if result = 'default' then result:='';
+end;
+
+function tform1.readsett: tStringList; // прочитать существующий файл конфигурации
+var
+  fl: textfile;
+  lin: string;
+  txt: string;
+begin
+  result := tstringlist.Create;
+  txt:='';
+  if confflag then
+       begin
+         result:=config;
+         exit;
+       end;
+  if fileexists('vapsett') then
+     begin
+       assignfile(fl, 'vapsett');
+       reset(fl);
+       while not(eof(fl)) do
+         begin
+           readln(fl, lin);
+           if pos('=',lin) > 0 then txt:=txt + lin + ', ';
+         end;
+       closefile(fl);
+       if txt<>'' then txt:=copy(txt, 1, length(txt)-2);
+     end;
+  result.CommaText:=txt;
+  config:=result;
+  confflag:=true;
+end;
+
+procedure tform1.WriteSett(st: tStringList); // записать новые значения в файл конфигурации
+var
+  fl: textfile;
+  i: integer;
+begin
+  assignfile(fl, 'vapsett');
+  rewrite(fl);
+  for i:=0 to st.Count-1 do writeln(fl, st[i]);
+  closefile(fl);
+  config:=st;
+end;
+
 procedure tform1.GetUserSize;
 // установить произвольный размер бумаги (открыть панель приема размера)
 begin
-   panel5.Left:=25;
-   panel5.Top:=260;
+   panel5.Left:=211;
+   panel5.Top:=328;
    panel5.Visible:=true;
    labelededit1.Text:='210';
    labelededit2.Text:='297';
@@ -338,6 +466,7 @@ end;
 
 procedure tform1.RefreshScreen; // обновить изображение
 begin
+  if buf=0 then exit;
   for num:=0 to buf-1 do toprint[num].show:=false;
   endstep(0);
 end;
@@ -594,8 +723,42 @@ begin
 end;
 
 procedure TForm1.Button12Click(Sender: TObject);
+// открыть окно настроек
 begin
   form3.show;
+end;
+
+procedure TForm1.Button13Click(Sender: TObject);
+// Выбор принтера для печати
+var
+  Prin: TPrinter;
+  pr: tStrings;
+begin
+  panel6.Left:=419;
+  panel6.top:=48;
+  prin := Printer;
+  pr:=prin.Printers;
+  combobox2.Items:=pr;
+  combobox2.Text:=combobox2.Items[0];
+  Panel6.Visible:=true;
+end;
+
+procedure TForm1.Button14Click(Sender: TObject);
+begin
+  userprinter:=combobox2.Text;
+  if radiobutton2.Checked then
+    begin
+     userprinter:='';
+     savesett('printer', 'default');
+    end;
+  if radiobutton1.Checked then savesett('printer', userprinter);
+  panel6.Visible:=false;
+end;
+
+procedure TForm1.Button15Click(Sender: TObject);
+// просто закрыть диалог выбора принтера
+begin
+  panel6.Visible:=false;
 end;
 
 
@@ -642,9 +805,13 @@ var
   sx, sy: extended;
 begin
   prin := Printer;
-
-  //prin.PageWidth:=trunc((prin.XDPI / 25.4) * frms[frm][0]);
-  //prin.PageHeight:=trunc((prin.YDPI / 25.4) * frms[frm][1]);
+  // выбрать принтер заданный пользователем
+  if userprinter<>'' then
+    begin
+      combobox2.Items:=prin.Printers;
+      for x:=0 to combobox2.Items.Count-1 do
+        if combobox2.Items[x]=userprinter then prin.PrinterIndex:=x;
+    end;
   if orn = 0 then prin.Orientation:=poPortrait else prin.Orientation:=poLandscape;
   sx:= prin.PageWidth / prin.PaperSize.Width;
   sy:= prin.PageHeight / prin.PaperSize.Height;
@@ -1443,6 +1610,11 @@ begin
          labelededit3.EditLabel.Caption:='Масштаб предпросмотра - только на экране.';
          label9.Caption:='<--Только цифры! -->';
          label13.Caption:='<--Только цифры!';
+         button13.Caption:='Принтер';
+         button15.Caption:='Отменить';
+         radiobutton1.Caption:='Всегда использовать этот принтер';
+         radiobutton2.Caption:='Использовать принтер по умолчанию';
+         label11.Caption:='Выбор принтера';
        end;
     1: begin
          button5.Caption:='Open file';
@@ -1483,6 +1655,11 @@ begin
          labelededit3.EditLabel.Caption:='The scale of the preview - only on the screen.';
          label9.Caption:='<--Only numbers! -->';
          label13.Caption:='<--Only numbers!';
+         button13.Caption:='Printers';
+         button15.Caption:='Cancel';
+         radiobutton1.Caption:='Always use this printer';
+         radiobutton2.Caption:='Use default printer';
+         label11.Caption:='Selecting a printer';
     end;
   end;
 end;

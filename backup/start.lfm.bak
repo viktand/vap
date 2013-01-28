@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 152
+  Left = 432
   Height = 716
-  Top = 275
+  Top = 184
   Width = 773
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -12,9 +12,9 @@ object Form1: TForm1
   Position = poScreenCenter
   LCLVersion = '0.9.30.4'
   object Panel1: TPanel
-    Left = 344
+    Left = 343
     Height = 594
-    Top = 76
+    Top = 72
     Width = 420
     Caption = 'Лист А4 21 х 29.7'
     Color = clWhite
@@ -8753,7 +8753,7 @@ object Form1: TForm1
     ParentColor = False
   end
   object Button7: TButton
-    Left = 521
+    Left = 638
     Height = 35
     Top = 0
     Width = 106
@@ -8775,9 +8775,9 @@ object Form1: TForm1
     TabOrder = 11
   end
   object Label6: TLabel
-    Left = 632
+    Left = 344
     Height = 24
-    Top = 8
+    Top = 686
     Width = 87
     Caption = 'Думаю...'
     Font.Color = clRed
@@ -8862,11 +8862,11 @@ object Form1: TForm1
     TabOrder = 15
   end
   object Panel5: TPanel
-    Left = 432
+    Left = 632
     Height = 224
-    Top = 400
+    Top = 488
     Width = 464
-    BorderWidth = 2
+    BorderWidth = 5
     BorderStyle = bsSingle
     ClientHeight = 222
     ClientWidth = 462
@@ -8940,18 +8940,18 @@ object Form1: TForm1
       OnChange = LabeledEdit1Change
     end
     object Button10: TButton
-      Left = 80
+      Left = 243
       Height = 24
-      Top = 184
+      Top = 181
       Width = 121
       Caption = 'Установить'
       OnClick = Button10Click
       TabOrder = 4
     end
     object Button11: TButton
-      Left = 272
+      Left = 107
       Height = 24
-      Top = 184
+      Top = 181
       Width = 121
       Caption = 'Отклонить'
       OnClick = Button11Click
@@ -8981,6 +8981,16 @@ object Form1: TForm1
       ParentFont = False
       Visible = False
     end
+    object Label10: TLabel
+      Left = -146
+      Height = 16
+      Top = 70
+      Width = 50
+      Caption = 'Label10'
+      Color = clMenuText
+      ParentColor = False
+      Transparent = False
+    end
   end
   object StaticText2: TStaticText
     Left = 201
@@ -9005,6 +9015,92 @@ object Form1: TForm1
     ParentFont = False
     TabOrder = 18
   end
+  object Button13: TButton
+    Left = 521
+    Height = 35
+    Top = 0
+    Width = 118
+    Caption = 'Принтер'
+    Font.Height = -11
+    OnClick = Button13Click
+    ParentFont = False
+    TabOrder = 19
+  end
+  object Panel6: TPanel
+    Left = 419
+    Height = 165
+    Top = 48
+    Width = 269
+    BorderWidth = 5
+    BorderStyle = bsSingle
+    ClientHeight = 163
+    ClientWidth = 267
+    TabOrder = 20
+    Visible = False
+    object Label11: TLabel
+      Left = 3
+      Height = 16
+      Top = 6
+      Width = 256
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Настройка принтера'
+      ParentColor = False
+    end
+    object ComboBox2: TComboBox
+      Left = 36
+      Height = 29
+      Top = 34
+      Width = 209
+      ItemHeight = 0
+      TabOrder = 0
+      Text = 'ComboBox2'
+    end
+    object Button14: TButton
+      Left = 156
+      Height = 23
+      Top = 127
+      Width = 80
+      Caption = 'Ok'
+      Font.Height = -11
+      OnClick = Button14Click
+      ParentFont = False
+      TabOrder = 1
+    end
+    object Button15: TButton
+      Left = 44
+      Height = 23
+      Top = 127
+      Width = 77
+      Caption = 'Отменить'
+      Font.Height = -11
+      OnClick = Button15Click
+      ParentFont = False
+      TabOrder = 2
+    end
+    object RadioButton1: TRadioButton
+      Left = 10
+      Height = 24
+      Top = 66
+      Width = 238
+      Caption = 'Всегда использовать этот принтер'
+      Font.Height = -11
+      ParentFont = False
+      TabOrder = 3
+    end
+    object RadioButton2: TRadioButton
+      Left = 10
+      Height = 24
+      Top = 94
+      Width = 249
+      Caption = 'Использовать принтер по умолчанию'
+      Checked = True
+      Font.Height = -11
+      ParentFont = False
+      TabOrder = 4
+      TabStop = True
+    end
+  end
   object SDD1: TSelectDirectoryDialog
     left = 296
     top = 696
@@ -9014,8 +9110,8 @@ object Form1: TForm1
     top = 696
   end
   object PopupMenu1: TPopupMenu
-    left = 346
-    top = 698
+    left = 208
+    top = 696
     object MenuItem1: TMenuItem
       Caption = 'Удалить это изображение из списка'
       OnClick = MenuItem1Click
