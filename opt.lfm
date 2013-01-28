@@ -1,0 +1,91 @@
+object Form3: TForm3
+  Left = 333
+  Height = 237
+  Top = 468
+  Width = 207
+  BorderStyle = bsDialog
+  Caption = 'Настройки'
+  ClientHeight = 237
+  ClientWidth = 207
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poMainFormCenter
+  LCLVersion = '0.9.30.4'
+  object RadioGroup1: TRadioGroup
+    Left = 17
+    Height = 89
+    Top = 15
+    Width = 174
+    AutoFill = True
+    Caption = 'Язык / Language'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 70
+    ClientWidth = 170
+    TabOrder = 0
+    object RadioButton1: TRadioButton
+      Left = 6
+      Height = 29
+      Top = 6
+      Width = 158
+      AutoSize = False
+      Caption = 'Русский'
+      Checked = True
+      OnChange = RadioButton1Change
+      TabOrder = 0
+      TabStop = True
+    end
+    object RadioButton2: TRadioButton
+      Left = 6
+      Height = 29
+      Top = 35
+      Width = 158
+      Caption = 'English'
+      OnChange = RadioButton1Change
+      TabOrder = 1
+    end
+  end
+  object Button1: TButton
+    Left = 17
+    Height = 32
+    Top = 114
+    Width = 174
+    Caption = 'Интеграция'
+    Font.Height = -12
+    OnClick = Button1Click
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 17
+    Height = 32
+    Top = 195
+    Width = 174
+    Caption = 'Сохранить настройки'
+    Font.Height = -12
+    OnClick = Button2Click
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 17
+    Height = 31
+    Top = 154
+    Width = 174
+    Caption = 'Отменить интеграцию'
+    Font.Height = -12
+    OnClick = Button3Click
+    ParentFont = False
+    TabOrder = 3
+  end
+end
