@@ -1614,6 +1614,7 @@ begin
          button15.Caption:='Отменить';
          radiobutton1.Caption:='Всегда использовать этот принтер';
          radiobutton2.Caption:='Использовать принтер по умолчанию';
+         label11.Caption:='Выбор принтера';
        end;
     1: begin
          button5.Caption:='Open file';
@@ -1658,6 +1659,7 @@ begin
          button15.Caption:='Cancel';
          radiobutton1.Caption:='Always use this printer';
          radiobutton2.Caption:='Use default printer';
+         label11.Caption:='Selecting a printer';
     end;
   end;
 end;

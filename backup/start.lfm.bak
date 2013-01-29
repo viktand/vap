@@ -9044,7 +9044,7 @@ object Form1: TForm1
       Width = 256
       Alignment = taCenter
       AutoSize = False
-      Caption = 'Настройка принтера'
+      Caption = 'Выбор принтера'
       ParentColor = False
     end
     object ComboBox2: TComboBox
