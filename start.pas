@@ -1640,7 +1640,7 @@ begin
          CheckBox3.Caption:='Fill';
          CheckBox3.Hint:='Calculate field separately for each picture to completely fill its place with the layout';
          StaticText2.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
-         StaticText2.Caption:='Field between'+#13+'miniatures, mm';
+         StaticText2.Caption:='Margin between'+#13+'miniatures, mm';
          button8.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
          button9.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
          label12.Hint:='The exact value of the fields depends on the aspect ratio of pictures';

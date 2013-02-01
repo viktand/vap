@@ -61,10 +61,11 @@
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="start"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1590"/>
-        <CursorPos X="42" Y="1617"/>
+        <TopLine Value="1623"/>
+        <CursorPos X="33" Y="1643"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
           <WindowIndex Value="0"/>
@@ -157,10 +158,9 @@
         <ComponentName Value="Form3"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Opt"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="64"/>
+        <TopLine Value="142"/>
         <CursorPos X="36" Y="67"/>
         <UsageCount Value="58"/>
         <Loaded Value="True"/>
