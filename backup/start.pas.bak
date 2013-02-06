@@ -225,6 +225,7 @@ type
     userprinter: string; // Выбранный принтер
     config: tstringlist; // копия конфига в памяти - чтобы не читать диск каждый раз
     confflag: boolean;  // признак необходимости прочитать конфиг с диска
+    MyFolder: string; // Папка программы
 
 implementation
 
@@ -238,6 +239,7 @@ procedure TForm1.FormCreate(Sender: TObject); // Начало
 var
   i: integer;
 begin
+  MyFolder:=extractfilepath(paramstr(0)); // Где Я?!!!
   sc:='';
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
@@ -387,9 +389,9 @@ begin
          result:=config;
          exit;
        end;
-  if fileexists('vapsett') then
+  if fileexists(myfolder + 'vapsett') then
      begin
-       assignfile(fl, 'vapsett');
+       assignfile(fl, myfolder + 'vapsett');
        reset(fl);
        while not(eof(fl)) do
          begin
@@ -409,7 +411,7 @@ var
   fl: textfile;
   i: integer;
 begin
-  assignfile(fl, 'vapsett');
+  assignfile(fl, myfolder + 'vapsett');
   rewrite(fl);
   for i:=0 to st.Count-1 do writeln(fl, st[i]);
   closefile(fl);
@@ -476,8 +478,15 @@ procedure tform1.SetListPrn;
 // установить размер заготовки в соответствии с форматом листа и его ориентацией
 var
   Prin: TPrinter;
+  x: integer;
 begin
   prin := Printer;
+  if userprinter<>'' then
+    begin
+      combobox2.Items:=prin.Printers;
+      for x:=0 to combobox2.Items.Count-1 do
+        if combobox2.Items[x]=userprinter then prin.PrinterIndex:=x;
+    end;
   if orn=0 then
     begin
       image11.Width:=trunc(prin.XDPI * (frms[frm][0] / 25.4)); // точек по горизонтали
@@ -486,6 +495,7 @@ begin
       image11.Width:=trunc(prin.XDPI * (frms[frm][1] / 25.4)); // точек по горизонтали
       image11.Height:=trunc(prin.YDPI * (frms[frm][0] / 25.4)); // точек по вертикали
     end;
+    prin.Free;
   //label10.Caption:=inttostr(image11.Width)+'-'+ inttostr(image11.Height);
 end;
 
@@ -1640,7 +1650,7 @@ begin
          CheckBox3.Caption:='Fill';
          CheckBox3.Hint:='Calculate field separately for each picture to completely fill its place with the layout';
          StaticText2.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
-         StaticText2.Caption:='Field between'+#13+'miniatures, mm';
+         StaticText2.Caption:='Margin between'+#13+'miniatures, mm';
          button8.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
          button9.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
          label12.Hint:='The exact value of the fields depends on the aspect ratio of pictures';

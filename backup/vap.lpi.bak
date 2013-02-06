@@ -64,8 +64,8 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1623"/>
-        <CursorPos X="33" Y="1643"/>
+        <TopLine Value="471"/>
+        <CursorPos X="15" Y="498"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
           <WindowIndex Value="0"/>
@@ -86,7 +86,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="16" Y="10"/>
-        <UsageCount Value="192"/>
+        <UsageCount Value="193"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -162,7 +162,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="142"/>
         <CursorPos X="36" Y="67"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="59"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit11>
@@ -184,123 +184,123 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="start.pas"/>
-        <Caret Line="342" Column="10" TopLine="316"/>
+        <Caret Line="226" Column="98" TopLine="220"/>
       </Position1>
       <Position2>
         <Filename Value="start.pas"/>
-        <Caret Line="331" Column="43" TopLine="316"/>
+        <Caret Line="707" Column="50" TopLine="699"/>
       </Position2>
       <Position3>
         <Filename Value="start.pas"/>
-        <Caret Line="343" Column="45" TopLine="316"/>
+        <Caret Line="706" Column="50" TopLine="698"/>
       </Position3>
       <Position4>
         <Filename Value="start.pas"/>
-        <Caret Line="329" Column="3" TopLine="316"/>
+        <Caret Line="705" Column="50" TopLine="697"/>
       </Position4>
       <Position5>
         <Filename Value="start.pas"/>
-        <Caret Line="276" Column="43" TopLine="254"/>
+        <Caret Line="706" Column="50" TopLine="698"/>
       </Position5>
       <Position6>
-        <Filename Value="start.pas"/>
-        <Caret Line="277" Column="43" TopLine="255"/>
+        <Filename Value="opt.pas"/>
+        <Caret Line="9" Column="40" TopLine="1"/>
       </Position6>
       <Position7>
-        <Filename Value="start.pas"/>
-        <Caret Line="226" Column="98" TopLine="220"/>
+        <Filename Value="opt.pas"/>
+        <Caret Line="94" Column="111" TopLine="76"/>
       </Position7>
       <Position8>
         <Filename Value="start.pas"/>
-        <Caret Line="707" Column="50" TopLine="699"/>
+        <Caret Line="337" Column="37" TopLine="295"/>
       </Position8>
       <Position9>
         <Filename Value="start.pas"/>
-        <Caret Line="706" Column="50" TopLine="698"/>
+        <Caret Line="414" Column="14" TopLine="381"/>
       </Position9>
       <Position10>
         <Filename Value="start.pas"/>
-        <Caret Line="705" Column="50" TopLine="697"/>
+        <Caret Line="283" Column="14" TopLine="255"/>
       </Position10>
       <Position11>
         <Filename Value="start.pas"/>
-        <Caret Line="706" Column="50" TopLine="698"/>
+        <Caret Line="319" Column="21" TopLine="301"/>
       </Position11>
       <Position12>
-        <Filename Value="opt.pas"/>
-        <Caret Line="9" Column="40" TopLine="1"/>
+        <Filename Value="start.pas"/>
+        <Caret Line="308" Column="64" TopLine="301"/>
       </Position12>
       <Position13>
-        <Filename Value="opt.pas"/>
-        <Caret Line="94" Column="111" TopLine="76"/>
+        <Filename Value="start.pas"/>
+        <Caret Line="316" Column="12" TopLine="290"/>
       </Position13>
       <Position14>
         <Filename Value="start.pas"/>
-        <Caret Line="337" Column="37" TopLine="295"/>
+        <Caret Line="489" Column="63" TopLine="193"/>
       </Position14>
       <Position15>
         <Filename Value="start.pas"/>
-        <Caret Line="414" Column="14" TopLine="381"/>
+        <Caret Line="303" Column="5" TopLine="290"/>
       </Position15>
       <Position16>
         <Filename Value="start.pas"/>
-        <Caret Line="283" Column="14" TopLine="255"/>
+        <Caret Line="323" Column="24" TopLine="270"/>
       </Position16>
       <Position17>
-        <Filename Value="start.pas"/>
-        <Caret Line="319" Column="21" TopLine="301"/>
+        <Filename Value="opt.pas"/>
+        <Caret Line="94" Column="30" TopLine="77"/>
       </Position17>
       <Position18>
         <Filename Value="start.pas"/>
-        <Caret Line="308" Column="64" TopLine="301"/>
+        <Caret Line="1467" Column="9" TopLine="1449"/>
       </Position18>
       <Position19>
         <Filename Value="start.pas"/>
-        <Caret Line="316" Column="12" TopLine="290"/>
+        <Caret Line="288" Column="45" TopLine="260"/>
       </Position19>
       <Position20>
         <Filename Value="start.pas"/>
-        <Caret Line="489" Column="63" TopLine="193"/>
+        <Caret Line="287" Column="33" TopLine="266"/>
       </Position20>
       <Position21>
         <Filename Value="start.pas"/>
-        <Caret Line="303" Column="5" TopLine="290"/>
+        <Caret Line="469" Column="1" TopLine="464"/>
       </Position21>
       <Position22>
-        <Filename Value="start.pas"/>
-        <Caret Line="323" Column="24" TopLine="270"/>
+        <Filename Value="opt.pas"/>
+        <Caret Line="177" Column="14" TopLine="155"/>
       </Position22>
       <Position23>
         <Filename Value="opt.pas"/>
-        <Caret Line="94" Column="30" TopLine="77"/>
+        <Caret Line="176" Column="14" TopLine="154"/>
       </Position23>
       <Position24>
-        <Filename Value="start.pas"/>
-        <Caret Line="1467" Column="9" TopLine="1449"/>
+        <Filename Value="opt.pas"/>
+        <Caret Line="231" Column="43" TopLine="202"/>
       </Position24>
       <Position25>
         <Filename Value="start.pas"/>
-        <Caret Line="288" Column="45" TopLine="260"/>
+        <Caret Line="399" Column="107" TopLine="203"/>
       </Position25>
       <Position26>
         <Filename Value="start.pas"/>
-        <Caret Line="287" Column="33" TopLine="266"/>
+        <Caret Line="400" Column="107" TopLine="363"/>
       </Position26>
       <Position27>
         <Filename Value="start.pas"/>
-        <Caret Line="469" Column="1" TopLine="464"/>
+        <Caret Line="399" Column="107" TopLine="362"/>
       </Position27>
       <Position28>
-        <Filename Value="opt.pas"/>
-        <Caret Line="177" Column="14" TopLine="155"/>
+        <Filename Value="start.pas"/>
+        <Caret Line="220" Column="142" TopLine="220"/>
       </Position28>
       <Position29>
-        <Filename Value="opt.pas"/>
-        <Caret Line="176" Column="14" TopLine="154"/>
+        <Filename Value="start.pas"/>
+        <Caret Line="219" Column="142" TopLine="219"/>
       </Position29>
       <Position30>
-        <Filename Value="opt.pas"/>
-        <Caret Line="231" Column="43" TopLine="202"/>
+        <Filename Value="start.pas"/>
+        <Caret Line="245" Column="67" TopLine="252"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
