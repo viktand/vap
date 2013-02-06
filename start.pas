@@ -495,7 +495,6 @@ begin
       image11.Width:=trunc(prin.XDPI * (frms[frm][1] / 25.4)); // точек по горизонтали
       image11.Height:=trunc(prin.YDPI * (frms[frm][0] / 25.4)); // точек по вертикали
     end;
-    prin.Free;
   //label10.Caption:=inttostr(image11.Width)+'-'+ inttostr(image11.Height);
 end;
 
@@ -762,6 +761,7 @@ begin
      savesett('printer', 'default');
     end;
   if radiobutton1.Checked then savesett('printer', userprinter);
+  SetListPrn;
   panel6.Visible:=false;
 end;
 

@@ -762,6 +762,7 @@ begin
      savesett('printer', 'default');
     end;
   if radiobutton1.Checked then savesett('printer', userprinter);
+  SetListPrn;
   panel6.Visible:=false;
 end;
 
@@ -818,7 +819,7 @@ begin
   // выбрать принтер заданный пользователем
   if userprinter<>'' then
     begin
-      combobox2.Items:=prin.Printers;
+      combobox2.Items:=prin.Printers;  exit;
       for x:=0 to combobox2.Items.Count-1 do
         if combobox2.Items[x]=userprinter then prin.PrinterIndex:=x;
     end;
@@ -836,7 +837,6 @@ begin
   prin.Canvas.StretchDraw(Im, image11.Picture.Bitmap);
   // Конец печати
   prin.EndDoc;
-
 end;
 
 procedure TForm1.TrackBar1Change(Sender: TObject);
