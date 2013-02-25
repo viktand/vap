@@ -472,9 +472,9 @@ end;
 procedure TForm1.Button6Click(Sender: TObject);
 // сохранить измение размера image
 begin
-  num:=showindex+strtoint(copy((sender as timage).Name, 3, 2));
-  toprint[num].width:=(sender as timage).Width;
-  toprint[num].heigth:=(sender as timage).Height;
+  num:=showindex+strtoint(copy((sndr as timage).Name, 3, 2));
+  toprint[num].width:=(sndr as timage).Width;
+  toprint[num].heigth:=(sndr as timage).Height;
   panel7.Visible:=false;
 end;
 

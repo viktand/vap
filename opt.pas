@@ -122,6 +122,7 @@ begin
 end;
 
 procedure TForm3.Button3Click(Sender: TObject);
+// отмена интеграции
 var
   pt: string;
   sr: tsearchrec;
@@ -144,6 +145,12 @@ begin
              if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
              if FileExists(pt+'/Print') then deletefile(pt+'/Print');
           end;
+        pt:=users[i]+'.config/caja/scripts';  // to caja
+         if DirectoryExists(pt) then
+           begin
+              if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
+              if FileExists(pt+'/Print') then deletefile(pt+'/Print');
+           end;
         pt:=users[i]+'.kde/share/kde4/services/ServiceMenus';
         if DirectoryExists(pt) then // to kde
           begin
@@ -151,6 +158,7 @@ begin
              if FileExists(pt+'/Print.descktop') then deletefile(pt+'/Print.descktop');
           end;
      end;
+  showmessage('Ok!');
 end;
 
 procedure tform3.GetUsers;    // Получить список пользователей этого ПК   и создать файлы для контекстного меню
@@ -181,6 +189,17 @@ begin
              closefile(fl);
              fpChmod (pt+'/'+prnt,&777);
           end;
+        pt:=users[i]+'.config/caja/scripts';  // to caja
+        if DirectoryExists(pt) then // to caja
+          begin
+             assignfile(fl, pt+'/'+prnt);
+             rewrite(fl);
+             writeln(fl, '#!/bin/sh');
+             writeln(fl, ' ');
+             writeln(fl, ParamStr(0)+' '+ pram +' $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS');
+             closefile(fl);
+             fpChmod (pt+'/'+prnt,&777);
+          end;
         pt:=users[i]+'.kde/share/kde4/services/ServiceMenus';
         if DirectoryExists(pt) then // to kde
           begin
@@ -200,6 +219,7 @@ begin
              closefile(fl);
           end;
      end;
+  showmessage('Ok!');
 end;
 
 procedure tform3.AddUsers(wrd: string); // Добавить строку wrd к массиву строк users
