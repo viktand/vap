@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 171
+  Left = 431
   Height = 716
-  Top = 88
+  Top = 226
   Width = 773
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -12,9 +12,9 @@ object Form1: TForm1
   Position = poScreenCenter
   LCLVersion = '0.9.30.4'
   object Panel1: TPanel
-    Left = 343
+    Left = 336
     Height = 594
-    Top = 72
+    Top = 80
     Width = 420
     Caption = 'Лист А4 21 х 29.7'
     Color = clWhite
@@ -8680,68 +8680,6 @@ object Form1: TForm1
     ShowHint = True
     TabOrder = 6
   end
-  object Button6: TButton
-    Left = 208
-    Height = 35
-    Hint = 'Масштаб печати. Увеличить или уменьшить общую картинку. Все, что не влезет на лист А4 от верхнего левого угла, будет потеряно.'
-    Top = 472
-    Width = 106
-    Caption = 'Масштаб'
-    Font.Height = -11
-    OnClick = Button6Click
-    ParentFont = False
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 7
-  end
-  object TrackBar1: TTrackBar
-    Left = 208
-    Height = 46
-    Top = 545
-    Width = 106
-    Frequency = 5
-    Max = 300
-    Min = 10
-    OnChange = TrackBar1Change
-    Position = 100
-    Enabled = False
-    TabOrder = 8
-  end
-  object Label3: TLabel
-    Left = 208
-    Height = 16
-    Top = 526
-    Width = 106
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'Label3'
-    Enabled = False
-    ParentColor = False
-  end
-  object Label4: TLabel
-    Left = 208
-    Height = 16
-    Top = 593
-    Width = 106
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'Label4'
-    Enabled = False
-    ParentColor = False
-  end
-  object TrackBar2: TTrackBar
-    Left = 208
-    Height = 40
-    Top = 612
-    Width = 106
-    Frequency = 5
-    Max = 300
-    Min = 10
-    OnChange = TrackBar2Change
-    Position = 100
-    Enabled = False
-    TabOrder = 9
-  end
   object Label5: TLabel
     Left = 344
     Height = 16
@@ -8761,18 +8699,7 @@ object Form1: TForm1
     Font.Height = -11
     OnClick = Button7Click
     ParentFont = False
-    TabOrder = 10
-  end
-  object CheckBox1: TCheckBox
-    Left = 211
-    Height = 24
-    Top = 660
-    Width = 99
-    Caption = 'Синхронно'
-    Checked = True
-    Enabled = False
-    State = cbChecked
-    TabOrder = 11
+    TabOrder = 7
   end
   object Label6: TLabel
     Left = 344
@@ -8786,12 +8713,6 @@ object Form1: TForm1
     ParentFont = False
     Visible = False
   end
-  object Image11: TImage
-    Left = 16
-    Height = 16
-    Top = 696
-    Width = 51
-  end
   object CheckBox3: TCheckBox
     Left = 213
     Height = 24
@@ -8804,7 +8725,7 @@ object Form1: TForm1
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 12
+    TabOrder = 8
   end
   object Label12: TLabel
     Left = 224
@@ -8833,7 +8754,7 @@ object Form1: TForm1
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 13
+    TabOrder = 9
   end
   object Button9: TButton
     Left = 198
@@ -8847,7 +8768,7 @@ object Form1: TForm1
     ParentFont = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 14
+    TabOrder = 10
   end
   object TrackBar3: TTrackBar
     Left = 192
@@ -8859,7 +8780,7 @@ object Form1: TForm1
     Min = -150
     Position = 5
     OnMouseUp = TrackBar3MouseUp
-    TabOrder = 15
+    TabOrder = 11
   end
   object Panel5: TPanel
     Left = 632
@@ -8872,7 +8793,7 @@ object Form1: TForm1
     ClientWidth = 462
     Font.Height = -12
     ParentFont = False
-    TabOrder = 16
+    TabOrder = 12
     Visible = False
     object LabeledEdit1: TLabeledEdit
       Left = 33
@@ -9001,7 +8922,7 @@ object Form1: TForm1
     Alignment = taCenter
     Caption = 'Поля между'#10'миниатюр, mm'
     ShowHint = True
-    TabOrder = 17
+    TabOrder = 13
   end
   object Button12: TButton
     Left = 416
@@ -9013,7 +8934,7 @@ object Form1: TForm1
     Font.Height = -11
     OnClick = Button12Click
     ParentFont = False
-    TabOrder = 18
+    TabOrder = 14
   end
   object Button13: TButton
     Left = 521
@@ -9024,7 +8945,9 @@ object Form1: TForm1
     Font.Height = -11
     OnClick = Button13Click
     ParentFont = False
-    TabOrder = 19
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 15
   end
   object Panel6: TPanel
     Left = 419
@@ -9035,7 +8958,7 @@ object Form1: TForm1
     BorderStyle = bsSingle
     ClientHeight = 163
     ClientWidth = 267
-    TabOrder = 20
+    TabOrder = 16
     Visible = False
     object Label11: TLabel
       Left = 3
@@ -9101,6 +9024,57 @@ object Form1: TForm1
       TabStop = True
     end
   end
+  object Panel7: TPanel
+    Left = 32
+    Height = 150
+    Top = 72
+    Width = 291
+    BorderWidth = 5
+    BorderStyle = bsSingle
+    ClientHeight = 148
+    ClientWidth = 289
+    TabOrder = 17
+    Visible = False
+    object Label3: TLabel
+      Left = 6
+      Height = 18
+      Top = 6
+      Width = 277
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Коррекция размера миниатюры'
+      ParentColor = False
+    end
+    object TrackBar1: TTrackBar
+      Left = 14
+      Height = 46
+      Top = 48
+      Width = 259
+      Max = 100
+      Min = -100
+      OnChange = TrackBar1Change
+      Position = 0
+      TabOrder = 0
+    end
+    object Button6: TButton
+      Left = 167
+      Height = 27
+      Top = 109
+      Width = 102
+      Caption = 'Ok'
+      OnClick = Button6Click
+      TabOrder = 1
+    end
+    object Button16: TButton
+      Left = 23
+      Height = 27
+      Top = 109
+      Width = 102
+      Caption = 'Cancel'
+      OnClick = Button16Click
+      TabOrder = 2
+    end
+  end
   object SDD1: TSelectDirectoryDialog
     left = 296
     top = 696
@@ -9110,6 +9084,7 @@ object Form1: TForm1
     top = 696
   end
   object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
     left = 208
     top = 696
     object MenuItem1: TMenuItem
@@ -9119,6 +9094,10 @@ object Form1: TForm1
     object MenuItem2: TMenuItem
       Caption = 'Удалить, но оставить это место пустым'
       OnClick = MenuItem2Click
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Коррекция размера'
+      OnClick = MenuItem3Click
     end
   end
 end

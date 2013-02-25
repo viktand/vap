@@ -1,3 +1,6 @@
+{$DEFINE UNIX}
+{$DEFINE UseCThreads}
+
 program vap;
 
 {$mode objfpc}{$H+}
@@ -7,7 +10,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, start, printer4lazarus, ab, Opt;
+  Forms, start, printer4lazarus, runtimetypeinfocontrols, ab, Opt;
 
 {$R *.res}
 

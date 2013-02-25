@@ -1,0 +1,43 @@
+Start print
+comp=10
+Start procedure "drawlist" with index = 10
+Preview scale = 11.8097643097643
+Building a page
+Picture on this page #0 x=1889 y=165 size 2821x1416
+Picture on this page #1 x=1322 y=118 size 2408x1369
+Picture on this page #2 x=2527 y=118 size 3613x1369
+Picture on this page #3 x=3731 y=118 size 4817x1369
+Picture on this page #4 x=118 y=1488 size 1204x2739
+Picture on this page #5 x=1322 y=1488 size 2408x2739
+Picture on this page #6 x=2527 y=1488 size 3613x2739
+Picture on this page #7 x=3731 y=1488 size 4817x2739
+Picture on this page #8 x=118 y=2857 size 1204x4108
+Picture on this page #9 x=1322 y=2857 size 2408x4108
+Picture on this page #10 x=2527 y=2857 size 3613x4108
+Picture on this page #11 x=3731 y=2857 size 4817x4108
+Picture on this page #12 x=118 y=4227 size 1204x5478
+Picture on this page #13 x=1322 y=4227 size 2408x5478
+Picture on this page #14 x=2527 y=4227 size 3613x5478
+Picture on this page #15 x=3731 y=4227 size 4817x5478
+Picture on this page #16 x=118 y=5597 size 1204x6848
+Picture on this page #17 x=1322 y=5597 size 2408x6848
+Picture on this page #18 x=2527 y=5597 size 3613x6848
+Picture on this page #19 x=3731 y=5597 size 4817x6848
+Calling the printing procedure
+Start the printing procedure
+End of the procedure select the printer
+Specify the orientation of the page
+Start printing
+Task was named "Картинки"
+Область печати - 4722x6781
+Размер бумаги - 4958x7017
+Заготовка - 4960x7015
+The task is sent to the printer. The end of work.
+Task was named "Картинки"
+Task was named "Картинки"
+Task was named "Картинки"
+Task was named "Картинки"
+Task was named "Картинки"
+Task was named "Картинки"
+Task was named "Картинки"
+Task was named "Картинки"

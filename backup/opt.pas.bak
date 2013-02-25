@@ -23,6 +23,7 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject); // выбор языка программы
     procedure lng; // перевести на выбранный язык эту форму
     procedure GetUsers; // Получить список пользователей этого ПК
@@ -58,6 +59,11 @@ procedure TForm3.FormCreate(Sender: TObject);
 begin
   pram:='';
   lng;
+end;
+
+procedure TForm3.FormShow(Sender: TObject);
+begin
+  radiobutton2.Checked:=start.lng=1;
 end;
 
 procedure TForm3.Button1Click(Sender: TObject);

@@ -5,8 +5,9 @@ unit start;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, printers, ComCtrls, Menus, PrintersDlgs; //, jwawingdi;
+  Classes, SysUtils, process, FileUtil, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, LResources,
+  PrintersDlgs, RTTICtrls;
 
 type
 
@@ -20,6 +21,7 @@ type
     Button13: TButton;
     Button14: TButton;
     Button15: TButton;
+    Button16: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -28,7 +30,6 @@ type
     Button7: TButton;
     Button8: TButton;
     Button9: TButton;
-    CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     ComboBox1: TComboBox;
@@ -36,7 +37,6 @@ type
     GroupBox1: TGroupBox;
     Image1: TImage;
     Image10: TImage;
-    Image11: TImage;
     Image12: TImage;
     Image2: TImage;
     Image3: TImage;
@@ -53,7 +53,6 @@ type
     Label13: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
@@ -64,6 +63,7 @@ type
     LabeledEdit3: TLabeledEdit;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
     ODl1: TOpenDialog;
     Panel1: TPanel;
     Panel2: TPanel;
@@ -71,6 +71,7 @@ type
     Panel4: TPanel;
     Panel5: TPanel;
     Panel6: TPanel;
+    Panel7: TPanel;
     PopupMenu1: TPopupMenu;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
@@ -78,7 +79,6 @@ type
     StaticText1: TStaticText;
     StaticText2: TStaticText;
     TrackBar1: TTrackBar;
-    TrackBar2: TTrackBar;
     TrackBar3: TTrackBar;
      procedure Button10Click(Sender: TObject);
      procedure Button11Click(Sender: TObject);
@@ -86,6 +86,7 @@ type
      procedure Button13Click(Sender: TObject);
      procedure Button14Click(Sender: TObject);
      procedure Button15Click(Sender: TObject);
+     procedure Button16Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -109,8 +110,10 @@ type
      procedure LabeledEdit1Change(Sender: TObject);
      procedure MenuItem1Click(Sender: TObject);
      procedure MenuItem2Click(Sender: TObject);
+     procedure MenuItem3Click(Sender: TObject);
      procedure Panel3Click(Sender: TObject);
      procedure Panel4Click(Sender: TObject);
+     procedure PopupMenu1Popup(Sender: TObject);
      procedure StaticText1Click(Sender: TObject);
      function steplist(i: integer): integer; // шаг листания картинок в завис от компоновки
      procedure AddPict(p: string); // Загрузить картинку в буфер для компоновки p - путь к файлу
@@ -134,17 +137,14 @@ type
      procedure SetPos(im: timage); // уточнить позицию image
      function GetmX: integer;
      function GetmY: integer;
-     procedure DrawList(index: integer); // Нарисовать лист
-     procedure Prn; // вывести лист на принтер
-     procedure TrackBar1Change(Sender: TObject);
-     procedure TrackBar2Change(Sender: TObject);
+     procedure DrawList2(index: integer); // Нарисовать лист сразу в принтере
      procedure showlistnum; // показать номер текущего листа предпросмотра и сколько всего листов
      procedure EndClick(im: timage); // завершение перехода на новую компоновку (общее для всех)
      procedure EndStep(index: integer); // завершение перелистывания страниц (общее для всех)
      procedure EndList(i: integer);//завершение построения листа предпросмотра (общее для всех)
      procedure RefreshScreen; // обновить изображение (после игр с настройками)
-     procedure SetListPrn; // Установить размер выходного image в соответствии с форматом листа
      procedure FillList; // Заполнение листа картинкой
+     procedure TrackBar1Change(Sender: TObject);
      procedure TrackBar3MouseUp(Sender: TObject; Button: TMouseButton;
        Shift: TShiftState; X, Y: Integer);
      procedure MoveStart(Sender: TObject; Button: TMouseButton;Shift: TShiftState; X, Y: Integer); // процедуры перемещения showp[0]
@@ -159,11 +159,13 @@ type
      procedure SetComp(p: string); // установка начальной компоновки из командной строки
      procedure SetLng; // Установка языка
      procedure SetWords; // Заготовки фраз на разных языках
-     procedure SaveSett(Key, Word: string); // Сщхранить в файле конфигурации значение word c ключем key
+     procedure SaveSett(Key, Word: string); // Сoхранить в файле конфигурации значение word c ключем key
      function ReadSett: tStringList; // прочитать существующий файл конфигурации
      Procedure WriteSett(st: tStringList); // записать новые значения в файл конфигурации
      function LoadSett(key: string):string; // получить значение ключа key
      procedure LoadConfig; // загрузить конфигурацию из файла
+     procedure Say(word: string); // Записать строку в лог-файл
+     function sign(n: integer): integer;
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -215,7 +217,7 @@ type
                         //начинать рисовать предпросмотр (чтобы листать страницы)
     getx, gety: integer; // максимальный размер image для текущей компоновки
     FlagMove: boolean; // флаг разрешения передвижения showp[0]
-    MovX, MovY: integer; // предыдущие координаты мышки (для рачета перемещения)
+    ttx, tty: integer; // координаты мышки, где она была нажата для расчета перемещения
     imindex: integer; // индекс картинки, на image которой нажали кнопку мышки
     fl: boolean; // просто флаг для промежуточных операций
     sc: string;  // используется для загрузки предустановленной компоновки
@@ -226,6 +228,11 @@ type
     config: tstringlist; // копия конфига в памяти - чтобы не читать диск каждый раз
     confflag: boolean;  // признак необходимости прочитать конфиг с диска
     MyFolder: string; // Папка программы
+    PrinterIndex: integer; // index выбранного принтера
+    repo: string; // рапорт о завершении печати
+    sndr: TObject; // ссылка на имадж, на котором нажата и отпущена кнопка мыши
+    sndh, sndw: integer; // исходные размеры имадже перед корректировкой
+
 
 implementation
 
@@ -270,7 +277,6 @@ begin
   labs[7]:='3 x 3';
   labs[8]:='3 x 5';
   labs[9]:='4 x 5';
-  image11.Visible:=false;
   label2.Caption := labs[comp-1];
   // поддерживаемые размеры (книжная ориентация) (может быть потом будет смысл вынести во внешний файл)
   frms[0][0]:=210; frms[0][1]:=297; frms[0][2]:=2; // A4
@@ -279,14 +285,8 @@ begin
   frms[3][0]:=100; frms[3][1]:=150; frms[3][2]:=4; // Фото 10х15
   frms[4][0]:=150; frms[4][1]:=200; frms[4][2]:=3; // Фото 15х20
   frms[5][0]:=0; frms[5][1]:=0; frms[5][2]:=0; // Users format
-  label3.Caption:='X = ' + inttostr(scalex) + '%';
-  trackbar1.Position := scalex;
-  label4.Caption:='Y = ' + inttostr(scaley) + '%';
-  trackbar2.Position := scaley;
   loadconfig;
   if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
-  TrackBar1.Position:=scalex;
-  TrackBar2.Position:=scaley;
   for i := 0 to 19 do ex[i] := false;
   setcomp(sc); // установить компоновку
   if orn=1 then panel4click(panel4);
@@ -295,10 +295,9 @@ end;
 
 procedure tform1.LoadConfig; // загрузить конфигурацию из файла
 var
-  s, lin: string;
+  s: string;
   x, y: integer;
 begin
-  lin:='';
   s:=loadsett('paper');
   if s<>'' then addpict('*p'+s);
   s:=loadsett('comp');
@@ -328,9 +327,8 @@ end;
 
 procedure tform1.LoadFiles;
 var
-  i, j: integer;
+  i: integer;
   pr: string;
-  fl: boolean;
 begin
    pr:='';
    for i:=1 to ParamCount do
@@ -345,6 +343,26 @@ begin
      end;
      if pr<>'' then addpict(pr);
  end;
+
+procedure tform1.Say(word: string); // Записать строку в лог-файл
+var
+   fl: textfile;
+   fn: string;
+begin
+   fn := MyFolder + 'vap_prn.log';
+   if word = '' then
+        begin
+          assignfile(fl, fn);
+          rewrite(fl);
+        end
+        else
+        begin
+          assignfile(fl, fn);
+          append(fl);
+          writeln(fl, word);
+        end;
+closefile(fl);
+end;
 
 procedure tform1.SaveSett(Key, Word: string); // Сохранить в файле конфигурации значение word c ключем key
 var
@@ -435,13 +453,14 @@ begin
     begin
       (sender as timage).Cursor:=crsizeall;
       flagmove:=true;
-      movx:=x;
-      movy:=y;
+      ttx:=x;
+      tty:=y;
       (sender as timage).BringToFront;
     end;
 end;
 
 procedure tform1.MoveEnd(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+// отпускание кнопки мыши
 var
   i: integer;
 begin
@@ -450,20 +469,54 @@ begin
   (sender as timage).Cursor:=crdefault;
 end;
 
+procedure TForm1.Button6Click(Sender: TObject);
+// сохранить измение размера image
+begin
+  num:=showindex+strtoint(copy((sender as timage).Name, 3, 2));
+  toprint[num].width:=(sender as timage).Width;
+  toprint[num].heigth:=(sender as timage).Height;
+  panel7.Visible:=false;
+end;
 
 procedure tform1.MoveNow(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+// движение мышкой
 begin
-  imindex := GetPictIndex(sender);
-  if flagmove then if (abs(x-movx)<>1) and (abs(y-movy)<>1) then
+  if flagmove then
     begin
-       (sender as timage).Left:=(sender as timage).Left + (x-movx) div 2;
-       (sender as timage).Top:=(sender as timage).Top + (y-movy) div 2;
-       movx:=x;
-       movy:=y;
+      (sender as timage).Left:=(sender as timage).Left + (x-ttx);
+      (sender as timage).Top:=(sender as timage).Top + (y-tty);
        num:=showindex+strtoint(copy((sender as timage).Name, 3, 2));
        toprint[num].left:=(sender as timage).Left;
        toprint[num].top:=(sender as timage).Top;
     end;
+end;
+
+procedure TForm1.PopupMenu1Popup(Sender: TObject);
+begin
+  sndr:=(sender as tpopupmenu).PopupComponent;
+  imindex := GetPictIndex(sndr);
+  sndh:=(sndr as timage).height;
+  sndw:=(sndr as timage).Width;
+end;
+
+
+procedure TForm1.TrackBar1Change(Sender: TObject);
+// изменение размера image
+var
+  k: extended;
+begin
+  if sndr = nil then exit;
+  k:=sndh/sndw;
+  (sndr as timage).Height:=sndh+trackbar1.Position;
+  (sndr as timage).Width:=sndw+trunc(trackbar1.Position / k);
+end;
+
+function tform1.sign(n: integer): integer;
+begin
+  if n=0 then result:=0;
+  if n>0 then result:=1;
+  if n<0 then result:=-1;
+
 end;
 
 procedure tform1.RefreshScreen; // обновить изображение
@@ -471,32 +524,6 @@ begin
   if buf=0 then exit;
   for num:=0 to buf-1 do toprint[num].show:=false;
   endstep(0);
-end;
-
-
-procedure tform1.SetListPrn;
-// установить размер заготовки в соответствии с форматом листа и его ориентацией
-var
-  Prin: TPrinter;
-  x: integer;
-begin
-  prin := Printer;
-  if userprinter<>'' then
-    begin
-      combobox2.Items:=prin.Printers;
-      for x:=0 to combobox2.Items.Count-1 do
-        if combobox2.Items[x]=userprinter then prin.PrinterIndex:=x;
-    end;
-  if orn=0 then
-    begin
-      image11.Width:=trunc(prin.XDPI * (frms[frm][0] / 25.4)); // точек по горизонтали
-      image11.Height:=trunc(prin.YDPI * (frms[frm][1] / 25.4)); // точек по вертикали
-    end else begin
-      image11.Width:=trunc(prin.XDPI * (frms[frm][1] / 25.4)); // точек по горизонтали
-      image11.Height:=trunc(prin.YDPI * (frms[frm][0] / 25.4)); // точек по вертикали
-    end;
-    prin.Free;
-  //label10.Caption:=inttostr(image11.Width)+'-'+ inttostr(image11.Height);
 end;
 
 
@@ -581,15 +608,6 @@ begin
     end;
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
-begin
-  label3.enabled := not label3.enabled;
-  label4.enabled := not label4.enabled;
-  trackbar1.enabled := not trackbar1.enabled;
-  trackbar2.enabled := not trackbar2.enabled;
-  checkbox1.enabled := not checkbox1.enabled;
-end;
-
 procedure TForm1.Button7Click(Sender: TObject);
 // О программе
 begin
@@ -649,6 +667,7 @@ begin
        end;
  end;
 
+
 procedure TForm1.TrackBar3MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 // быстрое изменение размера полей
@@ -688,32 +707,6 @@ begin
    label5.Top:= panel1.Top - 24;
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
-// печать
-var
-  i: integer;
-begin
-  setlistprn;
-  showindex := 0;
-  CreateList;
-  showpict(showindex);
-  repeat // перебор листов для их прорисовки
-    case comp of
-       1,2: drawlist(0);
-       3: drawlist(1);
-       4: drawlist(2);
-       5: drawlist(3);
-       6: drawlist(5);
-       7: drawlist(7);
-       8: drawlist(8);
-       9: drawlist(14);
-       10: drawlist(19);
-     end;
-     i := showindex;
-     Button2Click(image11);
-  until (i = showindex);
-end;
-
 procedure TForm1.Button10Click(Sender: TObject);
 begin
   frms[5][0]:=strtoint(labelededit1.Text);
@@ -743,6 +736,7 @@ procedure TForm1.Button13Click(Sender: TObject);
 var
   Prin: TPrinter;
   pr: tStrings;
+  i: integer;
 begin
   panel6.Left:=419;
   panel6.top:=48;
@@ -750,7 +744,19 @@ begin
   pr:=prin.Printers;
   combobox2.Items:=pr;
   combobox2.Text:=combobox2.Items[0];
+  if userprinter <> '' then
+    begin
+       for i:=0 to combobox2.Items.Count-1 do
+           if  combobox2.Items[i] = userprinter then
+             begin
+                combobox2.Text:=userprinter;
+                combobox2.ItemIndex:=i;
+                radiobutton1.Checked:=true;
+                break;
+             end;
+    end;
   Panel6.Visible:=true;
+  SetLng;
 end;
 
 procedure TForm1.Button14Click(Sender: TObject);
@@ -762,8 +768,8 @@ begin
      savesett('printer', 'default');
     end;
   if radiobutton1.Checked then savesett('printer', userprinter);
-  SetListPrn;
   panel6.Visible:=false;
+  SetLng;
 end;
 
 procedure TForm1.Button15Click(Sender: TObject);
@@ -772,88 +778,94 @@ begin
   panel6.Visible:=false;
 end;
 
-
-procedure tform1.drawlist(index: integer);
-// подготовка страницы к печати, т.е. рисование image, который пойдет на принтер
-var
-   i, x, x1, y, y1: integer;
-   k: extended;
-   ImageRect: TRect;
+procedure TForm1.Button16Click(Sender: TObject);
+// закрыть регулятор размера image  без изменений
 begin
-   label6.visible:=true;
-   self.Repaint;
-   image11.Canvas.Clear;
-   image11.Canvas.Brush.Color:=clWhite;
-   image11.Canvas.FillRect(image11.ClientRect);
-   k := image11.Height / panel1.Height; // масштаб между предпросмотром и листом
-   for i := 0 to index do  // перебрать все задействованные showp[] и перерисовать их в один image
-     begin
-        x :=  trunc(k * showp[i].Left);
-        y :=  trunc(k * showp[i].Top);
-        x1 := x + trunc(k * showp[i].Width);
-        y1 := y + trunc(k * showp[i].Height);
-        ImageRect:=Rect(x, y, x1, y1);
-        image11.Canvas.StretchDraw(ImageRect, showp[i].Picture.Bitmap);
-       end;
-   prn;
-   label6.visible:=false;
-   //image11.visible:=true;
-   //panel1.visible:=false;
-   //image11.Proportional:=true;
-   //label11.Caption:=inttostr(image11.Width)+'-'+ inttostr(image11.Height);
-   //image11.Width:= image11.Width div 20;
-   //image11.Height:= image11.Height div 20;
-   //label10.Caption:=inttostr(image11.Width)+'-'+ inttostr(image11.Height);
+  panel7.Visible:=false;
+  (sndr as timage).Height:=sndh;
+  (sndr as timage).Width:=sndw;
 end;
 
-procedure TForm1.Prn;
-// печать страницы
+
+procedure TForm1.Button3Click(Sender: TObject);
+// печать
 var
-  Prin: TPrinter;
-  Im: TRect;
-  x, y: integer;
-  sm: integer;
-  sx, sy: extended;
+  i, x: integer;
 begin
-  prin := Printer;
-  // выбрать принтер заданный пользователем
+  showindex := 0;
+  CreateList;
+  showpict(showindex);
   if userprinter<>'' then
     begin
-      combobox2.Items:=prin.Printers;  exit;
+      combobox2.Items:=printer.Printers;
       for x:=0 to combobox2.Items.Count-1 do
-        if combobox2.Items[x]=userprinter then prin.PrinterIndex:=x;
+        if combobox2.Items[x]=userprinter then
+          begin
+               PrinterIndex:=x;
+          end;
+    end
+    else PrinterIndex:=0;
+  // выбрать принтер заданный пользователем
+  printer.PrinterIndex:=PrinterIndex;
+  if orn = 0 then printer.Orientation:=poPortrait else printer.Orientation:=poLandscape;
+  repeat // перебор листов для их прорисовки
+    case comp of
+       1,2: drawlist2(0);
+       3: drawlist2(1);
+       4: drawlist2(2);
+       5: drawlist2(3);
+       6: drawlist2(5);
+       7: drawlist2(7);
+       8: drawlist2(8);
+       9: drawlist2(14);
+       10: drawlist2(19);
+     end;
+     i := showindex;
+     Button2Click(nil);
+  until (i = showindex);
+  showmessage(repo);
+end;
+
+procedure tform1.drawlist2(index: integer);
+// подготовка и  печать страницы, т.е.  ee рисование
+var
+   i, x, x1, y, y1, dphor, dpver: integer;
+   mrv, mrh, sm1, sm0: integer;
+   kh, kv: extended;
+   ImageRect: TRect;
+begin
+   printer.BeginDoc;
+   printer.Canvas.Clear;
+   printer.Title:='pictures';
+   //реальный размер заданной области печати
+   if orn=0 then
+    begin
+      dphor:=trunc(printer.XDPI * (frms[frm][0] / 25.4)); // точек по горизонтали
+      dpver:=trunc(printer.YDPI * (frms[frm][1] / 25.4)); // точек по вертикали
+      sm0:=trunc((printer.PaperSize.Width-dphor)/2); // расчет сдвига к центру
+      sm1:=0;
+    end else begin
+      dphor:=trunc(printer.XDPI * (frms[frm][1] / 25.4)); // точек по горизонтали
+      dpver:=trunc(printer.YDPI * (frms[frm][0] / 25.4)); // точек по вертикали
+      sm1:=trunc((printer.PaperSize.Height-dpver)/2); // расчет сдвига к центру
+      sm0:=0;
     end;
-  if orn = 0 then prin.Orientation:=poPortrait else prin.Orientation:=poLandscape;
-  sx:= prin.PageWidth / prin.PaperSize.Width;
-  sy:= prin.PageHeight / prin.PaperSize.Height;
-  x := trunc(image11.Picture.Width * (scalex / 100) * sx);
-  y := trunc(image11.Picture.Height * (scaley / 100) * sy);
-  //exit;
-  // Начало печати
-  prin.BeginDoc;
-  prin.Title:='Картинки';
-  sm:= (prin.PageWidth - image11.Width) div 2;
-  Im:=Rect(sm, 0, x+sm, y);
-  prin.Canvas.StretchDraw(Im, image11.Picture.Bitmap);
-  // Конец печати
-  prin.EndDoc;
+   mrv:= printer.PaperSize.Height - printer.PageHeight; // непечатные поля слева
+   mrh:= printer.PaperSize.Width - printer.PageWidth; // непечатные поля сверху
+   kh := (dphor-mrh) / panel1.Width; // масштаб между предпросмотром и листом
+   kv := (dpver-mrv) / panel1.Height; // масштаб между предпросмотром и листом
+
+   for i := 0 to index do  // перебрать все задействованные showp[] и перерисовать их в холст принтера
+     begin
+        x :=  sm0+trunc(kh * showp[i].Left);
+        y :=  sm1+trunc(kv * showp[i].Top);
+        x1 := x + trunc(kh * showp[i].Width);
+        y1 := y + trunc(kv * showp[i].Height);
+        ImageRect:=Rect(x, y, x1, y1);
+        printer.Canvas.StretchDraw(ImageRect, showp[i].Picture.Bitmap);
+       end;
+   printer.EndDoc;
 end;
-
-procedure TForm1.TrackBar1Change(Sender: TObject);
-begin
-  scalex := trackbar1.Position;
-  label3.Caption:='X = ' + inttostr(scalex) + '%';
-  if checkbox1.Checked then TrackBar2.Position:=TrackBar1.Position;
-end;
-
-procedure TForm1.TrackBar2Change(Sender: TObject);
-begin
-  scaley := trackbar2.Position;
-  label4.Caption:='Y = ' + inttostr(scaley) + '%';
-  if checkbox1.Checked then TrackBar1.Position:=TrackBar2.Position;
-end;
-
-
 
 
 procedure tform1.OpenFolder;
@@ -1399,9 +1411,17 @@ var
   i, j: integer;
 begin
   i:=imindex;
-  for j:=i to buf-2 do toprint[j] := toprint[j+1];
-  dec(buf);
-  setlength(toprint, buf);
+  if (buf>1) then
+     begin
+          for j:=i to buf-2 do toprint[j] := toprint[j+1];
+          dec(buf);
+          setlength(toprint, buf);
+     end else
+         begin
+           buf:=0;
+           toprint[0].show:=false;
+           endstep(0);
+         end;
   refreshscreen;
 end;
 
@@ -1414,6 +1434,13 @@ begin
   toprint[i].pict := '';
   toprint[i].pct:=nil;
   refreshscreen;
+end;
+
+procedure TForm1.MenuItem3Click(Sender: TObject);
+// открыть окошко регулятора размера
+begin
+   trackbar1.Position:=0;
+   panel7.Visible:=true;
 end;
 
 procedure TForm1.Panel3Click(Sender: TObject);
@@ -1523,12 +1550,6 @@ begin
           setpg(p);
           exit;
         end;
-  if (copy(p, 1, 3)='*ns') or
-      (copy(p, 1, 3)='*NS') then
-        begin
-          checkbox1.Checked:=false;
-          exit;
-        end;
   if (copy(p, 1, 3)='*x=') or
      (copy(p, 1, 3)='*X=') then
        begin
@@ -1559,6 +1580,8 @@ begin
 end;
 
 procedure tform1.SetLng;
+var
+  upr: string;
 begin
   capt[0]:=lngn[lng, 8];
   capt[1]:=lngn[lng, 9];
@@ -1580,8 +1603,10 @@ begin
   panel1.Caption:=capt[frm];
   if lists > 0 then label5.Caption:=lngn[lng,5] + inttostr(curlist) + lngn[lng,6] + inttostr(lists)
      else label5.Caption:=lngn[lng, 4];
+  upr := userprinter;
   case lng of
     0: begin
+         if upr = '' then upr := 'по умолчанию';
          button5.Caption:='Открыть файл';
          button5.Hint:='Открыть один файл (или добавить его к списку уже открытых)';
          button4.Caption:='Открыть папку';
@@ -1599,9 +1624,6 @@ begin
          Label8.Caption:='Ориентация листа';
          CheckBox2.Caption:='Не увеличивать мелкие';
          CheckBox2.Hint:='Если снять эту галочку, то изначально мелкие картинки будут растягиваться до максимального возможного размера в соответствии с выбранной компоновкой.';
-         CheckBox1.Caption:='Синхронно';
-         button6.Caption:='Масштаб';
-         button6.Hint:='Масштаб печати. Увеличить или уменьшить общую картинку. Все, что не влезет на лист А4 от верхнего левого угла, будет потеряно.';
          CheckBox3.Caption:='Заполнить';
          CheckBox3.Hint:='Расчитать поля отдельно для каждой картинки для полного заполнения ее места с учетом компоновки';
          StaticText2.Hint:='Точное значение полей зависит от соотношения сторон картинки';
@@ -1616,7 +1638,9 @@ begin
          StaticText1.Caption:='Укажите размер Вашего листа в миллиметрах.'+#13+'Не рекомендуется превышать размер бумаги Вашего принтера.'
                                        +#13+'Используйте портретную (книжную) ориентацию.';
          button10.Caption:='Установить';
+         button6.Caption:='Установить';
          button11.Caption:='Отклонить';
+         button16.Caption:='Отклонить';
          labelededit3.EditLabel.Caption:='Масштаб предпросмотра - только на экране.';
          label9.Caption:='<--Только цифры! -->';
          label13.Caption:='<--Только цифры!';
@@ -1625,8 +1649,12 @@ begin
          radiobutton1.Caption:='Всегда использовать этот принтер';
          radiobutton2.Caption:='Использовать принтер по умолчанию';
          label11.Caption:='Выбор принтера';
+         button13.Hint:='Выбран принтер "'+upr+'"';
+         repo:='Изображения отправлены на печать';
+         label3.Caption:='Коррекция размера миниатюры';
        end;
     1: begin
+         if upr = '' then upr := 'default';
          button5.Caption:='Open file';
          button5.Hint:='Open one file (or add it to the list is open)';
          button4.Caption:='Open folder';
@@ -1644,9 +1672,6 @@ begin
          Label8.Caption:='Page orientation';
          CheckBox2.Caption:='Not increase';
          CheckBox2.Hint:='If you clear the check box, then the initially small image will be stretched to the maximum possible size according to the selected layout.';
-         CheckBox1.Caption:='Synchronously';
-         button6.Caption:='Scale';
-         button6.Hint:='Print Scale. Increase or decrease the overall picture. Everything that does not fit on A4 paper from the top left corner will be lost.';
          CheckBox3.Caption:='Fill';
          CheckBox3.Hint:='Calculate field separately for each picture to completely fill its place with the layout';
          StaticText2.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
@@ -1661,7 +1686,9 @@ begin
          StaticText1.Caption:='Enter the size of your paper in millimeters.'+#13+'Do not exceed the paper size of your printer.'
                                        +#13+'Use portrait (like a book) orientation.';
          button10.Caption:='Ок';
+         button6.Caption:='Ок';
          button11.Caption:='Cancel';
+         button16.Caption:='Cancel';
          labelededit3.EditLabel.Caption:='The scale of the preview - only on the screen.';
          label9.Caption:='<--Only numbers! -->';
          label13.Caption:='<--Only numbers!';
@@ -1670,6 +1697,9 @@ begin
          radiobutton1.Caption:='Always use this printer';
          radiobutton2.Caption:='Use default printer';
          label11.Caption:='Selecting a printer';
+         button13.Hint:='Printer selected "'+upr+'"';
+         repo:='Images sent to the printer';
+         label3.Caption:='Correction of the image size';
     end;
   end;
 end;

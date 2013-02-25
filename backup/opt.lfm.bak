@@ -1,13 +1,15 @@
 object Form3: TForm3
-  Left = 333
+  Left = 652
   Height = 237
-  Top = 468
+  Top = 515
   Width = 207
   BorderStyle = bsDialog
   Caption = 'Настройки'
   ClientHeight = 237
   ClientWidth = 207
+  FormStyle = fsMDIChild
   OnCreate = FormCreate
+  OnShow = FormShow
   Position = poMainFormCenter
   LCLVersion = '0.9.30.4'
   object RadioGroup1: TRadioGroup
