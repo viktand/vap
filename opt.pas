@@ -78,10 +78,17 @@ procedure TForm3.Button1Click(Sender: TObject);
 begin
   if form3.Height <> 372 then
     begin
+      try
        setcheck;
        form3.Height:=372
+      except
+        showmessage('Настройка интеграции возможна только'+#13#10+
+                               'при запуске с правами администратора.'+#13#10+
+                               'В Ubuntu и других подобных  системах:'+#13#10+
+                               'в терминале: "sudo /{путь}/vap"');
+      end;
     end  else form3.Height:=204;
-  //getusers;
+
 end;
 
 procedure tform3.setcheck;
