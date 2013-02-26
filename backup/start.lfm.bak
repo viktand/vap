@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 337
+  Left = 253
   Height = 716
-  Top = 206
+  Top = 154
   Width = 773
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -9121,6 +9121,15 @@ object Form1: TForm1
       454E44AE426082
     }
     Visible = False
+  end
+  object Button17: TButton
+    Left = 232
+    Height = 22
+    Top = 584
+    Width = 53
+    Caption = 'Button17'
+    OnClick = Button17Click
+    TabOrder = 18
   end
   object SDD1: TSelectDirectoryDialog
     left = 296

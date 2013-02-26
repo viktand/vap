@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, process, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, LResources;
+  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, Ipfilebroker, IpHtml;
 
 type
 
@@ -21,6 +21,7 @@ type
     Button14: TButton;
     Button15: TButton;
     Button16: TButton;
+    Button17: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -87,6 +88,7 @@ type
      procedure Button14Click(Sender: TObject);
      procedure Button15Click(Sender: TObject);
      procedure Button16Click(Sender: TObject);
+     procedure Button17Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -166,6 +168,7 @@ type
      procedure LoadConfig; // загрузить конфигурацию из файла
      procedure Say(word: string); // Записать строку в лог-файл
      function sign(n: integer): integer;
+     procedure getnews; // проверить обновление
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -784,6 +787,11 @@ begin
   panel7.Visible:=false;
   (sndr as timage).Height:=sndh;
   (sndr as timage).Width:=sndw;
+end;
+
+procedure TForm1.Button17Click(Sender: TObject);
+begin
+  getnews;
 end;
 
 
@@ -1710,6 +1718,22 @@ begin
    lngn[1,12]:='Photo 15 x 20';
    lngn[0,13]:='Произвольный размер';
    lngn[1,13]:='Custom size';
+
+end;
+
+procedure tform1.getnews;
+var
+  mem:TMemoryStream;
+  s: string;
+begin
+   mem := TMemoryStream.Create;
+   try
+        IdHTTP1.Get('https://github.com/viktand/vap/blob/master/version?raw=true',mem);
+        s:=mem.ToString; //  SaveToFile('c:\1.exe');
+        showmessage(s);
+   finally
+        mem.Destroy;
+   end;
 
 end;
 
