@@ -91,6 +91,7 @@
         <ComponentName Value="Form2"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ab"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
@@ -167,7 +168,6 @@
         <ComponentName Value="Form3"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Opt"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="76"/>
@@ -223,7 +223,7 @@
         <UsageCount Value="10"/>
       </Unit17>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="start.pas"/>
         <Caret Line="1692" Column="56" TopLine="1659"/>
@@ -340,10 +340,6 @@
         <Filename Value="opt.pas"/>
         <Caret Line="9" Column="13" TopLine="1"/>
       </Position29>
-      <Position30>
-        <Filename Value="opt.pas"/>
-        <Caret Line="38" Column="18" TopLine="188"/>
-      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
