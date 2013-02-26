@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, process, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, LResources,
-  PrintersDlgs, RTTICtrls;
+  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, LResources;
 
 type
 
@@ -37,6 +36,7 @@ type
     GroupBox1: TGroupBox;
     Image1: TImage;
     Image10: TImage;
+    Image11: TImage;
     Image12: TImage;
     Image2: TImage;
     Image3: TImage;
@@ -115,7 +115,7 @@ type
      procedure Panel4Click(Sender: TObject);
      procedure PopupMenu1Popup(Sender: TObject);
      procedure StaticText1Click(Sender: TObject);
-     function steplist(i: integer): integer; // шаг листания картинок в завис от компоновки
+     function steplist(i: integer): integer; // шаг листания картинок в зависит от компоновки
      procedure AddPict(p: string); // Загрузить картинку в буфер для компоновки p - путь к файлу
      procedure ShowPict(index: integer); // предпросмотр  начиная с картинки № index
      procedure CreateList; // создать лист в соответствии с вариантом компоновки
@@ -912,6 +912,7 @@ begin
 end;
 
 procedure tform1.ShowPic(index: Integer; cou: integer);
+// показать картинку
 var
   i: integer;
 begin
@@ -926,8 +927,18 @@ begin
       showp[i].Center := true;
       if not(toprint[num].load) then
                                   begin
-                                   toprint[num].pct.loadfromfile(toprint[num].pict);
-                                   toprint[num].load:=true;
+                                    try
+                                       toprint[num].pct.loadfromfile(systoUTF8(toprint[num].pict));
+                                       toprint[num].load:=true;
+                                    except
+                                          on E: Exception do
+                                             begin
+                                                showmessage('Ошибка чтения файла:' + #13#10+ E.Message);
+                                                toprint[num].pct := image11.Picture;
+                                                toprint[num].load:=true;
+                                             end;
+                                    end;
+
                                   end;
       showp[i].Picture:=toprint[num].pct;
       if toprint[num].show then
@@ -1527,41 +1538,6 @@ var
   s: string;
 begin
   p:=trim(p);
-  if (copy(p, 1, 3)='*oL') or (copy(p, 1, 3)='*ol') or (copy(p, 1, 3)='*Ol') or
-      (copy(p, 1, 3)='*OL') then
-        begin
-          orn:=1;
-          exit;
-        end;
-  if (p='*i') or (p='*I') then
-        begin
-          lng:=1;
-          exit;
-        end;
-  if (copy(p, 1, 2)='*c') or
-      (copy(p, 1, 2)='*C') then
-        begin
-          sc:=p;
-          exit;
-        end;
-  if (copy(p, 1, 2)='*p') or
-      (copy(p, 1, 2)='*P') then
-        begin
-          setpg(p);
-          exit;
-        end;
-  if (copy(p, 1, 3)='*x=') or
-     (copy(p, 1, 3)='*X=') then
-       begin
-         ScaleX := strtoint(copy(p, 4, length(p)-2));
-         exit;
-       end;
-  if (copy(p, 1, 3)='*y=') or
-     (copy(p, 1, 3)='*Y=') then
-       begin
-         ScaleY := strtoint(copy(p, 4, length(p)-2));
-         exit;
-       end;
   s := copy(p, (length(p)-3), 4);
   s := uppercase(s);
   if (s = '.JPG') or (s = '.BMP') or (s = '.PNG') or (s = '.ICO') or (s = 'JPEG')then

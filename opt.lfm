@@ -1,16 +1,17 @@
 object Form3: TForm3
-  Left = 1044
-  Height = 237
-  Top = 114
+  Left = 578
+  Height = 379
+  Top = 239
   Width = 207
   BorderStyle = bsDialog
   Caption = 'Настройки'
-  ClientHeight = 237
+  ClientHeight = 379
   ClientWidth = 207
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poMainFormCenter
   LCLVersion = '0.9.30.4'
+  Visible = True
   object RadioGroup1: TRadioGroup
     Left = 17
     Height = 89
@@ -67,7 +68,7 @@ object Form3: TForm3
   object Button2: TButton
     Left = 17
     Height = 32
-    Top = 195
+    Top = 160
     Width = 174
     Caption = 'Сохранить настройки'
     Font.Height = -12
@@ -77,15 +78,62 @@ object Form3: TForm3
     ShowHint = True
     TabOrder = 2
   end
-  object Button3: TButton
-    Left = 17
-    Height = 31
-    Top = 154
-    Width = 174
-    Caption = 'Отменить интеграцию'
-    Font.Height = -12
-    OnClick = Button3Click
+  object CheckGroup1: TCheckGroup
+    Left = 10
+    Height = 151
+    Top = 208
+    Width = 189
+    AutoFill = True
+    Caption = 'Настройка интеграции'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    Font.Height = -13
     ParentFont = False
     TabOrder = 3
+    object CheckBox1: TCheckBox
+      Left = 6
+      Height = 30
+      Top = 6
+      Width = 173
+      AutoSize = False
+      Caption = 'Nautilus'
+      OnChange = CheckBox1Change
+      TabOrder = 0
+    end
+    object CheckBox2: TCheckBox
+      Left = 6
+      Height = 30
+      Top = 36
+      Width = 173
+      Caption = 'Dolphin'
+      OnChange = CheckBox2Change
+      TabOrder = 1
+    end
+    object CheckBox3: TCheckBox
+      Left = 6
+      Height = 30
+      Top = 66
+      Width = 173
+      Caption = 'Caje'
+      OnChange = CheckBox3Change
+      TabOrder = 2
+    end
+    object Button4: TButton
+      Left = 6
+      Height = 30
+      Top = 96
+      Width = 173
+      Caption = 'Установить автоматически'
+      Font.Height = -11
+      OnClick = Button4Click
+      ParentFont = False
+      TabOrder = 3
+    end
   end
 end
