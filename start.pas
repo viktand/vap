@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, process, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, Ipfilebroker, IpHtml,
-  SynExportHTML;
+  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, Ipfilebroker, IpHtml;
 
 type
 
@@ -236,13 +235,14 @@ type
     repo: string; // рапорт о завершении печати
     sndr: TObject; // ссылка на имадж, на котором нажата и отпущена кнопка мыши
     sndh, sndw: integer; // исходные размеры имадже перед корректировкой
+    //root: boolean; // признак запуска программы с параметром "-root"
 
 
 implementation
 
 {$R *.lfm}
 
-uses ab, opt, httpsend;
+uses ab, opt;
 
 { TForm1 }
 
@@ -251,6 +251,7 @@ var
   i: integer;
 begin
   MyFolder:=extractfilepath(paramstr(0)); // Где Я?!!!
+  //root:=false;
   sc:='';
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
@@ -329,7 +330,7 @@ begin
   CheckBox2.Checked:=(s='');
 end;
 
-procedure tform1.LoadFiles;
+procedure tform1.LoadFiles; // анализ параметров запуска программы
 var
   i: integer;
   pr: string;
@@ -337,6 +338,10 @@ begin
    pr:='';
    for i:=1 to ParamCount do
      begin
+       if (paramstr(i) = '-root') then  // запуск типа с рут-правами
+         begin
+           form1.Caption:=form1.Caption+' -root';
+         end;
        if ((copy(paramstr(i), 1,1) = '/') or
           (copy(paramstr(i), 1,1) = '*')) and (pr <> '') then
             begin
@@ -695,6 +700,8 @@ begin
      end;
    endfrms;
 end;
+
+
 
 procedure tform1.endfrms;
 begin
@@ -1729,7 +1736,7 @@ var
 begin
    mem := TMemoryStream.Create;
    try
-        IdHTTP1.Get('https://github.com/viktand/vap/blob/master/version?raw=true',mem);
+        //IdHTTP1.Get('https://github.com/viktand/vap/blob/master/version?raw=true',mem);
         s:=mem.ToString; //  SaveToFile('c:\1.exe');
         showmessage(s);
    finally

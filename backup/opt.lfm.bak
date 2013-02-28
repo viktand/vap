@@ -1,5 +1,5 @@
 object Form3: TForm3
-  Left = 489
+  Left = 490
   Height = 379
   Top = 24
   Width = 207
@@ -109,10 +109,13 @@ object Form3: TForm3
     object CheckBox2: TCheckBox
       Left = 6
       Height = 30
+      Hint = 'Dolphin, Krusader, Konqueror'
       Top = 36
       Width = 173
-      Caption = 'Dolphin'
+      Caption = 'Dolphin + etc'
       OnChange = CheckBox2Change
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
     end
     object CheckBox3: TCheckBox

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls,  BaseUnix;
+  StdCtrls,  BaseUnix,  Process;
 
 type
 
@@ -35,6 +35,7 @@ type
     procedure lng; // перевести на выбранный язык эту форму
     procedure AddUsers(wrd: string); // Добавить строку wrd к массиву строк users
     procedure Setcheck; // установка чекбоксов по текущему состоянию интеграции
+    procedure DoRoot; // перезапуск прграммы под рутом
   private
     { private declarations }
   public
@@ -45,6 +46,7 @@ var
   Form3: TForm3;
   users: array of string; // список пользователей в системе (в папке home)
   pram: string; // Строка параметров
+  flag: boolean; // флаг разрешения настройки интеграции
 
 implementation
 
@@ -65,6 +67,7 @@ procedure TForm3.FormCreate(Sender: TObject);
 begin
   pram:='';
   lng;
+  form3.close;
 end;
 
 procedure TForm3.FormShow(Sender: TObject);
@@ -75,20 +78,43 @@ end;
 
 procedure TForm3.Button1Click(Sender: TObject);
 // интеграция в контекстное меню
+var
+  f: textfile;
 begin
   if form3.Height <> 372 then
     begin
       try
+       assignfile(f, '/etc/1');
+       rewrite(f);
+       closefile(f);
+       deletefile('/etc/1');
+       flag:=false;
        setcheck;
+       flag:=true;
        form3.Height:=372
       except
         showmessage('Настройка интеграции возможна только'+#13#10+
-                               'при запуске с правами администратора.'+#13#10+
-                               'В Ubuntu и других подобных  системах:'+#13#10+
-                               'в терминале: "sudo /{путь}/vap"');
+                    'при запуске программы с правами администратора.'+#13#10+
+                    'В Ubuntu и других подобных  системах в терминале:' + #13#10+
+                    '"sudo /{путь}/vap"'+#13#10+
+                    'Т.к. Вы запустили программу без этих прав, то сейчас '+
+                    'будет запущен другой экземпляр, но уже с такими правами. В нем Вы сможете '+
+                    'настроить интеграцию. Закрыв root-экземпляр, Вы вернетесь к этому варианту.');
+         doroot;
       end;
     end  else form3.Height:=204;
 
+end;
+
+procedure tform3.DoRoot;   // запуск root-экземпляра
+var
+  AProcess: TProcess;
+begin
+   AProcess := TProcess.Create(nil);
+   AProcess.CommandLine := 'gksu "'+ start.MyFolder + 'vap -root"';
+   AProcess.Options := AProcess.Options + [poWaitOnExit];
+   AProcess.Execute;
+   AProcess.Free;
 end;
 
 procedure tform3.setcheck;
@@ -130,8 +156,8 @@ begin
           begin
              checkbox2.Enabled:=true;
              checkbox2.Checked:=false;
-             if FileExists(pt+'/Печать.descktop') then checkbox2.Checked:=true;
-             if FileExists(pt+'/Print.descktop') then checkbox2.Checked:=true;
+             if FileExists(pt+'/Печать.desktop') then checkbox2.Checked:=true;
+             if FileExists(pt+'/Print.desktop') then checkbox2.Checked:=true;
           end else checkbox2.Enabled:=false;
      end;
 end;
@@ -184,6 +210,7 @@ var
   fl: textfile;
   prnt: string;
 begin
+  if not flag then exit;
   pt := '/home/*';
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
   if findfirst(pt, faDirectory, sr) = 0 then
@@ -220,6 +247,7 @@ var
   fl: textfile;
   prnt: string;
 begin
+  if not flag then exit;
   pt := '/home/*';
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
   if findfirst(pt, faDirectory, sr) = 0 then
@@ -233,7 +261,7 @@ begin
          if DirectoryExists(pt) then
             if checkbox2.Checked then
               begin
-                  assignfile(fl, pt+'/'+prnt+'.descktop');
+                  assignfile(fl, pt+'/'+prnt+'.desktop');
                   rewrite(fl);
                   writeln(fl, '[Desktop Entry]');
                   writeln(fl, 'Actions=add');
@@ -263,6 +291,7 @@ var
   fl: textfile;
   prnt: string;
 begin
+  if not flag then exit;
   pt := '/home/*';
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
   if findfirst(pt, faDirectory, sr) = 0 then
@@ -290,10 +319,6 @@ begin
               end;
      end;
 end;
-
-
-
-
 
 procedure tform3.AddUsers(wrd: string); // Добавить строку wrd к массиву строк users
 var
