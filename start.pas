@@ -21,7 +21,6 @@ type
     Button14: TButton;
     Button15: TButton;
     Button16: TButton;
-    Button17: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;

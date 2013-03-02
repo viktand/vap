@@ -235,7 +235,7 @@ type
     repo: string; // рапорт о завершении печати
     sndr: TObject; // ссылка на имадж, на котором нажата и отпущена кнопка мыши
     sndh, sndw: integer; // исходные размеры имадже перед корректировкой
-    root: boolean; // признак запуска программы с параметром "-root"
+    //root: boolean; // признак запуска программы с параметром "-root"
 
 
 implementation
@@ -251,7 +251,7 @@ var
   i: integer;
 begin
   MyFolder:=extractfilepath(paramstr(0)); // Где Я?!!!
-  root:=false;
+  //root:=false;
   sc:='';
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
