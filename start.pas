@@ -21,7 +21,6 @@ type
     Button14: TButton;
     Button15: TButton;
     Button16: TButton;
-    Button17: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -116,7 +115,6 @@ type
      procedure Panel3Click(Sender: TObject);
      procedure Panel4Click(Sender: TObject);
      procedure PopupMenu1Popup(Sender: TObject);
-     procedure StaticText1Click(Sender: TObject);
      function steplist(i: integer): integer; // шаг листания картинок в зависит от компоновки
      procedure AddPict(p: string); // Загрузить картинку в буфер для компоновки p - путь к файлу
      procedure ShowPict(index: integer); // предпросмотр  начиная с картинки № index
@@ -158,7 +156,7 @@ type
      procedure LoadFiles; // загрузка файлов из командной строки, т.е. переданных как параметры запуска (выделенных мышкой перед запуском)
      procedure SetPg(p: string); // Установить формат бумаги из командной строки при запуске программы
      procedure SetPg2(p: string); // -//- для пользовательского формата
-     procedure SetComp(p: string); // установка начальной компоновки из командной строки
+     procedure SetComp(index: integer); // установка начальной компоновки
      procedure SetLng; // Установка языка
      procedure SetWords; // Заготовки фраз на разных языках
      procedure SaveSett(Key, Word: string); // Сoхранить в файле конфигурации значение word c ключем key
@@ -195,6 +193,7 @@ type
 
   var
     Form1: TForm1;
+    cmbx: integer; // Выбранная в комбобокс1 позиция
     num: integer; // временная переменная для передачи параметров
     pol, tmp_pol: integer; // Ширина полей
     orn: integer; // ориентация 0 - книжная, 1 - альбомная
@@ -206,9 +205,6 @@ type
     scl: integer; // Масштаб на экране - чтобы красиво вписать в форму
     capt: array[0..5] of string; // массив заготовок надписей в центре листа предпросмотра
                   //листы разного формата в окно программы A4 - scl = 1;
-    ScaleX, ScaleY: integer; // коэф масштабирования печати
-            // точные значения зависят от конкретного принтера
-    zg: tcolor;
     s: string;
     toprint: array of tpict; // массив картинок для печати
     buf: integer; // количество загруженных картинок
@@ -223,7 +219,6 @@ type
     ttx, tty: integer; // координаты мышки, где она была нажата для расчета перемещения
     imindex: integer; // индекс картинки, на image которой нажали кнопку мышки
     fl: boolean; // просто флаг для промежуточных операций
-    sc: string;  // используется для загрузки предустановленной компоновки
     lng: integer; // 0 - русский язык, 1 - английский язык
     lngn: array[0..1,0..100] of string; // массив надписей рус/анг
     labs: array[0..9] of string; // массив заготовок подписей под выбранной компоновкой
@@ -250,17 +245,17 @@ procedure TForm1.FormCreate(Sender: TObject); // Начало
 var
   i: integer;
 begin
-  MyFolder:=extractfilepath(paramstr(0)); // Где Я?!!!
+  // кто Я?!!!
+  MyFolder:='/home/'+GetEnvironmentVariable('LOGNAME')+'/.vap';
+  if not(DirectoryExists(myfolder)) then createdir(myfolder);
+  myfolder:=myfolder+'/';
   //root:=false;
-  sc:='';
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
   userprinter:=loadsett('printer');
   form1.BorderStyle:=bsSingle;
   flagmove:=false;
   showindex := 0;
-  ScaleX := 100;
-  ScaleY := 100;
   scl := 1;
   pol := 10;
   orn := 0;
@@ -293,7 +288,7 @@ begin
   loadconfig;
   if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
   for i := 0 to 19 do ex[i] := false;
-  setcomp(sc); // установить компоновку
+  setcomp(comp); // установить компоновку
   if orn=1 then panel4click(panel4);
   if lng=1 then setlng;
 end;
@@ -301,27 +296,16 @@ end;
 procedure tform1.LoadConfig; // загрузить конфигурацию из файла
 var
   s: string;
-  x, y: integer;
 begin
   s:=loadsett('paper');
-  if s<>'' then addpict('*p'+s);
+  if s<>'' then setpg('*p'+s);
   s:=loadsett('comp');
-  if s<>'' then addpict('*c'+s);
+  if s<>'' then comp:=strtoint(s);
   s:=loadsett('orn');
-  if s<>'' then addpict('*o'+s);
-  s:=loadsett('lang');
-  if s<>'' then addpict('*'+s);
-  s:=loadsett('scale');
   if s<>'' then
-    begin
-       x:=pos('x>', s);
-       y:=pos('y>', s);
-       x:=strtoint(copy(s, x+2, y-(x+2)));
-       y:=strtoint(copy(s, y+2, length(s)));
-       addpict('*x='+inttostr(x));
-       addpict('*y='+inttostr(y));
-       if x<>y then addpict('*ns');
-    end;
+     if s='L' then orn:=1 else orn:=0;
+  s:=loadsett('lang');
+  if s<>'' then lng:=strtoint(s);
   s:=loadsett('mrg');
   if s<>'' then pol:=strtoint(s);
   s:=loadsett('fill');
@@ -690,6 +674,7 @@ end;
 procedure TForm1.ComboBox1Change(Sender: TObject);
 // Выбор нового формата листа
 begin
+   cmbx:= combobox1.ItemIndex;
    if frm <> 5 then num := frm;
    frm := combobox1.ItemIndex;
    if frm = -1 then frm := 0;
@@ -1488,11 +1473,6 @@ begin
   RefreshScreen;
 end;
 
-procedure TForm1.StaticText1Click(Sender: TObject);
-begin
-
-end;
-
 
 procedure tform1.setpg(p: string);
 // установить формат бумаги
@@ -1526,15 +1506,15 @@ begin
   combobox1.text:=copy(p, 4, i-4)+'x'+copy(p, i+1, length(p)-i);
 end;
 
-procedure tform1.setcomp(p: string);
+procedure tform1.setcomp(index: integer);
 // установка начальной компоновки из командной строки
 begin
-  if (length(p)<>3) or not (p[3] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+  if (index<0) or (index>9) then
     begin
      Image1Click(image1);
      exit;
     end;
-  case strtoint(p[3]) of
+  case index of
     0: Image1Click(image1);
     1: Image2Click(image2);
     2: Image3Click(image3);

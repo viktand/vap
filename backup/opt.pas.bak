@@ -87,7 +87,7 @@ begin
        assignfile(f, '/etc/1');
        rewrite(f);
        closefile(f);
-       //deletefile('/etc/1');
+       deletefile('/etc/1');
        flag:=false;
        setcheck;
        flag:=true;
@@ -111,7 +111,7 @@ var
   AProcess: TProcess;
 begin
    AProcess := TProcess.Create(nil);
-   AProcess.CommandLine := 'gksu "'+ start.MyFolder + 'vap -root"';
+   AProcess.CommandLine := 'gksu "'+ '/usr/bin/vap -root"';
    AProcess.Options := AProcess.Options + [poWaitOnExit];
    AProcess.Execute;
    AProcess.Free;
@@ -123,11 +123,8 @@ var
   pt: string;
   sr: tsearchrec;
   i: integer;
-  fl: textfile;
-  prnt: string;
 begin
   pt := '/home/*';
-  if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
   if findfirst(pt, faDirectory, sr) = 0 then
     repeat
          if pos('.', sr.Name) = 0 then addusers('/home/' + sr.Name + '/');
@@ -181,10 +178,6 @@ begin
   if start.orn=1 then form1.SaveSett('orn','L') else form1.SaveSett('orn','default');
   // Язык
   if radiobutton2.Checked then form1.SaveSett('lang','i') else form1.SaveSett('lang','default');
-  // масштаб
-  if (start.ScaleX<>100) or (start.ScaleY<>100) then
-     form1.SaveSett('scale', 'x>' + inttostr(start.ScaleX) + 'y>' + inttostr(start.ScaleY))
-                             else  form1.SaveSett('scale', 'default');
   // поля
   if start.pol<>10 then form1.SaveSett('mrg', inttostr(start.pol)) else form1.SaveSett('mrg','default');
   // заполнить

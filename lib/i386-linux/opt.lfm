@@ -53,9 +53,9 @@ object Form3: TForm3
     end
   end
   object Button1: TButton
-    Left = 17
+    Left = 16
     Height = 32
-    Top = 114
+    Top = 160
     Width = 174
     Caption = 'Интеграция'
     Font.Height = -12
@@ -66,9 +66,9 @@ object Form3: TForm3
     TabOrder = 1
   end
   object Button2: TButton
-    Left = 17
+    Left = 16
     Height = 32
-    Top = 160
+    Top = 120
     Width = 174
     Caption = 'Сохранить настройки'
     Font.Height = -12
