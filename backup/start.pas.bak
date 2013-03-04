@@ -193,6 +193,7 @@ type
 
   var
     Form1: TForm1;
+    cmbx: integer; // Выбранная в комбобокс1 позиция
     num: integer; // временная переменная для передачи параметров
     pol, tmp_pol: integer; // Ширина полей
     orn: integer; // ориентация 0 - книжная, 1 - альбомная
@@ -244,17 +245,11 @@ procedure TForm1.FormCreate(Sender: TObject); // Начало
 var
   i: integer;
 begin
-<<<<<<< HEAD
   // кто Я?!!!
   MyFolder:='/home/'+GetEnvironmentVariable('LOGNAME')+'/.vap';
   if not(DirectoryExists(myfolder)) then createdir(myfolder);
   myfolder:=myfolder+'/';
   //root:=false;
-=======
-  MyFolder:=extractfilepath(paramstr(0)); // Где Я?!!!
-  //root:=false;
-  sc:='';
->>>>>>> 2ff275800b1389be6ef9ce2b470378de711026d3
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
   userprinter:=loadsett('printer');
@@ -679,6 +674,7 @@ end;
 procedure TForm1.ComboBox1Change(Sender: TObject);
 // Выбор нового формата листа
 begin
+   cmbx:= combobox1.ItemIndex;
    if frm <> 5 then num := frm;
    frm := combobox1.ItemIndex;
    if frm = -1 then frm := 0;
