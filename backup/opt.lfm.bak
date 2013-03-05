@@ -1,12 +1,12 @@
 object Form3: TForm3
   Left = 590
-  Height = 420
+  Height = 407
   Top = 24
   Width = 207
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Настройки'
-  ClientHeight = 420
+  ClientHeight = 407
   ClientWidth = 207
   OnCreate = FormCreate
   OnShow = FormShow
@@ -82,7 +82,7 @@ object Form3: TForm3
   object CheckGroup1: TCheckGroup
     Left = 10
     Height = 151
-    Top = 255
+    Top = 243
     Width = 189
     AutoFill = True
     Caption = 'Настройка интеграции'
@@ -143,7 +143,7 @@ object Form3: TForm3
   object Label1: TLabel
     Left = 10
     Height = 18
-    Top = 224
+    Top = 215
     Width = 189
     AutoSize = False
     Caption = 'Label1'

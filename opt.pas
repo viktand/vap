@@ -96,7 +96,12 @@ begin
          end;
     end;
     closefile(fl);
-    if usr.Count>1 then form4.Show;
+    if usr.Count>1 then form4.Show else
+      begin
+        ptuser:='/home/'+usr[0]+'/';
+        start.MyFolder:=ptuser;
+        Label1.Caption:=usr[0]+':';
+      end;
 end;
 
 procedure TForm3.FormCreate(Sender: TObject);
