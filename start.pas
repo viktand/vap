@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, process, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, Ipfilebroker, IpHtml;
+  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons;
 
 type
 
@@ -237,7 +237,7 @@ implementation
 
 {$R *.lfm}
 
-uses ab, opt;
+uses ab, opt, ask;
 
 { TForm1 }
 
@@ -725,6 +725,7 @@ procedure TForm1.Button12Click(Sender: TObject);
 // открыть окно настроек
 begin
   form3.show;
+  if form4.Showing then form4.SetFocus;
 end;
 
 procedure TForm1.Button13Click(Sender: TObject);
@@ -1757,4 +1758,3 @@ end;
 
 
 end.
-

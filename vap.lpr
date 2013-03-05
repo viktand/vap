@@ -11,7 +11,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, start, printer4lazarus, runtimetypeinfocontrols, turbopoweripro, ab,
-  Opt;
+  Opt, ask;
 
 {$R *.res}
 
@@ -21,6 +21,6 @@ begin
   Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TForm3, Form3);
+  Application.CreateForm(TForm4, Form4);
   Application.Run;
 end.
-

@@ -20,6 +20,7 @@ type
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     CheckGroup1: TCheckGroup;
+    Label1: TLabel;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     RadioGroup1: TRadioGroup;
@@ -33,9 +34,9 @@ type
     procedure FormShow(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject); // выбор языка программы
     procedure lng; // перевести на выбранный язык эту форму
-    procedure AddUsers(wrd: string); // Добавить строку wrd к массиву строк users
     procedure Setcheck; // установка чекбоксов по текущему состоянию интеграции
     procedure DoRoot; // перезапуск прграммы под рутом
+    procedure GetUsers; //получить список юзеров
   private
     { private declarations }
   public
@@ -44,15 +45,16 @@ type
 
 var
   Form3: TForm3;
-  users: array of string; // список пользователей в системе (в папке home)
   pram: string; // Строка параметров
   flag: boolean; // флаг разрешения настройки интеграции
+  usr: tstringlist; // список самих юзеров
+  ptuser: string; // путь к выбранному юзеру
 
 implementation
 
 {$R *.lfm}
 
-uses start;
+uses start, ask;
 
 { TForm3 }
 
@@ -61,6 +63,40 @@ begin
   if radiobutton1.Checked then start.lng:=0 else start.lng:=1;
   form1.SetLng;
   lng;
+end;
+
+procedure tform3.GetUsers;
+var
+  fl: textfile;
+  us, lin, s: string;
+  i: integer;
+  f: boolean;
+begin
+  assignfile(fl, '/etc/passwd');
+  reset(fl);
+  usr:=tstringlist.Create;
+  while not(eof(fl)) do
+    begin
+      readln(fl, lin);
+      i:= pos('/home/',lin);
+      if i > 0 then
+        begin
+           s:='';
+           i:=pos(':', lin);
+           us:=copy(lin, 1, i-1);
+           f:=false;
+           for i:=i+1 to length(lin) do
+             begin
+                  if (lin[i]=':') and f then break;
+                  if f then s:=s+lin[i];
+                  if lin[i]=':' then f:=true;
+             end;
+           i:=strtoint(s);
+           if i>999 then usr.Add(us);
+         end;
+    end;
+    closefile(fl);
+    if usr.Count>1 then form4.Show;
 end;
 
 procedure TForm3.FormCreate(Sender: TObject);
@@ -74,6 +110,7 @@ procedure TForm3.FormShow(Sender: TObject);
 begin
   radiobutton2.Checked:=start.lng=1;
   form3.Height:=204;
+  if GetEnvironmentVariable('LOGNAME') = 'root' then getusers;
 end;
 
 procedure TForm3.Button1Click(Sender: TObject);
@@ -81,29 +118,26 @@ procedure TForm3.Button1Click(Sender: TObject);
 var
   f: textfile;
 begin
-  if form3.Height <> 372 then
+  if form3.Height <> 420 then
     begin
-      try
-       assignfile(f, '/etc/1');
-       rewrite(f);
-       closefile(f);
-       deletefile('/etc/1');
-       flag:=false;
-       setcheck;
-       flag:=true;
-       form3.Height:=372
-      except
-        showmessage('Настройка интеграции возможна только'+#13#10+
+       if GetEnvironmentVariable('LOGNAME') = 'root' then
+         begin
+           flag:=false;
+           setcheck;
+           flag:=true;
+           form3.Height:=420
+         end else
+           begin
+             showmessage('Настройка интеграции возможна только'+#13#10+
                     'при запуске программы с правами администратора.'+#13#10+
                     'В Ubuntu и других подобных  системах в терминале:' + #13#10+
                     '"sudo /{путь}/vap"'+#13#10+
                     'Т.к. Вы запустили программу без этих прав, то сейчас '+
                     'будет запущен другой экземпляр, но уже с такими правами. В нем Вы сможете '+
                     'настроить интеграцию. Закрыв root-экземпляр, Вы вернетесь к этому варианту.');
-         doroot;
-      end;
+             doroot;
+           end;
     end  else form3.Height:=204;
-
 end;
 
 procedure tform3.DoRoot;   // запуск root-экземпляра
@@ -121,42 +155,31 @@ procedure tform3.setcheck;
 // установка чекбоксов по текущему состоянию интеграции
 var
   pt: string;
-  sr: tsearchrec;
-  i: integer;
 begin
-  pt := '/home/*';
-  if findfirst(pt, faDirectory, sr) = 0 then
-    repeat
-         if pos('.', sr.Name) = 0 then addusers('/home/' + sr.Name + '/');
-    until findnext(sr) <> 0;
-  findclose(sr);
-  for i:=0 to high(users) do
-     begin
-        pt:=users[i]+'.gnome2/nautilus-scripts';
+  checkbox1.Enabled:=false;  checkbox1.Checked:=false;
+  checkbox2.Enabled:=false;  checkbox2.Checked:=false;
+  checkbox3.Enabled:=false;  checkbox3.Checked:=false;
+        pt:=ptuser+'.gnome2/nautilus-scripts';
         if DirectoryExists(pt) then // to gnome
           begin
              checkbox1.Enabled:=true;
-             checkbox1.Checked:=false;
              if FileExists(pt+'/Печать') then checkbox1.Checked:=true;
              if FileExists(pt+'/Print') then checkbox1.Checked:=true;
-          end else checkbox1.Enabled:=false;
-        pt:=users[i]+'.config/caja/scripts';  // to caja
+          end;
+        pt:=ptuser+'.config/caja/scripts';  // to caja
          if DirectoryExists(pt) then
            begin
               checkbox3.Enabled:=true;
-              checkbox3.Checked:=false;
               if FileExists(pt+'/Печать') then checkbox3.Checked:=true;
               if FileExists(pt+'/Print') then checkbox3.Checked:=true;
-           end else checkbox3.Enabled:=false;
-        pt:=users[i]+'.kde/share/kde4/services/ServiceMenus';
+           end;
+        pt:=ptuser+'.kde/share/kde4/services/ServiceMenus';
         if DirectoryExists(pt) then // to kde
           begin
              checkbox2.Enabled:=true;
-             checkbox2.Checked:=false;
              if FileExists(pt+'/Печать.desktop') then checkbox2.Checked:=true;
              if FileExists(pt+'/Print.desktop') then checkbox2.Checked:=true;
-          end else checkbox2.Enabled:=false;
-     end;
+          end;
 end;
 
 procedure TForm3.Button2Click(Sender: TObject);
@@ -164,7 +187,7 @@ procedure TForm3.Button2Click(Sender: TObject);
 begin
   //в конфигурационном файле:
   // размер бумаги
-  case form1.ComboBox1.ItemIndex of
+  case start.cmbx of
        0: form1.SaveSett('paper','A4');
        1: form1.SaveSett('paper','A5');
        2: form1.SaveSett('paper','A6');
@@ -198,22 +221,12 @@ end;
 procedure TForm3.CheckBox1Change(Sender: TObject);
 var
   pt: string;
-  sr: tsearchrec;
-  i: integer;
   fl: textfile;
   prnt: string;
 begin
   if not flag then exit;
-  pt := '/home/*';
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-  if findfirst(pt, faDirectory, sr) = 0 then
-  repeat
-    if pos('.', sr.Name) = 0 then addusers('/home/' + sr.Name + '/');
-  until findnext(sr) <> 0;
-  findclose(sr);
-  for i:=0 to high(users) do
-     begin
-        pt:=users[i]+'.gnome2/nautilus-scripts';
+        pt:=ptuser+'.gnome2/nautilus-scripts';
          if DirectoryExists(pt) then
             if checkbox1.Checked then
               begin
@@ -229,28 +242,17 @@ begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
                  if FileExists(pt+'/Print') then deletefile(pt+'/Print');
               end;
-     end;
 end;
 
 procedure TForm3.CheckBox2Change(Sender: TObject);
 var
   pt: string;
-  sr: tsearchrec;
-  i: integer;
   fl: textfile;
   prnt: string;
 begin
   if not flag then exit;
-  pt := '/home/*';
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-  if findfirst(pt, faDirectory, sr) = 0 then
-  repeat
-    if pos('.', sr.Name) = 0 then addusers('/home/' + sr.Name + '/');
-  until findnext(sr) <> 0;
-  findclose(sr);
-  for i:=0 to high(users) do
-     begin
-        pt:=users[i]+'.kde/share/kde4/services/ServiceMenus';
+        pt:=ptuser+'.kde/share/kde4/services/ServiceMenus';
          if DirectoryExists(pt) then
             if checkbox2.Checked then
               begin
@@ -273,28 +275,17 @@ begin
                   if FileExists(pt+'/Печать.descktop') then deletefile(pt+'/Печать.descktop');
                   if FileExists(pt+'/Print.descktop') then deletefile(pt+'/Print.descktop');
               end;
-     end;
 end;
 
 procedure TForm3.CheckBox3Change(Sender: TObject);
 var
   pt: string;
-  sr: tsearchrec;
-  i: integer;
   fl: textfile;
   prnt: string;
 begin
   if not flag then exit;
-  pt := '/home/*';
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-  if findfirst(pt, faDirectory, sr) = 0 then
-  repeat
-    if pos('.', sr.Name) = 0 then addusers('/home/' + sr.Name + '/');
-  until findnext(sr) <> 0;
-  findclose(sr);
-  for i:=0 to high(users) do
-     begin
-        pt:=users[i]+'.config/caja/scripts';
+         pt:=ptuser+'.config/caja/scripts';
          if DirectoryExists(pt) then
             if checkbox3.Checked then
               begin
@@ -310,18 +301,8 @@ begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
                  if FileExists(pt+'/Print') then deletefile(pt+'/Print');
               end;
-     end;
 end;
 
-procedure tform3.AddUsers(wrd: string); // Добавить строку wrd к массиву строк users
-var
-  i: integer;
-begin
-  i:=Length(users)+1;
-  setlength(users, i);
-  dec(i);
-  users[i]:=wrd;
-end;
 
 procedure tform3.lng;
 // переключение языка этого окна
