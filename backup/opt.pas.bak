@@ -90,7 +90,7 @@ begin
            flag:=false;
            setcheck;
            flag:=true;
-           form3.Height:=407
+           form3.Height:=407;
            label1.Caption:='for '+start.imuser;
          end else
            begin

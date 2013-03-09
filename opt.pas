@@ -120,26 +120,27 @@ end;
 procedure tform3.setcheck;
 // установка чекбоксов по текущему состоянию интеграции
 var
-  pt: string;
+  pt, p: string;
 begin
+  p:=MyFolder+imuser;
   checkbox1.Enabled:=false;  checkbox1.Checked:=false;
   checkbox2.Enabled:=false;  checkbox2.Checked:=false;
   checkbox3.Enabled:=false;  checkbox3.Checked:=false;
-        pt:=start.MyFolder+'.gnome2/nautilus-scripts';
+        pt:=p+'/.gnome2/nautilus-scripts';
         if DirectoryExists(pt) then // to gnome
           begin
              checkbox1.Enabled:=true;
              if FileExists(pt+'/Печать') then checkbox1.Checked:=true;
              if FileExists(pt+'/Print') then checkbox1.Checked:=true;
           end;
-        pt:=start.MyFolder+'.config/caja/scripts';  // to caja
+        pt:=p+'/.config/caja/scripts';  // to caja
          if DirectoryExists(pt) then
            begin
               checkbox3.Enabled:=true;
               if FileExists(pt+'/Печать') then checkbox3.Checked:=true;
               if FileExists(pt+'/Print') then checkbox3.Checked:=true;
            end;
-        pt:=start.MyFolder+'.kde/share/kde4/services/ServiceMenus';
+        pt:=p+'/.kde/share/kde4/services/ServiceMenus';
         if DirectoryExists(pt) then // to kde
           begin
              checkbox2.Enabled:=true;
@@ -186,13 +187,14 @@ end;
 
 procedure TForm3.CheckBox1Change(Sender: TObject);
 var
-  pt: string;
+  pt, p: string;
   fl: textfile;
   prnt: string;
 begin
   if not flag then exit;
+  p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-        pt:=start.MyFolder+'.gnome2/nautilus-scripts';
+        pt:=p+'.gnome2/nautilus-scripts';
          if DirectoryExists(pt) then
             if checkbox1.Checked then
               begin
@@ -212,13 +214,14 @@ end;
 
 procedure TForm3.CheckBox2Change(Sender: TObject);
 var
-  pt: string;
+  pt, p: string;
   fl: textfile;
   prnt: string;
 begin
   if not flag then exit;
+  p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-        pt:=start.MyFolder+'.kde/share/kde4/services/ServiceMenus';
+        pt:=p+'.kde/share/kde4/services/ServiceMenus';
          if DirectoryExists(pt) then
             if checkbox2.Checked then
               begin
@@ -245,13 +248,14 @@ end;
 
 procedure TForm3.CheckBox3Change(Sender: TObject);
 var
-  pt: string;
+  pt, p: string;
   fl: textfile;
   prnt: string;
 begin
   if not flag then exit;
+  p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-         pt:=start.MyFolder+'.config/caja/scripts';
+         pt:=p+'.config/caja/scripts';
          if DirectoryExists(pt) then
             if checkbox3.Checked then
               begin

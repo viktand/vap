@@ -9119,14 +9119,6 @@ object Form1: TForm1
     }
     Visible = False
   end
-  object Label4: TLabel
-    Left = 194
-    Height = 18
-    Top = 599
-    Width = 44
-    Caption = 'Label4'
-    ParentColor = False
-  end
   object SDD1: TSelectDirectoryDialog
     left = 296
     top = 696
