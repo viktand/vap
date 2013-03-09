@@ -36,7 +36,6 @@ type
     procedure lng; // перевести на выбранный язык эту форму
     procedure Setcheck; // установка чекбоксов по текущему состоянию интеграции
     procedure DoRoot; // перезапуск прграммы под рутом
-    procedure GetUsers; //получить список юзеров
   private
     { private declarations }
   public
@@ -65,39 +64,7 @@ begin
   lng;
 end;
 
-procedure tform3.GetUsers;
-var
-  fl: textfile;
-  us, lin, s: string;
-  i: integer;
-  f: boolean;
-begin
-  assignfile(fl, '/etc/passwd');
-  reset(fl);
-  usr:=tstringlist.Create;
-  while not(eof(fl)) do
-    begin
-      readln(fl, lin);
-      i:= pos('/home/',lin);
-      if i > 0 then
-        begin
-           s:='';
-           i:=pos(':', lin);
-           us:=copy(lin, 1, i-1);
-           f:=false;
-           for i:=i+1 to length(lin) do
-             begin
-                  if (lin[i]=':') and f then break;
-                  if f then s:=s+lin[i];
-                  if lin[i]=':' then f:=true;
-             end;
-           i:=strtoint(s);
-           if i>999 then usr.Add(us);
-         end;
-    end;
-    closefile(fl);
-    if usr.Count>1 then form4.Show;
-end;
+
 
 procedure TForm3.FormCreate(Sender: TObject);
 begin
@@ -110,13 +77,11 @@ procedure TForm3.FormShow(Sender: TObject);
 begin
   radiobutton2.Checked:=start.lng=1;
   form3.Height:=204;
-  if GetEnvironmentVariable('LOGNAME') = 'root' then getusers;
+  if imuser='' then form4.Show;
 end;
 
 procedure TForm3.Button1Click(Sender: TObject);
 // интеграция в контекстное меню
-var
-  f: textfile;
 begin
   if form3.Height <> 407 then
     begin
@@ -126,6 +91,7 @@ begin
            setcheck;
            flag:=true;
            form3.Height:=407
+           label1.Caption:='for '+start.imuser;
          end else
            begin
              showmessage('Настройка интеграции возможна только'+#13#10+
@@ -159,21 +125,21 @@ begin
   checkbox1.Enabled:=false;  checkbox1.Checked:=false;
   checkbox2.Enabled:=false;  checkbox2.Checked:=false;
   checkbox3.Enabled:=false;  checkbox3.Checked:=false;
-        pt:=ptuser+'.gnome2/nautilus-scripts';
+        pt:=start.MyFolder+'.gnome2/nautilus-scripts';
         if DirectoryExists(pt) then // to gnome
           begin
              checkbox1.Enabled:=true;
              if FileExists(pt+'/Печать') then checkbox1.Checked:=true;
              if FileExists(pt+'/Print') then checkbox1.Checked:=true;
           end;
-        pt:=ptuser+'.config/caja/scripts';  // to caja
+        pt:=start.MyFolder+'.config/caja/scripts';  // to caja
          if DirectoryExists(pt) then
            begin
               checkbox3.Enabled:=true;
               if FileExists(pt+'/Печать') then checkbox3.Checked:=true;
               if FileExists(pt+'/Print') then checkbox3.Checked:=true;
            end;
-        pt:=ptuser+'.kde/share/kde4/services/ServiceMenus';
+        pt:=start.MyFolder+'.kde/share/kde4/services/ServiceMenus';
         if DirectoryExists(pt) then // to kde
           begin
              checkbox2.Enabled:=true;
@@ -226,7 +192,7 @@ var
 begin
   if not flag then exit;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-        pt:=ptuser+'.gnome2/nautilus-scripts';
+        pt:=start.MyFolder+'.gnome2/nautilus-scripts';
          if DirectoryExists(pt) then
             if checkbox1.Checked then
               begin
@@ -252,7 +218,7 @@ var
 begin
   if not flag then exit;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-        pt:=ptuser+'.kde/share/kde4/services/ServiceMenus';
+        pt:=start.MyFolder+'.kde/share/kde4/services/ServiceMenus';
          if DirectoryExists(pt) then
             if checkbox2.Checked then
               begin
@@ -285,7 +251,7 @@ var
 begin
   if not flag then exit;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-         pt:=ptuser+'.config/caja/scripts';
+         pt:=start.MyFolder+'.config/caja/scripts';
          if DirectoryExists(pt) then
             if checkbox3.Checked then
               begin

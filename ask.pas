@@ -56,9 +56,8 @@ end;
 
 procedure TForm4.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-   opt.ptuser:='/home/'+combobox1.Text+'/';
-   start.MyFolder:=opt.ptuser;
-   form3.Label1.Caption:=combobox1.Text+':';
+   if combobox1.Text<>'ComboBox1' then start.imuser:=combobox1.Text;
+   //form1.label4.Caption:=myfolder + '.config/vap/vapsett' ;
 end;
 
 

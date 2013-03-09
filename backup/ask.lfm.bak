@@ -1,7 +1,7 @@
 object Form4: TForm4
-  Left = 482
+  Left = 500
   Height = 186
-  Top = 23
+  Top = 24
   Width = 387
   BorderIcons = []
   BorderStyle = bsDialog

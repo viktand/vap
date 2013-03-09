@@ -8,7 +8,7 @@ object Form1: TForm1
   Caption = 'Быстрая печать'
   ClientHeight = 716
   ClientWidth = 773
-  OnCreate = FormCreate
+  OnShow = FormCreate
   LCLVersion = '0.9.30.4'
   object Panel1: TPanel
     Left = 336
@@ -9118,6 +9118,14 @@ object Form1: TForm1
       454E44AE426082
     }
     Visible = False
+  end
+  object Label4: TLabel
+    Left = 194
+    Height = 18
+    Top = 599
+    Width = 44
+    Caption = 'Label4'
+    ParentColor = False
   end
   object SDD1: TSelectDirectoryDialog
     left = 296

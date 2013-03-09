@@ -143,9 +143,8 @@ object Form3: TForm3
   object Label1: TLabel
     Left = 10
     Height = 18
-    Top = 215
-    Width = 189
-    AutoSize = False
+    Top = 223
+    Width = 44
     Caption = 'Label1'
     ParentColor = False
   end

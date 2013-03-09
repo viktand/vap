@@ -53,6 +53,7 @@ type
     Label13: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
@@ -87,7 +88,6 @@ type
      procedure Button14Click(Sender: TObject);
      procedure Button15Click(Sender: TObject);
      procedure Button16Click(Sender: TObject);
-     procedure Button17Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -164,9 +164,9 @@ type
      Procedure WriteSett(st: tStringList); // записать новые значения в файл конфигурации
      function LoadSett(key: string):string; // получить значение ключа key
      procedure LoadConfig; // загрузить конфигурацию из файла
-     procedure Say(word: string); // Записать строку в лог-файл
      function sign(n: integer): integer;
-     procedure getnews; // проверить обновление
+     procedure GetIm; // Узнать пользователя
+
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -230,14 +230,13 @@ type
     repo: string; // рапорт о завершении печати
     sndr: TObject; // ссылка на имадж, на котором нажата и отпущена кнопка мыши
     sndh, sndw: integer; // исходные размеры имадже перед корректировкой
-    //root: boolean; // признак запуска программы с параметром "-root"
-
+    imuser: string; // current user
 
 implementation
 
 {$R *.lfm}
 
-uses ab, opt;
+uses about, opt, ask;
 
 { TForm1 }
 
@@ -245,11 +244,7 @@ procedure TForm1.FormCreate(Sender: TObject); // Начало
 var
   i: integer;
 begin
-  // кто Я?!!!
-  MyFolder:='/home/'+GetEnvironmentVariable('LOGNAME')+'/.vap';
-  if not(DirectoryExists(myfolder)) then createdir(myfolder);
-  myfolder:=myfolder+'/';
-  //root:=false;
+  getim; // кто Я?!!!
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
   userprinter:=loadsett('printer');
@@ -292,6 +287,49 @@ begin
   if orn=1 then panel4click(panel4);
   if lng=1 then setlng;
 end;
+
+procedure tform1.getim;
+var
+  fl: textfile;
+  us, lin, s: string;
+  i: integer;
+  f: boolean;
+begin
+  if GetEnvironmentVariable('LOGNAME') <> 'root' then  imuser:= GetEnvironmentVariable('LOGNAME')
+    else
+    begin
+       assignfile(fl, '/etc/passwd');
+       reset(fl);
+       opt.usr:=tstringlist.Create;
+       while not(eof(fl)) do
+         begin
+           readln(fl, lin);
+           i:= pos('/home/',lin);
+           if i > 0 then
+             begin
+                s:='';
+                i:=pos(':', lin);
+                us:=copy(lin, 1, i-1);
+                f:=false;
+                for i:=i+1 to length(lin) do
+                  begin
+                       if (lin[i]=':') and f then break;
+                       if f then s:=s+lin[i];
+                       if lin[i]=':' then f:=true;
+                  end;
+                i:=strtoint(s);
+                if i>999 then opt.usr.Add(us);
+              end;
+         end;
+         closefile(fl);
+         if opt.usr.Count>1 then imuser:='' else imuser:=opt.usr[0];
+    end;
+   MyFolder:='/home/'+imuser+'/.config/vap';
+   if not(DirectoryExists(myfolder)) then createdir(myfolder);
+   myfolder:='/home/';
+end;
+
+
 
 procedure tform1.LoadConfig; // загрузить конфигурацию из файла
 var
@@ -337,26 +375,6 @@ begin
      if pr<>'' then addpict(pr);
  end;
 
-procedure tform1.Say(word: string); // Записать строку в лог-файл
-var
-   fl: textfile;
-   fn: string;
-begin
-   fn := MyFolder + 'vap_prn.log';
-   if word = '' then
-        begin
-          assignfile(fl, fn);
-          rewrite(fl);
-        end
-        else
-        begin
-          assignfile(fl, fn);
-          append(fl);
-          writeln(fl, word);
-        end;
-closefile(fl);
-end;
-
 procedure tform1.SaveSett(Key, Word: string); // Сохранить в файле конфигурации значение word c ключем key
 var
   st: tStringList;
@@ -400,9 +418,9 @@ begin
          result:=config;
          exit;
        end;
-  if fileexists(myfolder + 'vapsett') then
+  if fileexists(myfolder + imuser+'/.config/vap/vapsett') then
      begin
-       assignfile(fl, myfolder + 'vapsett');
+       assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
        reset(fl);
        while not(eof(fl)) do
          begin
@@ -422,7 +440,7 @@ var
   fl: textfile;
   i: integer;
 begin
-  assignfile(fl, myfolder + 'vapsett');
+  assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
   rewrite(fl);
   for i:=0 to st.Count-1 do writeln(fl, st[i]);
   closefile(fl);
@@ -604,7 +622,7 @@ end;
 procedure TForm1.Button7Click(Sender: TObject);
 // О программе
 begin
-     form2.Show;
+     form5.Show;
 end;
 
 procedure TForm1.Button8Click(Sender: TObject);
@@ -725,6 +743,7 @@ procedure TForm1.Button12Click(Sender: TObject);
 // открыть окно настроек
 begin
   form3.show;
+  if form4.Showing then form4.SetFocus;
 end;
 
 procedure TForm1.Button13Click(Sender: TObject);
@@ -734,6 +753,7 @@ var
   pr: tStrings;
   i: integer;
 begin
+  if imuser='' then form4.Show;
   panel6.Left:=419;
   panel6.top:=48;
   prin := Printer;
@@ -782,11 +802,6 @@ begin
   (sndr as timage).Width:=sndw;
 end;
 
-procedure TForm1.Button17Click(Sender: TObject);
-begin
-  getnews;
-end;
-
 
 procedure TForm1.Button3Click(Sender: TObject);
 // печать
@@ -808,6 +823,7 @@ begin
     else PrinterIndex:=0;
   // выбрать принтер заданный пользователем
   printer.PrinterIndex:=PrinterIndex;
+  //label4.Caption:=inttostr(printerindex);
   if orn = 0 then printer.Orientation:=poPortrait else printer.Orientation:=poLandscape;
   repeat // перебор листов для их прорисовки
     case comp of
@@ -1709,21 +1725,6 @@ begin
 
 end;
 
-procedure tform1.getnews;
-var
-  mem:TMemoryStream;
-  s: string;
-begin
-   mem := TMemoryStream.Create;
-   try
-        //IdHTTP1.Get('https://github.com/viktand/vap/blob/master/version?raw=true',mem);
-        s:=mem.ToString; //  SaveToFile('c:\1.exe');
-        showmessage(s);
-   finally
-        mem.Destroy;
-   end;
-
-end;
 
 {
 function tform1.Rotor(im: tImage; g: integer): tImage; // вращение picture вправо
