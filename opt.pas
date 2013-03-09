@@ -194,15 +194,15 @@ begin
   if not flag then exit;
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-        pt:=p+'.gnome2/nautilus-scripts';
-         if DirectoryExists(pt) then
+        pt:=p+'/.gnome2/nautilus-scripts';
+        if DirectoryExists(pt) then
             if checkbox1.Checked then
               begin
                  assignfile(fl, pt+'/'+prnt);
                 rewrite(fl);
                 writeln(fl, '#!/bin/sh');
                 writeln(fl, ' ');
-                writeln(fl, ParamStr(0)+' '+ pram +' $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS');
+                writeln(fl, '/usr/bin/vap $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS');
                 closefile(fl);
                 fpChmod (pt+'/'+prnt,&777);
               end else
@@ -221,7 +221,7 @@ begin
   if not flag then exit;
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-        pt:=p+'.kde/share/kde4/services/ServiceMenus';
+        pt:=p+'/.kde/share/kde4/services/ServiceMenus';
          if DirectoryExists(pt) then
             if checkbox2.Checked then
               begin
@@ -235,7 +235,7 @@ begin
                   writeln(fl, 'X-KDE-Priority=TopLevel');
                   writeln(fl, ' ');
                   writeln(fl, '[Desktop Action add]');
-                  writeln(fl, 'Exec='+ParamStr(0)+' '+ pram +' %F');
+                  writeln(fl, 'Exec=/usr/bin/vap %F');
                   writeln(fl, 'Icon=document-print');
                   writeln(fl, 'Name=' + prnt);
                   closefile(fl);                     ;
@@ -255,7 +255,7 @@ begin
   if not flag then exit;
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-         pt:=p+'.config/caja/scripts';
+         pt:=p+'/.config/caja/scripts';
          if DirectoryExists(pt) then
             if checkbox3.Checked then
               begin
@@ -263,7 +263,7 @@ begin
                 rewrite(fl);
                 writeln(fl, '#!/bin/sh');
                 writeln(fl, ' ');
-                writeln(fl, ParamStr(0)+' '+ pram +' $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS');
+                writeln(fl, '/usr/bin/vap $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS');
                 closefile(fl);
                 fpChmod (pt+'/'+prnt,&777);
               end else
