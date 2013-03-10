@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 253
+  Left = 472
   Height = 716
-  Top = 154
+  Top = 229
   Width = 773
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
@@ -9120,9 +9120,9 @@ object Form1: TForm1
     Visible = False
   end
   object Label4: TLabel
-    Left = 194
+    Left = 203
     Height = 18
-    Top = 599
+    Top = 598
     Width = 44
     Caption = 'Label4'
     ParentColor = False
