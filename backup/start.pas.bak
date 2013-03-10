@@ -53,7 +53,6 @@ type
     Label13: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
@@ -764,6 +763,11 @@ begin
   panel6.top:=48;
   prin := Printer;
   pr:=prin.Printers;
+  if pr.Count=0 then
+    begin
+      showmessage('Принтер не найден');
+      exit;
+    end;
   combobox2.Items:=pr;
   combobox2.Text:=combobox2.Items[0];
   if userprinter <> '' then
@@ -812,7 +816,7 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 // печать
 var
-  i, x: integer;
+  x: integer;
 begin
   showindex := 0;
   CreateList;

@@ -53,7 +53,6 @@ type
     Label13: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
@@ -479,8 +478,6 @@ end;
 
 procedure tform1.MoveEnd(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // отпускание кнопки мыши
-var
-  i: integer;
 begin
   flagmove:=false;
   (sender as timage).Cursor:=crdefault;
@@ -817,7 +814,7 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 // печать
 var
-  i, x: integer;
+  x: integer;
 begin
   showindex := 0;
   CreateList;
