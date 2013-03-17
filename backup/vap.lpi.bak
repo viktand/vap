@@ -83,7 +83,7 @@
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="416"/>
-        <CursorPos X="19" Y="427"/>
+        <CursorPos X="1" Y="427"/>
 =======
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
@@ -99,7 +99,7 @@
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
 <<<<<<< HEAD
-          <Item0 X="1" Y="873" ID="0"/>
+          <Item0 X="1" Y="872" ID="0"/>
 =======
           <Item0 X="1" Y="834" ID="0"/>
 >>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
@@ -127,22 +127,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="13"/>
         <CursorPos X="44" Y="883"/>
-<<<<<<< HEAD
         <UsageCount Value="7"/>
-=======
-        <UsageCount Value="8"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit3>
       <Unit4>
         <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/include/buttoncontrol.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="43"/>
         <CursorPos X="1" Y="62"/>
-<<<<<<< HEAD
         <UsageCount Value="5"/>
-=======
-        <UsageCount Value="6"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit4>
       <Unit5>
         <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/printers.pas"/>
@@ -162,11 +154,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-<<<<<<< HEAD
         <UsageCount Value="5"/>
-=======
-        <UsageCount Value="6"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit6>
       <Unit7>
         <Filename Value="/usr/lib/lazarus/0.9.30.4/components/printers/printersdlgs.pp"/>
@@ -174,11 +162,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="46"/>
         <CursorPos X="55" Y="57"/>
-<<<<<<< HEAD
         <UsageCount Value="7"/>
-=======
-        <UsageCount Value="8"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit7>
       <Unit8>
         <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/lclrescache.pas"/>
@@ -186,11 +170,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="347"/>
         <CursorPos X="27" Y="367"/>
-<<<<<<< HEAD
         <UsageCount Value="6"/>
-=======
-        <UsageCount Value="7"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit8>
       <Unit9>
         <Filename Value="easyprint.pas"/>
@@ -198,11 +178,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="39" Y="15"/>
-<<<<<<< HEAD
         <UsageCount Value="20"/>
-=======
-        <UsageCount Value="21"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit9>
       <Unit10>
         <Filename Value="C:/lazarus/lcl/printers.pas"/>
@@ -210,11 +186,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="30"/>
         <CursorPos X="53" Y="305"/>
-<<<<<<< HEAD
         <UsageCount Value="4"/>
-=======
-        <UsageCount Value="5"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit10>
       <Unit11>
         <Filename Value="opt.pas"/>
@@ -222,6 +194,7 @@
         <ComponentName Value="Form3"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Opt"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="186"/>
@@ -239,22 +212,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="3795"/>
         <CursorPos X="12" Y="3804"/>
-<<<<<<< HEAD
         <UsageCount Value="2"/>
-=======
-        <UsageCount Value="3"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit12>
       <Unit13>
         <Filename Value="C:/lazarus/lcl/include/control.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2693"/>
         <CursorPos X="22" Y="2696"/>
-<<<<<<< HEAD
         <UsageCount Value="2"/>
-=======
-        <UsageCount Value="3"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit13>
       <Unit14>
         <Filename Value="inic.pas"/>
@@ -264,11 +229,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="96" Y="20"/>
-<<<<<<< HEAD
         <UsageCount Value="30"/>
-=======
-        <UsageCount Value="31"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit14>
       <Unit15>
         <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/avglvltree.pas"/>
@@ -276,22 +237,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1084"/>
         <CursorPos X="1" Y="1103"/>
-<<<<<<< HEAD
         <UsageCount Value="5"/>
-=======
-        <UsageCount Value="6"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit15>
       <Unit16>
         <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/include/fpimagebitmap.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="127"/>
         <CursorPos X="18" Y="128"/>
-<<<<<<< HEAD
         <UsageCount Value="6"/>
-=======
-        <UsageCount Value="7"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit16>
       <Unit17>
         <Filename Value="/usr/lib/lazarus/0.9.30.4/lcl/include/control.inc"/>
@@ -310,11 +263,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="67"/>
         <CursorPos X="46" Y="84"/>
-<<<<<<< HEAD
         <UsageCount Value="17"/>
-=======
-        <UsageCount Value="18"/>
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
       </Unit18>
       <Unit19>
         <Filename Value="ask.pas"/>

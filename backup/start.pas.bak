@@ -426,7 +426,6 @@ begin
   inc(err);
   txt:='';
   inc(err);
-  printer.EndDoc;
   if confflag then
        begin
          result:=config;
