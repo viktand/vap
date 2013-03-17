@@ -87,6 +87,7 @@ type
      procedure Button14Click(Sender: TObject);
      procedure Button15Click(Sender: TObject);
      procedure Button16Click(Sender: TObject);
+     procedure Button17Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -232,10 +233,7 @@ type
     sndh, sndw: integer; // исходные размеры имадже перед корректировкой
     imuser: string; // current user
     curz: integer; // z порядок для текущей страницы, используется для расчета наложений
-<<<<<<< HEAD
     err: integer; // флаг ошибок
-=======
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
 
 implementation
 
@@ -426,6 +424,7 @@ begin
   inc(err);
   txt:='';
   inc(err);
+  printer.EndDoc;
   if confflag then
        begin
          result:=config;
@@ -434,13 +433,9 @@ begin
        end;
   if fileexists(myfolder + imuser+'/.config/vap/vapsett') then
      begin
-<<<<<<< HEAD
        inc(err);
        assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
        inc(err);
-=======
-       assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
        reset(fl);
        inc(err);
        while not(eof(fl)) do
@@ -848,15 +843,12 @@ begin
   (sndr as timage).Width:=sndw;
 end;
 
-<<<<<<< HEAD
 procedure TForm1.Button17Click(Sender: TObject);
 begin
   showp[0].Picture.Bitmap.Monochrome:=true;
   showp[0].Picture.LoadFromFile(toprint[0].pict);
 end;
 
-=======
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
 
 procedure TForm1.Button3Click(Sender: TObject);
 // печать

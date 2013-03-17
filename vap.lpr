@@ -10,7 +10,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, start, printer4lazarus, runtimetypeinfocontrols, turbopoweripro,
+  Forms, start, printer4lazarus,
   Opt, ask, about;
 
 {$R *.res}
