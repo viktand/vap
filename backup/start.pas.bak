@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, process, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, Ipfilebroker, IpHtml;
+  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons;
 
 type
 
@@ -164,9 +164,10 @@ type
      Procedure WriteSett(st: tStringList); // записать новые значения в файл конфигурации
      function LoadSett(key: string):string; // получить значение ключа key
      procedure LoadConfig; // загрузить конфигурацию из файла
-     procedure Say(word: string); // Записать строку в лог-файл
      function sign(n: integer): integer;
-     procedure getnews; // проверить обновление
+     procedure GetIm; // Узнать пользователя
+     procedure GetCurz; // расчитать значение curz и при необходимости поднять картинки
+
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -230,14 +231,15 @@ type
     repo: string; // рапорт о завершении печати
     sndr: TObject; // ссылка на имадж, на котором нажата и отпущена кнопка мыши
     sndh, sndw: integer; // исходные размеры имадже перед корректировкой
-    //root: boolean; // признак запуска программы с параметром "-root"
-
+    imuser: string; // current user
+    curz: integer; // z порядок для текущей страницы, используется для расчета наложений
+    err: integer; // флаг ошибок
 
 implementation
 
 {$R *.lfm}
 
-uses ab, opt;
+uses about, opt, ask;
 
 { TForm1 }
 
@@ -245,11 +247,7 @@ procedure TForm1.FormCreate(Sender: TObject); // Начало
 var
   i: integer;
 begin
-  // кто Я?!!!
-  MyFolder:='/home/'+GetEnvironmentVariable('LOGNAME')+'/.vap';
-  if not(DirectoryExists(myfolder)) then createdir(myfolder);
-  myfolder:=myfolder+'/';
-  //root:=false;
+  getim; // кто Я?!!!
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
   userprinter:=loadsett('printer');
@@ -291,7 +289,51 @@ begin
   setcomp(comp); // установить компоновку
   if orn=1 then panel4click(panel4);
   if lng=1 then setlng;
+  //image5.Picture.Bitmap.;
 end;
+
+procedure tform1.getim;
+var
+  fl: textfile;
+  us, lin, s: string;
+  i: integer;
+  f: boolean;
+begin
+  if GetEnvironmentVariable('LOGNAME') <> 'root' then  imuser:= GetEnvironmentVariable('LOGNAME')
+    else
+    begin
+       assignfile(fl, '/etc/passwd');
+       reset(fl);
+       opt.usr:=tstringlist.Create;
+       while not(eof(fl)) do
+         begin
+           readln(fl, lin);
+           i:= pos('/home/',lin);
+           if i > 0 then
+             begin
+                s:='';
+                i:=pos(':', lin);
+                us:=copy(lin, 1, i-1);
+                f:=false;
+                for i:=i+1 to length(lin) do
+                  begin
+                       if (lin[i]=':') and f then break;
+                       if f then s:=s+lin[i];
+                       if lin[i]=':' then f:=true;
+                  end;
+                i:=strtoint(s);
+                if i>999 then opt.usr.Add(us);
+              end;
+         end;
+         closefile(fl);
+         if opt.usr.Count>1 then imuser:='' else imuser:=opt.usr[0];
+    end;
+   MyFolder:='/home/'+imuser+'/.config/vap';
+   if not(DirectoryExists(myfolder)) then createdir(myfolder);
+   myfolder:='/home/';
+end;
+
+
 
 procedure tform1.LoadConfig; // загрузить конфигурацию из файла
 var
@@ -337,26 +379,6 @@ begin
      if pr<>'' then addpict(pr);
  end;
 
-procedure tform1.Say(word: string); // Записать строку в лог-файл
-var
-   fl: textfile;
-   fn: string;
-begin
-   fn := MyFolder + 'vap_prn.log';
-   if word = '' then
-        begin
-          assignfile(fl, fn);
-          rewrite(fl);
-        end
-        else
-        begin
-          assignfile(fl, fn);
-          append(fl);
-          writeln(fl, word);
-        end;
-closefile(fl);
-end;
-
 procedure tform1.SaveSett(Key, Word: string); // Сохранить в файле конфигурации значение word c ключем key
 var
   st: tStringList;
@@ -381,10 +403,15 @@ var
 begin
   result:='';
   st:=tStringList.Create;
+  inc(err);
   st:=readsett; // прочитать существующий файл
+  inc(err);
   s:=st.Values[key];
+  inc(err);
   for i:=1 to length(s) do if s[i]<>'#' then result:=result+s[i] else result:=result+' '; // заменить # на ' '
+  inc(err);
   if result = 'default' then result:='';
+  inc(err);
 end;
 
 function tform1.readsett: tStringList; // прочитать существующий файл конфигурации
@@ -394,27 +421,41 @@ var
   txt: string;
 begin
   result := tstringlist.Create;
+  inc(err);
   txt:='';
+  inc(err);
+  printer.EndDoc;
   if confflag then
        begin
          result:=config;
+         inc(err);
          exit;
        end;
-  if fileexists(myfolder + 'vapsett') then
+  if fileexists(myfolder + imuser+'/.config/vap/vapsett') then
      begin
-       assignfile(fl, myfolder + 'vapsett');
+       inc(err);
+       assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
+       inc(err);
        reset(fl);
+       inc(err);
        while not(eof(fl)) do
          begin
            readln(fl, lin);
+           inc(err);
            if pos('=',lin) > 0 then txt:=txt + lin + ', ';
+           inc(err);
          end;
        closefile(fl);
+       inc(err);
        if txt<>'' then txt:=copy(txt, 1, length(txt)-2);
+       inc(err);
      end;
   result.CommaText:=txt;
+  inc(err);
   config:=result;
+  inc(err);
   confflag:=true;
+  inc(err);
 end;
 
 procedure tform1.WriteSett(st: tStringList); // записать новые значения в файл конфигурации
@@ -422,7 +463,7 @@ var
   fl: textfile;
   i: integer;
 begin
-  assignfile(fl, myfolder + 'vapsett');
+  assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
   rewrite(fl);
   for i:=0 to st.Count-1 do writeln(fl, st[i]);
   closefile(fl);
@@ -441,24 +482,26 @@ begin
  end;
 
 procedure tform1.MoveStart(Sender: TObject; Button: TMouseButton;Shift: TShiftState; X, Y: Integer);
+// нажатие на кнопку мыши
 begin
   if button=mbLeft then
     begin
       (sender as timage).Cursor:=crsizeall;
+      num:=showindex+strtoint(copy((sender as timage).Name, 3, 2));
+      inc(curz);
+      toprint[num].z:=curz;
       flagmove:=true;
       ttx:=x;
       tty:=y;
       (sender as timage).BringToFront;
+
     end;
 end;
 
 procedure tform1.MoveEnd(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // отпускание кнопки мыши
-var
-  i: integer;
 begin
   flagmove:=false;
-  if buf > 0 then for i:=0 to steplist(comp)-1 do toprint[i+showindex].z:=showp[i].Tag;
   (sender as timage).Cursor:=crdefault;
 end;
 
@@ -604,7 +647,7 @@ end;
 procedure TForm1.Button7Click(Sender: TObject);
 // О программе
 begin
-     form2.Show;
+     form5.Show;
 end;
 
 procedure TForm1.Button8Click(Sender: TObject);
@@ -725,6 +768,7 @@ procedure TForm1.Button12Click(Sender: TObject);
 // открыть окно настроек
 begin
   form3.show;
+  if form4.Showing then form4.SetFocus;
 end;
 
 procedure TForm1.Button13Click(Sender: TObject);
@@ -734,10 +778,16 @@ var
   pr: tStrings;
   i: integer;
 begin
+  if imuser='' then form4.Show;
   panel6.Left:=419;
   panel6.top:=48;
   prin := Printer;
   pr:=prin.Printers;
+  if pr.Count=0 then
+    begin
+      showmessage('Принтер не найден');
+      exit;
+    end;
   combobox2.Items:=pr;
   combobox2.Text:=combobox2.Items[0];
   if userprinter <> '' then
@@ -757,15 +807,26 @@ end;
 
 procedure TForm1.Button14Click(Sender: TObject);
 begin
+ err:=0;
+ try
   userprinter:=combobox2.Text;
+  inc(err);
   if radiobutton2.Checked then
     begin
+     err:=err+1000;
      userprinter:='';
+     inc(err);
      savesett('printer', 'default');
+     inc(err);
     end;
   if radiobutton1.Checked then savesett('printer', userprinter);
+  inc(err);
   panel6.Visible:=false;
+  inc(err);
   SetLng;
+ except
+    ShowMessage('ошибка в строке ' + inttostr(err));
+ end;
 end;
 
 procedure TForm1.Button15Click(Sender: TObject);
@@ -784,14 +845,15 @@ end;
 
 procedure TForm1.Button17Click(Sender: TObject);
 begin
-  getnews;
+  showp[0].Picture.Bitmap.Monochrome:=true;
+  showp[0].Picture.LoadFromFile(toprint[0].pict);
 end;
 
 
 procedure TForm1.Button3Click(Sender: TObject);
 // печать
 var
-  i, x: integer;
+  x: integer;
 begin
   showindex := 0;
   CreateList;
@@ -821,9 +883,8 @@ begin
        9: drawlist2(14);
        10: drawlist2(19);
      end;
-     i := showindex;
-     Button2Click(nil);
-  until (i = showindex);
+     showindex:=showindex+steplist(comp);
+  until (showindex>buf-1);
   showmessage(repo);
 end;
 
@@ -831,6 +892,7 @@ procedure tform1.drawlist2(index: integer);
 // подготовка и  печать страницы, т.е.  ee рисование
 var
    i, x, x1, y, y1, dphor, dpver: integer;
+   z, j, st: integer;
    mrv, mrh, sm1, sm0: integer;
    kh, kv: extended;
    ImageRect: TRect;
@@ -856,6 +918,26 @@ begin
    kh := (dphor-mrh) / panel1.Width; // масштаб между предпросмотром и листом
    kv := (dpver-mrv) / panel1.Height; // масштаб между предпросмотром и листом
 
+   // сортировка миниатюр по z-порядку и их прорисовка в принтере
+   //"глубина" картинки, т.е. максимальный z
+   z:=0;
+   if showindex+index > buf-1 then st:=buf-1 else st:=showindex+index;
+   for i:=showindex to st do if toprint[i].z > z then z:=toprint[i].z;
+   for j:=0 to z do
+     for i:=showindex to st do
+       begin
+            if toprint[i].z = j then
+               begin
+                  x :=  sm0+trunc(kh * toprint[i].Left);
+                  y :=  sm1+trunc(kv * toprint[i].Top);
+                  x1 := x + trunc(kh * toprint[i].Width);
+                  y1 := y + trunc(kv * toprint[i].heigth);
+                  ImageRect:=Rect(x, y, x1, y1);
+                  printer.Canvas.StretchDraw(ImageRect, toprint[i].pct.Bitmap);
+                end;
+       end;
+
+  {
    for i := 0 to index do  // перебрать все задействованные showp[] и перерисовать их в холст принтера
      begin
         x :=  sm0+trunc(kh * showp[i].Left);
@@ -865,7 +947,8 @@ begin
         ImageRect:=Rect(x, y, x1, y1);
         printer.Canvas.StretchDraw(ImageRect, showp[i].Picture.Bitmap);
        end;
-   printer.EndDoc;
+   }
+  printer.EndDoc;
 end;
 
 
@@ -971,6 +1054,7 @@ begin
   i := 0 - steplist(comp);
   if showindex  > 0  then endstep(i);
   label6.visible:=false;
+  GetCurz; // расчитать значение curz и при необходимости поднять картинки
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -983,6 +1067,25 @@ begin
   i := steplist(comp);
   if showindex + i < buf   then endstep(i);
   label6.visible:=false;
+  GetCurz; // расчитать значение curz и при необходимости поднять картинки
+end;
+
+procedure tform1.getcurz;
+// расчитать значение curz и при необходимости поднять картинки
+var
+  i, j: integer;
+begin
+  curz:=0;
+  for i:=showindex to showindex+steplist(comp)-1 do
+    begin
+      if i>high(toprint) then break;
+      if toprint[i].z > curz then curz:=toprint[i].z;
+    end;
+  if curz=0 then exit;
+  // поднять картинки
+  for j:=1 to curz do
+    for i:=0 to steplist(comp)-1 do
+      if toprint[i+showindex].z = j then showp[i].BringToFront;
 end;
 
 procedure tform1.endstep(index: integer);
@@ -1308,7 +1411,11 @@ end;
 
 procedure tform1.endclick(im: timage);
 begin
-  for num:=0 to buf-1 do toprint[num].show:=false;
+  for num:=0 to buf-1 do
+    begin
+      toprint[num].show:=false;
+      toprint[num].z:=0;
+    end;
   label6.visible:=true;
   self.Repaint;
   showindex := 0;
@@ -1317,6 +1424,7 @@ begin
   image8.Picture := im.Picture;
   showlistnum;
   label6.Visible:=false;
+  curz:=0;
 end;
 
 
@@ -1709,21 +1817,6 @@ begin
 
 end;
 
-procedure tform1.getnews;
-var
-  mem:TMemoryStream;
-  s: string;
-begin
-   mem := TMemoryStream.Create;
-   try
-        //IdHTTP1.Get('https://github.com/viktand/vap/blob/master/version?raw=true',mem);
-        s:=mem.ToString; //  SaveToFile('c:\1.exe');
-        showmessage(s);
-   finally
-        mem.Destroy;
-   end;
-
-end;
 
 {
 function tform1.Rotor(im: tImage; g: integer): tImage; // вращение picture вправо
@@ -1757,4 +1850,3 @@ end;
 
 
 end.
-

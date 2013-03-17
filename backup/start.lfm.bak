@@ -1,17 +1,15 @@
 object Form1: TForm1
-  Left = 253
+  Left = 350
   Height = 716
-  Top = 154
+  Top = 182
   Width = 773
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Быстрая печать'
   ClientHeight = 716
   ClientWidth = 773
-  OnCreate = FormCreate
-  Position = poScreenCenter
+  OnShow = FormCreate
   LCLVersion = '0.9.30.4'
-  Visible = True
   object Panel1: TPanel
     Left = 336
     Height = 594
@@ -32,14 +30,14 @@ object Form1: TForm1
     ClientWidth = 180
     TabOrder = 1
     object Panel2: TPanel
-      Left = 14
+      Left = 19
       Height = 441
       Top = 6
-      Width = 152
+      Width = 140
       BorderWidth = 1
       BorderStyle = bsSingle
       ClientHeight = 439
-      ClientWidth = 150
+      ClientWidth = 138
       Color = clWhite
       ParentColor = False
       TabOrder = 0
@@ -8914,13 +8912,15 @@ object Form1: TForm1
     end
   end
   object StaticText2: TStaticText
-    Left = 201
+    Left = 184
     Height = 40
     Hint = 'Точное значение полей зависит от соотношения сторон картинки'
     Top = 240
-    Width = 128
+    Width = 152
     Alignment = taCenter
-    Caption = 'Поля между'#10'миниатюр, mm'
+    Caption = 'Поля между'#10'миниатюрами, mm'
+    Font.Height = -13
+    ParentFont = False
     ShowHint = True
     TabOrder = 13
   end

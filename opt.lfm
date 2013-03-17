@@ -1,11 +1,12 @@
 object Form3: TForm3
-  Left = 490
-  Height = 379
+  Left = 591
+  Height = 407
   Top = 24
   Width = 207
-  BorderStyle = bsDialog
+  BorderIcons = []
+  BorderStyle = bsSingle
   Caption = 'Настройки'
-  ClientHeight = 379
+  ClientHeight = 407
   ClientWidth = 207
   OnCreate = FormCreate
   OnShow = FormShow
@@ -81,7 +82,7 @@ object Form3: TForm3
   object CheckGroup1: TCheckGroup
     Left = 10
     Height = 151
-    Top = 208
+    Top = 243
     Width = 189
     AutoFill = True
     Caption = 'Настройка интеграции'
@@ -138,5 +139,13 @@ object Form3: TForm3
       ParentFont = False
       TabOrder = 3
     end
+  end
+  object Label1: TLabel
+    Left = 10
+    Height = 18
+    Top = 223
+    Width = 44
+    Caption = 'Label1'
+    ParentColor = False
   end
 end
