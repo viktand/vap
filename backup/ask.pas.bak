@@ -57,7 +57,11 @@ end;
 procedure TForm4.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
    if combobox1.Text<>'ComboBox1' then start.imuser:=combobox1.Text;
+<<<<<<< HEAD
    //form1.label4.Caption:=myfolder + '.config/vap/vapsett' ;
+=======
+   form1.label4.Caption:=myfolder + '.config/vap/vapsett' ;
+>>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
 end;
 
 
