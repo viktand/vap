@@ -403,13 +403,14 @@ var
 begin
   result:='';
   st:=tStringList.Create;
-  inc(err);
+  inc(err);  // 1003 - 2
   st:=readsett; // прочитать существующий файл
-  inc(err);
+  inc(err); // 1004 - 3
   s:=st.Values[key];
-  inc(err);
-  for i:=1 to length(s) do if s[i]<>'#' then result:=result+s[i] else result:=result+' '; // заменить # на ' '
-  inc(err);
+  inc(err); // 1005 - 4
+  //for i:=1 to length(s) do if s[i]<>'#' then result:=result+s[i] else result:=result+' '; // заменить # на ' '
+  result  := StringReplace(s, '#', ' ', [rfReplaceAll, rfIgnoreCase]);
+  inc(err);  // 1006 -5
   if result = 'default' then result:='';
   inc(err);
 end;
@@ -424,7 +425,6 @@ begin
   inc(err);
   txt:='';
   inc(err);
-  printer.EndDoc;
   if confflag then
        begin
          result:=config;
@@ -810,12 +810,12 @@ begin
  err:=0;
  try
   userprinter:=combobox2.Text;
-  inc(err);
+  inc(err); // 1
   if radiobutton2.Checked then
     begin
-     err:=err+1000;
+     err:=err+1000; // 1001
      userprinter:='';
-     inc(err);
+     inc(err);  // 1002
      savesett('printer', 'default');
      inc(err);
     end;
