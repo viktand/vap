@@ -233,7 +233,6 @@ type
     sndh, sndw: integer; // исходные размеры имадже перед корректировкой
     imuser: string; // current user
     curz: integer; // z порядок для текущей страницы, используется для расчета наложений
-    err: integer; // флаг ошибок
     errt: string; // текст ошибки
 
 implementation
@@ -398,7 +397,6 @@ var
   s: string;
 begin
   result:='';
-  inc(err);  // 1003 - 2
   readsett2; // прочитать существующий файл
   s:=config.Values[key];
   result  := StringReplace(s, '#', ' ', [rfReplaceAll, rfIgnoreCase]);   // заменить # на ' '
@@ -425,11 +423,9 @@ begin
        errt:='Попытка открыть файл конфигурации';
        reset(fl);
        errt:='Чтение файла конфигурации';
-       err:=0;
        while not(eof(fl)) do
          begin
            readln(fl, lin);
-           inc(err);
            if pos('=',lin) > 0 then txt:=txt + lin + ', ';
          end;
        errt:='Попытка закрыть файл конфигурации';
@@ -804,7 +800,7 @@ end;
 procedure TForm1.Button14Click(Sender: TObject);
 begin
  errt:='Начало процедуры сохранения выбора принтера';
- //try
+ try
   userprinter:=combobox2.Text;
   if radiobutton2.Checked then
     begin
@@ -821,9 +817,9 @@ begin
   panel6.Visible:=false;
   errt:='Обновить надписи';
   SetLng;
- //except
-   // ShowMessage('Ошибка в операции: ' + errt);
- //end;
+ except
+    ShowMessage('Ошибка в операции: ' + errt);
+ end;
 end;
 
 procedure TForm1.Button15Click(Sender: TObject);
