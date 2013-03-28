@@ -160,8 +160,8 @@ type
      procedure SetLng; // Установка языка
      procedure SetWords; // Заготовки фраз на разных языках
      procedure SaveSett(Key, Word: string); // Сoхранить в файле конфигурации значение word c ключем key
-     function ReadSett: tStringList; // прочитать существующий файл конфигурации
-     Procedure WriteSett(st: tStringList); // записать новые значения в файл конфигурации
+     Procedure ReadSett2; // прочитать существующий файл конфигурации
+     Procedure WriteSett2; // записать новые значения в файл конфигурации
      function LoadSett(key: string):string; // получить значение ключа key
      procedure LoadConfig; // загрузить конфигурацию из файла
      function sign(n: integer): integer;
@@ -234,6 +234,7 @@ type
     imuser: string; // current user
     curz: integer; // z порядок для текущей страницы, используется для расчета наложений
     err: integer; // флаг ошибок
+    errt: string; // текст ошибки
 
 implementation
 
@@ -380,94 +381,83 @@ begin
  end;
 
 procedure tform1.SaveSett(Key, Word: string); // Сохранить в файле конфигурации значение word c ключем key
-var
-  st: tStringList;
-  s: string;
-  i: integer;
 begin
-  s:='';
-  for i:=1 to length(word) do if word[i]<>' ' then s:=s+word[i] else s:=s+'#'; // заменить пробeлы на #
-  word:=s;
-  st:=tStringList.Create;
-  st:=readsett; // прочитать существующий файл
-  st.Values[key]:=word;  // Поменять (добавить) значение ключа
-  writesett(st); // записать новые значения в файл конфигурации
+  errt:='Замена пробелов на # для устранения неоднозначности форматирования';
+  word:=StringReplace(word, ' ', '#', [rfReplaceAll, rfIgnoreCase]); // заменить пробeлы на #
+  errt:='Попытка прочитать файл конфигурации';
+  readsett2;  // прочитать существующий файл
+  errt:='Поменять (добавить) значение ключа';
+  config.Values[key]:=word;  // Поменять (добавить) значение ключа
+  errt:='Сохранить новые значения в файле конфигурации';
+  writesett2; // записать новые значения в файл конфигурации
 end;
 
 
 function tform1.LoadSett(key: string):string; // получить значение ключа key
 var
-  st: tStringList;
   s: string;
-  i: integer;
 begin
   result:='';
-  st:=tStringList.Create;
   inc(err);  // 1003 - 2
-  st:=readsett; // прочитать существующий файл
-  inc(err); // 1004 - 3
-  s:=st.Values[key];
-  inc(err); // 1005 - 4
-  //for i:=1 to length(s) do if s[i]<>'#' then result:=result+s[i] else result:=result+' '; // заменить # на ' '
-  result  := StringReplace(s, '#', ' ', [rfReplaceAll, rfIgnoreCase]);
-  inc(err);  // 1006 -5
+  readsett2; // прочитать существующий файл
+  s:=config.Values[key];
+  result  := StringReplace(s, '#', ' ', [rfReplaceAll, rfIgnoreCase]);   // заменить # на ' '
   if result = 'default' then result:='';
-  inc(err);
 end;
 
-function tform1.readsett: tStringList; // прочитать существующий файл конфигурации
+
+procedure tform1.readsett2; // прочитать существующий файл конфигурации
 var
   fl: textfile;
   lin: string;
   txt: string;
 begin
-  result := tstringlist.Create;
-  inc(err);
   txt:='';
-  inc(err);
   if confflag then
        begin
-         result:=config;
-         inc(err);
+         errt:='Файл конфигурации уже прочитан';
          exit;
        end;
   if fileexists(myfolder + imuser+'/.config/vap/vapsett') then
      begin
-       inc(err);
+       errt:='Попытка подключения к файлу конфигурации';
        assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
-       inc(err);
+       errt:='Попытка открыть файл конфигурации';
        reset(fl);
-       inc(err);
+       errt:='Чтение файла конфигурации';
+       err:=0;
        while not(eof(fl)) do
          begin
            readln(fl, lin);
            inc(err);
            if pos('=',lin) > 0 then txt:=txt + lin + ', ';
-           inc(err);
          end;
+       errt:='Попытка закрыть файл конфигурации';
        closefile(fl);
-       inc(err);
+       errt:='Отбросить лишние два последних символа из прочитанной информации';
        if txt<>'' then txt:=copy(txt, 1, length(txt)-2);
-       inc(err);
      end;
-  result.CommaText:=txt;
-  inc(err);
-  config:=result;
-  inc(err);
+  errt:='Попытка сохранить прочитанную информацию в оперативной памяти в удобном формате';
+  config.CommaText:=txt;
   confflag:=true;
-  inc(err);
+  errt:='Процедура чтения файла конфигурации успешно завершена';
 end;
 
-procedure tform1.WriteSett(st: tStringList); // записать новые значения в файл конфигурации
+
+procedure tform1.WriteSett2; // записать новые значения в файл конфигурации
 var
   fl: textfile;
   i: integer;
 begin
+  errt:='Подключение к файлу конфигурации для сохранения';
   assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
+  errt:='Открытие файла конфигурации для перезаписи';
   rewrite(fl);
-  for i:=0 to st.Count-1 do writeln(fl, st[i]);
+  errt:='Запись в файл конфигурации новых значений';
+  for i:=0 to config.Count-1 do writeln(fl, config[i]);
+  errt:='Попытка закрыть файл конфигурации после сохранения новых значений';
   closefile(fl);
-  config:=st;
+  errt:='Запись успешно завершена! Выход из процедуры.';
 end;
 
 procedure tform1.GetUserSize;
@@ -807,26 +797,27 @@ end;
 
 procedure TForm1.Button14Click(Sender: TObject);
 begin
- err:=0;
- try
+ errt:='Начало процедуры сохранения выбора принтера';
+ //try
   userprinter:=combobox2.Text;
-  inc(err); // 1
   if radiobutton2.Checked then
     begin
-     err:=err+1000; // 1001
      userprinter:='';
-     inc(err);  // 1002
+     errt:='Cохранить выбор как принтер по умолчанию';
      savesett('printer', 'default');
-     inc(err);
     end;
-  if radiobutton1.Checked then savesett('printer', userprinter);
-  inc(err);
+  if radiobutton1.Checked then
+    begin
+     errt:='Сохранить выбор принтера';
+     savesett('printer', userprinter);
+    end;
+  errt:='Убрать окно выбора принтера';
   panel6.Visible:=false;
-  inc(err);
+  errt:='Обновить надписи';
   SetLng;
- except
-    ShowMessage('ошибка в строке ' + inttostr(err));
- end;
+ //except
+   // ShowMessage('Ошибка в операции: ' + errt);
+ //end;
 end;
 
 procedure TForm1.Button15Click(Sender: TObject);
@@ -1707,7 +1698,7 @@ begin
          CheckBox3.Caption:='Заполнить';
          CheckBox3.Hint:='Расчитать поля отдельно для каждой картинки для полного заполнения ее места с учетом компоновки';
          StaticText2.Hint:='Точное значение полей зависит от соотношения сторон картинки';
-         StaticText2.Caption:='Поля между'+#13+'миниатюр, mm';
+         StaticText2.Caption:='Поля между'+#13+'миниатюрами, mm';
          button8.Hint:='Точное значение полей зависит от соотношения сторон картинки';
          button9.Hint:='Точное значение полей зависит от соотношения сторон картинки';
          label12.Hint:='Точное значение полей зависит от соотношения сторон картинки';

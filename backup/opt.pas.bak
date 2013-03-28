@@ -195,12 +195,7 @@ begin
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
         pt:=p+'/.gnome2/nautilus-scripts';
-<<<<<<< HEAD
         if DirectoryExists(pt) then
-=======
-        label1.Caption:=pt;
-         if DirectoryExists(pt) then
->>>>>>> 8f8f479d6e73e5c4c031dd46867b330227da4bd4
             if checkbox1.Checked then
               begin
                  assignfile(fl, pt+'/'+prnt);
