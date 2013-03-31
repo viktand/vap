@@ -1,0 +1,28 @@
+Package: vap
+Priority: optional
+Section: contrib/misc
+Installed-Size: 5849
+Maintainer: viktand <viktand@bk.ru>
+Original-Maintainer: Vlasov Andrey <viktand@bk.ru>
+Architecture: all
+Source: vap
+Version: 1.15
+Filename: pool/universe/vap_1.15_any.deb
+Size: 2137380
+MD5sum: 2b96578d2b8398f1cee4babbbc9b2952
+SHA1: 393bde5000652f96a5fed2252b3f4b934a3032cd
+SHA256: 7a6f69148558d430cab52afcb2da80128e3008a8f6ca46fd23f53a5eaa8f896a
+Description: Быстрая компоновка и печать изображений
+ Эта программа позволяет открыть один или несколько файлов изображений
+  через контекстное меню файлового менеджера, выбрать и настроить компоновку,
+  т.е. вариант размещения по несколько штук на листе и отправить все на принтер.
+ Чтобы в открыть программу для настройки интеграции в контекстное меню 
+  файлового менеджера (т.е. первый запуск) введите в терминале команду: "vap".
+ Если автоматический запуск под root'ом не получается, попробуйте команду
+  "sudo vap" (для Ubuntu и т.п.). 
+ Эта версия поддерживает интеграцию в Nautilus, Caja, Dolphin, 
+  Krusader, Konqueror.
+ Больше подробностей: "man vap".
+Bugs: viktand@bk.ru
+Origin: Ubuntu
+Task: ubuntu-desktop
