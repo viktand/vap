@@ -19,8 +19,10 @@ type
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
+    CheckBox4: TCheckBox;
     CheckGroup1: TCheckGroup;
     Label1: TLabel;
+    Panel1: TPanel;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     RadioGroup1: TRadioGroup;
@@ -30,6 +32,7 @@ type
     procedure CheckBox1Change(Sender: TObject);  // nautilus
     procedure CheckBox2Change(Sender: TObject);  // dolphin
     procedure CheckBox3Change(Sender: TObject);  // caja
+    procedure CheckBox4Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject); // выбор языка программы
@@ -76,21 +79,21 @@ end;
 procedure TForm3.FormShow(Sender: TObject);
 begin
   radiobutton2.Checked:=start.lng=1;
-  form3.Height:=204;
+  form3.Height:=218;
   if imuser='' then form4.Show;
 end;
 
 procedure TForm3.Button1Click(Sender: TObject);
 // интеграция в контекстное меню
 begin
-  if form3.Height <> 407 then
+  if form3.Height <> 444 then
     begin
        if GetEnvironmentVariable('LOGNAME') = 'root' then
          begin
            flag:=false;
            setcheck;
            flag:=true;
-           form3.Height:=407;
+           form3.Height:=444;
            label1.Caption:='for '+start.imuser;
          end else
            begin
@@ -103,7 +106,7 @@ begin
                     'настроить интеграцию. Закрыв root-экземпляр, Вы вернетесь к этому варианту.');
              doroot;
            end;
-    end  else form3.Height:=204;
+    end  else form3.Height:=218;
 end;
 
 procedure tform3.DoRoot;   // запуск root-экземпляра
@@ -126,6 +129,7 @@ begin
   checkbox1.Enabled:=false;  checkbox1.Checked:=false;
   checkbox2.Enabled:=false;  checkbox2.Checked:=false;
   checkbox3.Enabled:=false;  checkbox3.Checked:=false;
+  checkbox4.Enabled:=false;  checkbox4.Checked:=false;
         pt:=p+'/.gnome2/nautilus-scripts';
         if DirectoryExists(pt) then // to gnome
           begin
@@ -147,6 +151,13 @@ begin
              if FileExists(pt+'/Печать.desktop') then checkbox2.Checked:=true;
              if FileExists(pt+'/Print.desktop') then checkbox2.Checked:=true;
           end;
+        pt:=p+'/.local/share/extended-actions';
+        if FileExists('/usr/bin/marlin') then
+          if DirectoryExists(pt) then // to marlin
+            begin
+              checkbox4.Enabled:=true;
+              if FileExists(pt+'/vap.desktop') then checkbox4.Checked:=true;
+            end;
 end;
 
 procedure TForm3.Button2Click(Sender: TObject);
@@ -182,6 +193,7 @@ begin
   if checkbox1.Enabled then checkbox1.Checked:=true;
   if checkbox2.Enabled then checkbox2.Checked:=true;
   if checkbox3.Enabled then checkbox3.Checked:=true;
+  if checkbox4.Enabled then checkbox4.Checked:=true;
 end;
 
 
@@ -228,21 +240,22 @@ begin
                   assignfile(fl, pt+'/'+prnt+'.desktop');
                   rewrite(fl);
                   writeln(fl, '[Desktop Entry]');
-                  writeln(fl, 'Actions=add');
-                  writeln(fl, 'Icon=preferences-desktop-printer');
+                  writeln(fl, 'Actions=vap');
+                  writeln(fl, 'Icon=vap');
                   writeln(fl, 'ServiceTypes=KonqPopupMenu/Plugin,all/allfiles');
                   writeln(fl, 'Type=Service');
                   writeln(fl, 'X-KDE-Priority=TopLevel');
                   writeln(fl, ' ');
-                  writeln(fl, '[Desktop Action add]');
-                  writeln(fl, 'Exec=/usr/bin/vap %F');
-                  writeln(fl, 'Icon=document-print');
+                  writeln(fl, '[Desktop Action vap]');
+                  writeln(fl, 'Exec=vap %F');
+                  writeln(fl, 'Icon=vap');
+                  writeln(fl, 'MimeType=image');
                   writeln(fl, 'Name=' + prnt);
                   closefile(fl);                     ;
               end else
               begin
-                  if FileExists(pt+'/Печать.descktop') then deletefile(pt+'/Печать.descktop');
-                  if FileExists(pt+'/Print.descktop') then deletefile(pt+'/Print.descktop');
+                  if FileExists(pt+'/Печать.desktop') then deletefile(pt+'/Печать.desktop');
+                  if FileExists(pt+'/Print.desktop') then deletefile(pt+'/Print.desktop');
               end;
 end;
 
@@ -271,6 +284,33 @@ begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
                  if FileExists(pt+'/Print') then deletefile(pt+'/Print');
               end;
+end;
+
+procedure TForm3.CheckBox4Change(Sender: TObject);
+var
+  pt, p: string;
+  fl: textfile;
+  prnt: string;
+begin
+  if not flag then exit;
+  p:=MyFolder+imuser;
+  pt:=p+'/.local/share/extended-actions';
+  if DirectoryExists(pt) then
+     if checkbox4.Checked then
+        begin
+           assignfile(fl, pt+'/vap.desktop');
+           rewrite(fl);
+           writeln(fl, '[Extended Action Entry]');
+           writeln(fl, 'MimeType=image');
+           writeln(fl, 'Name=vap');
+           writeln(fl, 'Exec=vap %F');
+           writeln(fl, 'Icon=vap');
+           writeln(fl, 'Comment=Fast printig pictures');
+           writeln(fl, 'Comment[ru]=Быстрая печать миниатюр изображений');
+           writeln(fl, 'Description=Печать');
+           closefile(fl);
+        end else
+           if FileExists(pt+'/vap.desktop') then deletefile(pt+'/vap.desktop');
 end;
 
 

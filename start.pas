@@ -167,6 +167,8 @@ type
      function sign(n: integer): integer;
      procedure GetIm; // Узнать пользователя
      procedure GetCurz; // расчитать значение curz и при необходимости поднять картинки
+     function EscToUTF8(word: string):string; // преобразование строки из escape последовательности в UTF8
+     function HexToInt(ch: char):integer; // преобразование символа из шестнадцатеричного счисления в десятичное
 
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
@@ -234,6 +236,11 @@ type
     imuser: string; // current user
     curz: integer; // z порядок для текущей страницы, используется для расчета наложений
     errt: string; // текст ошибки
+    alp: array[1040..1103] of string[3] = ('А','Б','В','Г','Д','Е','Ж','З','И',
+         'Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ',
+         'Ъ','Ы','Ь','Э','Ю','Я','а','б','в','г','д','е','ж','з','и','й','к',
+         'л','м','н','о','п', 'р','с','т','у','ф','х','ц','ч','ш','щ','ъ',
+         'ы','ь','э','ю','я');
 
 implementation
 
@@ -358,8 +365,8 @@ end;
 
 procedure tform1.LoadFiles; // анализ параметров запуска программы
 var
-  i: integer;
-  pr: string;
+  i, j: integer;
+  pr, s: string;
 begin
    pr:='';
    for i:=1 to ParamCount do
@@ -368,16 +375,72 @@ begin
          begin
            form1.Caption:=form1.Caption+' -root';
          end;
-       if ((copy(paramstr(i), 1,1) = '/') or
-          (copy(paramstr(i), 1,1) = '*')) and (pr <> '') then
+       if (copy(paramstr(i), 1,1) = '/') then
             begin
               addpict(pr);
               pr:='';
             end;
+       if (copy(paramstr(i), 1,8) = 'file:///') then
+             begin
+               s:= copy(paramstr(i), 8, length(paramstr(i)));
+               s:=EscToUTF8(s);
+               addpict(s);
+               continue;
+             end;
        pr:=pr+' '+paramstr(i);
      end;
      if pr<>'' then addpict(pr);
  end;
+
+procedure tform1.AddPict(p: string);
+// анализ параметров запуска   - добавить картинку
+var
+  s: string;
+begin
+  p:=trim(p);
+  s := uppercase(copy(p, (length(p)-3), 4));
+  if (s = '.JPG') or (s = '.BMP') or (s = '.PNG') or (s = '.ICO') or (s = 'JPEG')then
+    begin
+      inc(buf);
+      setlength(toprint, buf);
+      toprint[buf-1].pict := p;
+      toprint[buf-1].rot := 0;
+      toprint[buf-1].pct:=tPicture.Create;
+      toprint[buf-1].left:=0;
+      toprint[buf-1].top:=0;
+      toprint[buf-1].show:=false;
+      toprint[buf-1].load:=false;
+      toprint[buf-1].z:=0;
+    end;
+end;
+
+function tform1.EscToUTF8(word: string): string; // преобразование строки из escape последовательности в UTF8
+// только для кириллицы !!!
+var
+  i, h: integer;
+ begin
+  i:=1;
+  s:='';
+  repeat
+    if (copy(word, i, 4) = '%D0%') or (copy(word, i, 4) = '%D1%') then
+       begin
+         h:=1024 + HexToInt(word[i+2]) * 64 + 16 * (HexToInt(word[i+4])-8) + HexToInt(word[i+5]);
+         if h=1025 then result:=result+'Ё';
+         if h=1105 then result:=result+'ё';
+         if (h>1039) and (h<1104) then result:=result + alp[h];
+         i:=i+5;
+       end else result:=result+word[i];
+    inc(i);
+  until i>length(word);
+end;
+
+function tform1.HexToInt(ch: char): integer;
+var
+  i: integer;
+begin
+  i:=ord(ch);
+  if i>64 then result:=i-55 else result:=i-48;
+end;
 
 procedure tform1.SaveSett(Key, Word: string); // Сохранить в файле конфигурации значение word c ключем key
 begin
@@ -1627,29 +1690,6 @@ begin
     8: Image10Click(image10);
     9: Image12Click(image12);
   end;
-end;
-
-procedure tform1.AddPict(p: string);
-// анализ параметров запуска
-var
-  s: string;
-begin
-  p:=trim(p);
-  s := copy(p, (length(p)-3), 4);
-  s := uppercase(s);
-  if (s = '.JPG') or (s = '.BMP') or (s = '.PNG') or (s = '.ICO') or (s = 'JPEG')then
-    begin
-      inc(buf);
-      setlength(toprint, buf);
-      toprint[buf-1].pict := p;
-      toprint[buf-1].rot := 0;
-      toprint[buf-1].pct:=tPicture.Create;
-      toprint[buf-1].left:=0;
-      toprint[buf-1].top:=0;
-      toprint[buf-1].show:=false;
-      toprint[buf-1].load:=false;
-      toprint[buf-1].z:=0;
-    end;
 end;
 
 procedure tform1.SetLng;

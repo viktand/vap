@@ -1,12 +1,12 @@
 object Form3: TForm3
-  Left = 592
-  Height = 407
+  Left = 593
+  Height = 444
   Top = 24
   Width = 207
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Настройки'
-  ClientHeight = 407
+  ClientHeight = 444
   ClientWidth = 207
   OnCreate = FormCreate
   OnShow = FormShow
@@ -56,7 +56,7 @@ object Form3: TForm3
   object Button1: TButton
     Left = 16
     Height = 32
-    Top = 160
+    Top = 176
     Width = 174
     Caption = 'Интеграция'
     Font.Height = -12
@@ -128,15 +128,13 @@ object Form3: TForm3
       OnChange = CheckBox3Change
       TabOrder = 2
     end
-    object Button4: TButton
+    object CheckBox4: TCheckBox
       Left = 6
       Height = 30
       Top = 96
       Width = 173
-      Caption = 'Установить автоматически'
-      Font.Height = -11
-      OnClick = Button4Click
-      ParentFont = False
+      Caption = 'Marlin'
+      OnChange = CheckBox4Change
       TabOrder = 3
     end
   end
@@ -147,5 +145,24 @@ object Form3: TForm3
     Width = 44
     Caption = 'Label1'
     ParentColor = False
+  end
+  object Button4: TButton
+    Left = 10
+    Height = 34
+    Top = 404
+    Width = 189
+    Caption = 'Установить автоматически'
+    Font.Height = -11
+    OnClick = Button4Click
+    ParentFont = False
+    TabOrder = 4
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 6
+    Top = 159
+    Width = 208
+    BorderStyle = bsSingle
+    TabOrder = 5
   end
 end

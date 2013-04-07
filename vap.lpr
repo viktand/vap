@@ -9,8 +9,8 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Interfaces, // this includes the LCL widgetset
-  Forms, start, printer4lazarus,
+  // this includes the LCL widgetset
+  Forms, Interfaces, start, printer4lazarus,
   Opt, ask, about;
 
 {$R *.res}
