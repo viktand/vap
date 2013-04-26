@@ -14,31 +14,39 @@ type
 
   TForm3 = class(TForm)
     Button1: TButton;
-    Button2: TButton;
+    Button3: TButton;
     Button4: TButton;
+    Button2: TButton;
+    CheckBox5: TCheckBox;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
-    CheckGroup1: TCheckGroup;
+    ComboBox1: TComboBox;
+    GroupBox1: TGroupBox;
     Label1: TLabel;
+    Label2: TLabel;
     Panel1: TPanel;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     RadioGroup1: TRadioGroup;
+    StaticText1: TStaticText;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);  // nautilus
     procedure CheckBox2Change(Sender: TObject);  // dolphin
     procedure CheckBox3Change(Sender: TObject);  // caja
     procedure CheckBox4Change(Sender: TObject);
+    procedure CheckBox5Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject); // выбор языка программы
     procedure lng; // перевести на выбранный язык эту форму
     procedure Setcheck; // установка чекбоксов по текущему состоянию интеграции
     procedure DoRoot; // перезапуск прграммы под рутом
+    function GetGCinfo: boolean; // узнать есть ли интеграция в gnome-commander
   private
     { private declarations }
   public
@@ -56,7 +64,7 @@ implementation
 
 {$R *.lfm}
 
-uses start, ask;
+uses start;
 
 { TForm3 }
 
@@ -74,29 +82,50 @@ begin
   pram:='';
   lng;
   form3.close;
+  if GetEnvironmentVariable('LOGNAME') = 'root' then
+        begin
+          button1.Enabled:=false;
+          groupbox1.Enabled:=true;
+        end else
+        begin
+          button1.Enabled:=true;
+          groupbox1.Enabled:=false;
+        end;
 end;
 
 procedure TForm3.FormShow(Sender: TObject);
 begin
+  combobox1.Items.Clear;
+
   radiobutton2.Checked:=start.lng=1;
-  form3.Height:=218;
-  if imuser='' then form4.Show;
+  label1.Caption:='for '+start.imuser;
+  if imuser='' then
+     begin
+       panel1.Visible:=true;
+       combobox1.Items:=usr;
+       combobox1.Text:=combobox1.Items[0];
+     end;
+  flag:=false;
+  setcheck;
+  flag:=true;
+end;
+
+
+procedure TForm3.Button3Click(Sender: TObject);
+begin
+  panel1.Visible:=false;
+  start.imuser:=combobox1.Text;
+  label1.Caption:='for '+start.imuser;
+  flag:=false;
+  setcheck;
+  flag:=true;
 end;
 
 procedure TForm3.Button1Click(Sender: TObject);
 // интеграция в контекстное меню
 begin
-  if form3.Height <> 444 then
-    begin
-       if GetEnvironmentVariable('LOGNAME') = 'root' then
-         begin
-           flag:=false;
-           setcheck;
-           flag:=true;
-           form3.Height:=444;
-           label1.Caption:='for '+start.imuser;
-         end else
-           begin
+       if GetEnvironmentVariable('LOGNAME') <> 'root' then
+            begin
              showmessage('Настройка интеграции возможна только'+#13#10+
                     'при запуске программы с правами администратора.'+#13#10+
                     'В Ubuntu и других подобных  системах в терминале:' + #13#10+
@@ -106,7 +135,6 @@ begin
                     'настроить интеграцию. Закрыв root-экземпляр, Вы вернетесь к этому варианту.');
              doroot;
            end;
-    end  else form3.Height:=218;
 end;
 
 procedure tform3.DoRoot;   // запуск root-экземпляра
@@ -137,6 +165,12 @@ begin
              if FileExists(pt+'/Печать') then checkbox1.Checked:=true;
              if FileExists(pt+'/Print') then checkbox1.Checked:=true;
           end;
+        pt:=p+'/.gnome-commander';
+        if DirectoryExists(pt) then // to gnome commander
+          begin
+             checkbox1.Enabled:=true;
+             if GetGCinfo then checkbox5.Checked:=true;
+          end;
         pt:=p+'/.config/caja/scripts';  // to caja
          if DirectoryExists(pt) then
            begin
@@ -158,6 +192,7 @@ begin
               checkbox4.Enabled:=true;
               if FileExists(pt+'/vap.desktop') then checkbox4.Checked:=true;
             end;
+
 end;
 
 procedure TForm3.Button2Click(Sender: TObject);
@@ -187,6 +222,8 @@ begin
   if not(form1.CheckBox2.Checked) then form1.SaveSett('sml', 'yes') else form1.SaveSett('sml', 'default');
 
 end;
+
+
 
 procedure TForm3.Button4Click(Sender: TObject);
 begin
@@ -288,13 +325,12 @@ end;
 
 procedure TForm3.CheckBox4Change(Sender: TObject);
 var
-  pt, p: string;
+  pt: string;
   fl: textfile;
-  prnt: string;
 begin
   if not flag then exit;
-  p:=MyFolder+imuser;
-  pt:=p+'/.local/share/extended-actions';
+  pt:=MyFolder+imuser;
+  pt:=pt+'/.local/share/extended-actions';
   if DirectoryExists(pt) then
      if checkbox4.Checked then
         begin
@@ -313,6 +349,71 @@ begin
            if FileExists(pt+'/vap.desktop') then deletefile(pt+'/vap.desktop');
 end;
 
+procedure TForm3.CheckBox5Change(Sender: TObject);
+var
+  pt: string;
+  fl, fl2: textfile;
+  s: string;
+  f: boolean;
+  AProcess: TProcess;
+begin
+  if not flag then exit;
+  pt:=MyFolder+imuser;
+  pt:=pt+'/.gnome-commander';
+  f:=false;
+  if DirectoryExists(pt) then
+     if checkbox5.Checked then
+        begin
+           assignfile(fl, pt+'/fav-apps');
+           append(fl);
+           writeln(fl, '%D0%9F%D0%B5%D1%87%D0%B0%D1%82%D1%8C	%2Fusr%2Fbin%2Fvap%20%25F	%2Fusr%2Fshare%2Fpixmaps%2Fvap64.png	3	*.jpg%3B*.png%3B*.ico%3B*.bmp%3B*.jpeg	0	0	0');
+           closefile(fl);
+        end else
+           if getgcinfo then
+              begin
+                assignfile(fl, pt+'/fav-apps');
+                reset(fl);
+                assignfile(fl2, pt+'/fav-apps2');
+                rewrite(fl2);
+                while not(eof(fl)) do
+                   begin
+                     readln(fl, s);
+                     if not(ansipos('%2Fusr%2Fbin%2Fvap%20%25F', s)>0) then writeln(fl2, s);
+                   end;
+                 closefile(fl);
+                 closefile(fl2);
+                 deletefile(pt+'/fav-apps');
+                 RenameFile(pt+'/fav-apps2', pt+'/fav-apps');
+              end;
+        AProcess := TProcess.Create(nil);
+        AProcess.CommandLine := 'chmod 666 ' + pt+'/fav-apps';
+        AProcess.Options := AProcess.Options + [poWaitOnExit];   // ждать окончания
+        AProcess.Execute;
+        AProcess.Free;
+end;
+
+
+function tform3.GetGCinfo: boolean;
+var
+  pt: string;
+  fl: textfile;
+  s: string;
+begin
+  result:=false;
+  pt:=MyFolder+imuser;
+  pt:=pt+'/.gnome-commander';
+  if DirectoryExists(pt) then
+        begin
+           assignfile(fl, pt+'/fav-apps');
+           reset(fl);
+           while not(eof(fl)) do
+                 begin
+                   readln(fl, s);
+                   if ansipos('%2Fusr%2Fbin%2Fvap%20%25F', s)>0 then result:=true;
+                 end;
+           closefile(fl);
+        end;
+end;
 
 procedure tform3.lng;
 // переключение языка этого окна
@@ -320,15 +421,13 @@ begin
    case start.lng of
         0: begin
           form3.Caption:='Настройки';
-          button1.Caption:='Интеграция';
-          button1.Hint:='Интегрировать программу в контекстное меню Nautilus и Dolphin'+#13+'Обязательно запустите программу с root-правами';
+          Groupbox1.Caption:='Интеграция';
           button2.Caption:='Сохранить настройки';
           button2.Hint:='Сохранить текущие настройки как настройки по умолчанию';
          end;
         1: begin
            form3.Caption:='Settings';
-           button1.Caption:='Integration';
-           button1.Hint:='Integrate the program into the context menu Nautilus and Dolphin'+#13+'Be sure to run the program with root-rights';
+           Groupbox1.Caption:='Integration';
            button2.Caption:='Save Settings';
            button2.Hint:='Save the current settings as the default settings';
          end;

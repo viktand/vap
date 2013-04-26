@@ -246,7 +246,7 @@ implementation
 
 {$R *.lfm}
 
-uses about, opt, ask;
+uses about, opt;
 
 { TForm1 }
 
@@ -823,7 +823,6 @@ procedure TForm1.Button12Click(Sender: TObject);
 // открыть окно настроек
 begin
   form3.show;
-  if form4.Showing then form4.SetFocus;
 end;
 
 procedure TForm1.Button13Click(Sender: TObject);
@@ -833,7 +832,11 @@ var
   pr: tStrings;
   i: integer;
 begin
-  if imuser='' then form4.Show;
+  if imuser='' then
+    begin;
+      showmessage('Откройте окно настроек и укажите пользователя');
+      exit;
+    end;
   panel6.Left:=419;
   panel6.top:=48;
   prin := Printer;
