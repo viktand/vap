@@ -16,16 +16,17 @@ type
     Button1: TButton;
     Button3: TButton;
     Button4: TButton;
-    Button2: TButton;
     CheckBox5: TCheckBox;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
     CheckBox4: TCheckBox;
+    CheckBox6: TCheckBox;
+    CheckBox7: TCheckBox;
+    CheckBox8: TCheckBox;
     ComboBox1: TComboBox;
     GroupBox1: TGroupBox;
     Label1: TLabel;
-    Label2: TLabel;
     Panel1: TPanel;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
@@ -40,6 +41,9 @@ type
     procedure CheckBox3Change(Sender: TObject);  // caja
     procedure CheckBox4Change(Sender: TObject);
     procedure CheckBox5Change(Sender: TObject);
+    procedure CheckBox6Change(Sender: TObject);
+    procedure CheckBox7Change(Sender: TObject);
+    procedure CheckBox8Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject); // выбор языка программы
@@ -47,6 +51,7 @@ type
     procedure Setcheck; // установка чекбоксов по текущему состоянию интеграции
     procedure DoRoot; // перезапуск прграммы под рутом
     function GetGCinfo: boolean; // узнать есть ли интеграция в gnome-commander
+    procedure Save; // Сохранить настройки
   private
     { private declarations }
   public
@@ -73,6 +78,7 @@ begin
   if radiobutton1.Checked then start.lng:=0 else start.lng:=1;
   form1.SetLng;
   lng;
+  save;
 end;
 
 
@@ -82,6 +88,8 @@ begin
   pram:='';
   lng;
   form3.close;
+  if GetEnvironmentVariable('LOGNAME') = 'root' then button1.Visible:=false;
+  { для строгой рут-версии
   if GetEnvironmentVariable('LOGNAME') = 'root' then
         begin
           button1.Enabled:=false;
@@ -91,6 +99,7 @@ begin
           button1.Enabled:=true;
           groupbox1.Enabled:=false;
         end;
+        }
 end;
 
 procedure TForm3.FormShow(Sender: TObject);
@@ -101,9 +110,16 @@ begin
   label1.Caption:='for '+start.imuser;
   if imuser='' then
      begin
+       panel1.Top:=64;
+       panel1.left:=64;
        panel1.Visible:=true;
        combobox1.Items:=usr;
        combobox1.Text:=combobox1.Items[0];
+       RadioGroup1.Enabled:=false;
+       GroupBox1.Enabled:=false;
+       CheckBox6.Enabled:=false;
+       CheckBox7.Enabled:=false;
+       CheckBox8.Enabled:=false;
      end;
   flag:=false;
   setcheck;
@@ -115,26 +131,28 @@ procedure TForm3.Button3Click(Sender: TObject);
 begin
   panel1.Visible:=false;
   start.imuser:=combobox1.Text;
+  form1.bitbtn11.Enabled:=true;
+  form1.MenuItem12.Enabled:=true;
   label1.Caption:='for '+start.imuser;
   flag:=false;
   setcheck;
   flag:=true;
+  RadioGroup1.Enabled:=true;
+  GroupBox1.Enabled:=true;
+  CheckBox6.Enabled:=true;
+  CheckBox7.Enabled:=true;
+  CheckBox8.Enabled:=true;
 end;
 
 procedure TForm3.Button1Click(Sender: TObject);
 // интеграция в контекстное меню
 begin
-       if GetEnvironmentVariable('LOGNAME') <> 'root' then
-            begin
-             showmessage('Настройка интеграции возможна только'+#13#10+
-                    'при запуске программы с правами администратора.'+#13#10+
-                    'В Ubuntu и других подобных  системах в терминале:' + #13#10+
-                    '"sudo /{путь}/vap"'+#13#10+
-                    'Т.к. Вы запустили программу без этих прав, то сейчас '+
-                    'будет запущен другой экземпляр, но уже с такими правами. В нем Вы сможете '+
-                    'настроить интеграцию. Закрыв root-экземпляр, Вы вернетесь к этому варианту.');
-             doroot;
-           end;
+   doroot;
+end;
+
+procedure TForm3.Button2Click(Sender: TObject);
+begin
+
 end;
 
 procedure tform3.DoRoot;   // запуск root-экземпляра
@@ -195,32 +213,49 @@ begin
 
 end;
 
-procedure TForm3.Button2Click(Sender: TObject);
+procedure savecomp;
+begin
+ //в конфигурационном файле:
+ // размер бумаги
+ if form3.checkbox8.Checked then
+   begin
+      form1.SaveSett('paper','default');
+      form1.SaveSett('comp', 'default');
+      form1.SaveSett('orn','default');
+      form1.SaveSett('mrg','default');
+      form1.SaveSett('fill', 'default');
+      form1.SaveSett('sml', 'default');
+      form1.SaveSett('view', 'default');
+      exit;
+   end;
+ case start.cmbx of
+      0: form1.SaveSett('paper','A4');
+      1: form1.SaveSett('paper','A5');
+      2: form1.SaveSett('paper','A6');
+      3: form1.SaveSett('paper','10x15');
+      4: form1.SaveSett('paper','15x20');
+      5: form1.SaveSett('paper','x'+ inttostr(start.frms[5][0]) + 'y' + inttostr(start.frms[5][1]));
+ end;
+ //компоновка
+ form1.SaveSett('comp',inttostr(start.comp-1));
+ // ориентация бумаги
+ if start.orn=1 then form1.SaveSett('orn','L') else form1.SaveSett('orn','default');
+// поля
+ if start.pol<>10 then form1.SaveSett('mrg', inttostr(start.pol)) else form1.SaveSett('mrg','default');
+ // заполнить
+ if form1.CheckBox3.Checked then form1.SaveSett('fill', 'yes') else form1.SaveSett('fill', 'default');
+ // не увеличивать мелкие
+ if not(form1.CheckBox2.Checked) then form1.SaveSett('sml', 'yes') else form1.SaveSett('sml', 'default');
+ form1.SaveSett('view', 'users');
+end;
+
+procedure TForm3.save;
 // сохранить настройки программы
 begin
-  //в конфигурационном файле:
-  // размер бумаги
-  case start.cmbx of
-       0: form1.SaveSett('paper','A4');
-       1: form1.SaveSett('paper','A5');
-       2: form1.SaveSett('paper','A6');
-       3: form1.SaveSett('paper','10x15');
-       4: form1.SaveSett('paper','15x20');
-       5: form1.SaveSett('paper','x'+ inttostr(start.frms[5][0]) + 'y' + inttostr(start.frms[5][1]));
-  end;
-  //компоновка
-  form1.SaveSett('comp',inttostr(start.comp-1));
-  // ориентация бумаги
-  if start.orn=1 then form1.SaveSett('orn','L') else form1.SaveSett('orn','default');
   // Язык
-  if radiobutton2.Checked then form1.SaveSett('lang','i') else form1.SaveSett('lang','default');
-  // поля
-  if start.pol<>10 then form1.SaveSett('mrg', inttostr(start.pol)) else form1.SaveSett('mrg','default');
-  // заполнить
-  if form1.CheckBox3.Checked then form1.SaveSett('fill', 'yes') else form1.SaveSett('fill', 'default');
-  // не увеличивать мелкие
-  if not(form1.CheckBox2.Checked) then form1.SaveSett('sml', 'yes') else form1.SaveSett('sml', 'default');
-
+  if radiobutton2.Checked then form1.SaveSett('lang','1') else form1.SaveSett('lang','default');
+  if not(CheckBox6.Checked) then form1.SaveSett('button_pict', 'no') else form1.SaveSett('button_pict', 'default');
+  if not(CheckBox7.Checked) then form1.SaveSett('autosave', 'no') else form1.SaveSett('autosave', 'default');
 end;
 
 
@@ -240,6 +275,7 @@ var
   fl: textfile;
   prnt: string;
 begin
+  try
   if not flag then exit;
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
@@ -259,6 +295,12 @@ begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
                  if FileExists(pt+'/Print') then deletefile(pt+'/Print');
               end;
+  Except
+      case start.lng of
+        0: showmessage('Конфигурационный файл Nautilus потребовал особых прав доступа. Включите root.');
+        1: showmessage('The configuration file Nautilus requested special privileges. Turn on the root.');
+      end;
+  end;
 end;
 
 procedure TForm3.CheckBox2Change(Sender: TObject);
@@ -267,6 +309,7 @@ var
   fl: textfile;
   prnt: string;
 begin
+  try
   if not flag then exit;
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
@@ -294,6 +337,12 @@ begin
                   if FileExists(pt+'/Печать.desktop') then deletefile(pt+'/Печать.desktop');
                   if FileExists(pt+'/Print.desktop') then deletefile(pt+'/Print.desktop');
               end;
+  Except
+      case start.lng of
+        0: showmessage('Конфигурационный файл Dolphin потребовал особых прав доступа. Включите root.');
+        1: showmessage('The configuration file Dolphin requested special privileges. Turn on the root.');
+      end;
+  end;
 end;
 
 procedure TForm3.CheckBox3Change(Sender: TObject);
@@ -302,6 +351,7 @@ var
   fl: textfile;
   prnt: string;
 begin
+  try
   if not flag then exit;
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
@@ -321,13 +371,21 @@ begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
                  if FileExists(pt+'/Print') then deletefile(pt+'/Print');
               end;
+  Except
+      case start.lng of
+        0: showmessage('Конфигурационный файл Caja потребовал особых прав доступа. Включите root.');
+        1: showmessage('The configuration file Caja requested special privileges. Turn on the root.');
+      end;
+  end;
 end;
 
 procedure TForm3.CheckBox4Change(Sender: TObject);
 var
   pt: string;
   fl: textfile;
+  AProcess: TProcess;
 begin
+  try
   if not flag then exit;
   pt:=MyFolder+imuser;
   pt:=pt+'/.local/share/extended-actions';
@@ -345,8 +403,20 @@ begin
            writeln(fl, 'Comment[ru]=Быстрая печать миниатюр изображений');
            writeln(fl, 'Description=Печать');
            closefile(fl);
+           AProcess := TProcess.Create(nil);
+           AProcess.CommandLine := 'chmod 666 ' + name;
+           AProcess.Options := AProcess.Options + [poWaitOnExit];   // ждать окончания
+           AProcess.Execute;
+           AProcess.Free;
         end else
            if FileExists(pt+'/vap.desktop') then deletefile(pt+'/vap.desktop');
+
+  Except
+      case start.lng of
+        0: showmessage('Конфигурационный файл Marlin потребовал особых прав доступа. Включите root.');
+        1: showmessage('The configuration file Marlin requested special privileges. Turn on the root.');
+      end;
+  end;
 end;
 
 procedure TForm3.CheckBox5Change(Sender: TObject);
@@ -357,6 +427,7 @@ var
   f: boolean;
   AProcess: TProcess;
 begin
+  try
   if not flag then exit;
   pt:=MyFolder+imuser;
   pt:=pt+'/.gnome-commander';
@@ -390,6 +461,47 @@ begin
         AProcess.Options := AProcess.Options + [poWaitOnExit];   // ждать окончания
         AProcess.Execute;
         AProcess.Free;
+  Except
+      case start.lng of
+        0: showmessage('Конфигурационный файл Gnome-Commander потребовал особых прав доступа. Включите root.');
+        1: showmessage('The configuration file Gnome-Commander requested special privileges. Turn on the root.');
+      end;
+  end;
+end;
+
+procedure TForm3.CheckBox6Change(Sender: TObject);
+begin
+       form1.bitbtn1.Visible:=checkbox6.Checked;
+       form1.bitbtn2.Visible:=checkbox6.Checked;
+       form1.bitbtn3.Visible:=checkbox6.Checked;
+       form1.bitbtn4.Visible:=checkbox6.Checked;
+       form1.bitbtn5.Visible:=checkbox6.Checked;
+       form1.bitbtn6.Visible:=checkbox6.Checked;
+       form1.bitbtn7.Visible:=checkbox6.Checked;
+       form1.bitbtn8.Visible:=checkbox6.Checked;
+       form1.bitbtn9.Visible:=checkbox6.Checked;
+       form1.bitbtn10.Visible:=checkbox6.Checked;
+       form1.bitbtn11.Visible:=checkbox6.Checked;
+       form1.bitbtn12.Visible:=checkbox6.Checked;
+       form1.Button4.Visible:=not(checkbox6.Checked);
+       form1.Button5.Visible:=not(checkbox6.Checked);
+       form1.Button1.Visible:=not(checkbox6.Checked);
+       form1.Button2.Visible:=not(checkbox6.Checked);
+       form1.Button3.Visible:=not(checkbox6.Checked);
+       form1.Button12.Visible:=not(checkbox6.Checked);
+       form1.Button13.Visible:=not(checkbox6.Checked);
+       form1.Button7.Visible:=not(checkbox6.Checked);
+       save;
+end;
+
+procedure TForm3.CheckBox7Change(Sender: TObject);
+begin
+  save;
+end;
+
+procedure TForm3.CheckBox8Change(Sender: TObject);
+begin
+  savecomp;
 end;
 
 
@@ -422,14 +534,18 @@ begin
         0: begin
           form3.Caption:='Настройки';
           Groupbox1.Caption:='Интеграция';
-          button2.Caption:='Сохранить настройки';
-          button2.Hint:='Сохранить текущие настройки как настройки по умолчанию';
+          checkbox6.Caption:='Кнопки с пиктограммами';
+          checkbox7.Caption:='Автосохранение при выходе';
+          checkbox8.Caption:='Стандартная начальная компоновка';
+          button4.Caption:='Включить все доступное';
          end;
         1: begin
            form3.Caption:='Settings';
            Groupbox1.Caption:='Integration';
-           button2.Caption:='Save Settings';
-           button2.Hint:='Save the current settings as the default settings';
+           checkbox6.Caption:='Buttons with icons';
+           checkbox7.Caption:='Auto save on exit';
+           checkbox8.Caption:='Standard initial layout';
+           button4.Caption:='Enable all available';
          end;
    end;
 end;

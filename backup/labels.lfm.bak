@@ -1,0 +1,173 @@
+object Form4: TForm4
+  Left = 579
+  Height = 303
+  Top = 166
+  Width = 618
+  BorderIcons = [biSystemMenu]
+  Caption = 'Редактор надписей'
+  ClientHeight = 303
+  ClientWidth = 618
+  Font.Height = -13
+  Font.Name = 'Sans'
+  OnCreate = FormCreate
+  OnResize = FormResize
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.30.4'
+  Visible = True
+  object Memo1: TMemo
+    Left = 130
+    Height = 271
+    Top = 24
+    Width = 341
+    Color = clWhite
+    Font.Height = -13
+    Lines.Strings = (
+      'Текст надписи'
+    )
+    ParentFont = False
+    ScrollBars = ssBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+  object Button1: TButton
+    Left = 504
+    Height = 29
+    Top = 32
+    Width = 100
+    Caption = 'Шрифт'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 504
+    Height = 29
+    Top = 256
+    Width = 100
+    Caption = 'Ok'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 16
+    Height = 29
+    Top = 32
+    Width = 100
+    Caption = '<<'
+    OnClick = Button3Click
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+  end
+  object Button4: TButton
+    Left = 16
+    Height = 29
+    Top = 64
+    Width = 100
+    Caption = '>>'
+    OnClick = Button4Click
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
+  object Button5: TButton
+    Left = 16
+    Height = 29
+    Top = 96
+    Width = 100
+    Caption = 'Удалить'
+    OnClick = Button5Click
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+  end
+  object Button6: TButton
+    Left = 504
+    Height = 29
+    Top = 64
+    Width = 100
+    Caption = 'Цвет'
+    OnClick = Button6Click
+    TabOrder = 6
+  end
+  object GroupBox1: TGroupBox
+    Left = 480
+    Height = 105
+    Top = 104
+    Width = 128
+    Caption = 'Выравнивать'
+    ClientHeight = 86
+    ClientWidth = 124
+    TabOrder = 7
+    object RadioButton1: TRadioButton
+      Left = 6
+      Height = 24
+      Top = 6
+      Width = 106
+      Caption = 'Левый край'
+      Checked = True
+      OnChange = RadioButton1Change
+      TabOrder = 0
+      TabStop = True
+    end
+    object RadioButton2: TRadioButton
+      Left = 6
+      Height = 24
+      Top = 32
+      Width = 69
+      Caption = 'Центр'
+      OnChange = RadioButton2Change
+      TabOrder = 1
+    end
+    object RadioButton3: TRadioButton
+      Left = 6
+      Height = 24
+      Top = 59
+      Width = 113
+      Caption = 'Правый край'
+      OnChange = RadioButton3Change
+      TabOrder = 2
+    end
+  end
+  object Label1: TLabel
+    Left = 130
+    Height = 18
+    Top = 6
+    Width = 43
+    Caption = 'Label1'
+    ParentColor = False
+  end
+  object FontDialog1: TFontDialog
+    MinFontSize = 0
+    MaxFontSize = 0
+    left = 29
+    top = 206
+  end
+  object ColorDialog1: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    left = 80
+    top = 192
+  end
+end
