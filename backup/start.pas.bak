@@ -1,6 +1,6 @@
 unit start;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$R+}
 
 interface
 
@@ -244,7 +244,7 @@ type
      function HexToInt(ch: char):integer; // преобразование символа из шестнадцатеричного счисления в десятичное
      procedure setbtnpos; // установка координат буквенных кнопок
      procedure ShowCapts(key: boolean); // включить/выключить подписи к картинкам
-     procedure AddLbs(txt: tstringlist; al: tAlignment); // Создать новую надпись
+     procedure AddLbs(txt: string); // Создать новую надпись
      procedure ShowLabs; // показать (обновить) надписи текущего листа
      procedure AddNewLabsPicture(index: integer); // создать новый Pictutre, привязанный к надписи № index
      procedure DeleteLabs(index: integer); // удалить надпись № index
@@ -294,7 +294,9 @@ type
     z: integer;        // z-порядок
     show: boolean;     // признак того, что текущее значение уже отображено
     index: integer;    // индекс pictere, с которым связана надпись
-    alignment: tAlignment //выравнивание
+    alignment: tAlignment; //выравнивание
+    transp: boolean; // прозрачность фона
+    fon_color: tColor; // цвет фона
   end;
 
   tSvPict = record   //модефикация tpict для записи в файл
@@ -316,6 +318,8 @@ type
      alignment: tAlignment; //выравнивание
      showcomm: boolean; // показывать подпись или нет
      image: boolean; // признак того, что это картинка, а не надпись
+     transp: boolean; // прозрачность фона
+     fon_color: tColor; // цвет фона
    end;
 
 
@@ -415,7 +419,7 @@ begin
   gor := 420;
   fl:=true;
   lng:=0;
-  comp:=0;
+  comp:=1;
   buf := 0;
   setwords;
   setlng;
@@ -584,11 +588,22 @@ begin
   end;
 end;
 
-procedure tform1.AddLbs(txt: tstringlist; al: tAlignment); // Создать новую надпись
+procedure tform1.AddLbs(txt: string); // Создать новую надпись
+var
+  i, j: integer;
 begin
     setlength(lbs, lbscou+1);
     lbs[lbscou].text:=tstringlist.Create;
-    lbs[lbscou].text:=txt;
+    j:=1;
+    i:=1;
+    repeat
+       if txt[i]=#1 then
+          begin
+             lbs[lbscou].text.Add(copy(txt, j, i-j));
+             j:=i+1;
+          end;
+     inc(i);
+     until txt[i]=#2 ;
     lbs[lbscou].left:=10;
     lbs[lbscou].top:=10;
     inc(curz);
@@ -597,10 +612,12 @@ begin
     lbs[lbscou].fnt_Size:=Form4.Memo1.font.Size;
     lbs[lbscou].fnt_Style:=Form4.Memo1.font.Style;
     lbs[lbscou].fnt_Color:=Form4.Memo1.font.Color;
+    lbs[lbscou].transp:=not(form4.CheckBox1.Checked);
+    lbs[lbscou].fon_color:=form4.Memo1.Color;
     lbs[lbscou].show:=false;
     lbs[lbscou].index:=-1;
     lbs[lbscou].list:=curlist;
-    lbs[lbscou].alignment:=al;
+    lbs[lbscou].alignment:=taLeftJustify;
     inc(lbscou);
     showlabs;
 end;
@@ -618,17 +635,18 @@ begin
       if (lbs[i].list=curlist) and not(lbs[i].show) then
         begin
            if lbs[i].index=-1 then AddNewLabsPicture(i);
-
            // настройки шрифта
-           lbspic[lbs[i].index].Canvas.Font.Name:=lbs[i].fnt_Name;
+           lbspic[lbs[i].index].Canvas.Font.Name :=lbs[i].fnt_Name;
            lbspic[lbs[i].index].Canvas.Font.Style:=lbs[i].fnt_Style;
            lbspic[lbs[i].index].Canvas.Font.Color:=lbs[i].fnt_Color;
-           lbspic[lbs[i].index].Canvas.Font.Size:=lbs[i].fnt_Size div sclfont;
+           lbspic[lbs[i].index].Canvas.Font.Size :=lbs[i].fnt_Size div sclfont;
            // высота строки
-           hs:= lbspic[lbs[i].index].Canvas.font.GetTextHeight('|');
+           hs := lbspic[lbs[i].index].Canvas.font.GetTextHeight('|');
            //высота image
-           h:=hs*lbs[i].text.Count;
-           lbspic[lbs[i].index].Height:= h;
+
+           h:= lbs[i].text.Count;
+           h:=hs* h;
+           lbspic[lbs[i].index].Height:=h;
            // расчет длины image
            w:=0;
            for j:=0 to lbs[i].text.Count-1 do
@@ -638,16 +656,18 @@ begin
              end;
            lbspic[lbs[i].index].Width:=w;
            // настройка bitmap image
-          { with lbspic[lbs[i].index].Picture.Bitmap do
+
+           with lbspic[lbs[i].index].Picture.Bitmap do
              begin
-             // Clear;
+              //Clear;
               Width :=  w;
               Height := h;
-              //Canvas.Brush.Color := clWhite;
+              Canvas.Brush.Color := lbs[i].fon_color;
               Canvas.FillRect(0, 0, w, h);
-              //Transparent:=true;
-              //TransparentColor:=clWhite;
-             end;}
+              Transparent:=lbs[i].transp;
+              TransparentColor:=lbs[i].fon_color;
+             end;
+           lbspic[lbs[i].index].Transparent:=lbs[i].transp;
            //lbspic[lbs[i].index].Transparent:=true;
            //нарисовать текст
            for j:=0 to lbs[i].text.Count-1 do
@@ -659,21 +679,10 @@ begin
                   k:=(w-lbspic[lbs[i].index].Picture.Bitmap.Canvas.Font.GetTextWidth(lbs[i].text.Strings[j])) div 2;
                 lbspic[lbs[i].index].Canvas.TextOut(k, j*hs, lbs[i].text.Strings[j]);
              end;
-
-           with lbspic[lbs[i].index].Picture.Bitmap do
-               begin
-               // Clear;
-                Width :=  w;
-                Height := h;
-                Canvas.Brush.Color := clWhite;
-                Canvas.FillRect(0, 0, w, h);
-                Transparent:=true;
-                TransparentColor:=clWhite;
-               end;
-           lbs[i].show:=true;
+            lbs[i].show:=true;
          end;
       end;
-  end;
+end;
 
 procedure tform1.AddNewLabsPicture(index: integer);
 begin
@@ -689,13 +698,13 @@ begin
   lbspic[lbscoupic].OnMouseMove:=@MoveNowLbs;
   lbspic[lbscoupic].OnMouseUp:=@MoveEndLbs;
   lbspic[lbscoupic].PopupMenu:=popupmenu2;
-  lbspic[lbscoupic].Transparent:=true;
-  with lbspic[lbscoupic].Picture.Bitmap do
+  //lbspic[lbscoupic].Transparent:=true;
+  {with lbspic[lbscoupic].Picture.Bitmap do
     begin
-     //Canvas.Brush.Color := clWhite;
-     //Transparent:=true;
-     //TransparentColor:=clWhite;
-    end;
+     Canvas.Brush.Color := clWhite;
+     Transparent:=true;
+     TransparentColor:=clWhite;
+    end; }
   //lbspic[lbscoupic].Transparent:=true;
   //lbspic[lbscoupic].Canvas.Font:=tfont.Create;
   //lbspic[lbscoupic].Picture.Bitmap:=tbitmap.Create;
@@ -1432,7 +1441,7 @@ begin
            toprint[i].fnt_Size:=wr.fnt_Size;
          end else begin   // это надпись
            // l не изменится для длинных записей до конца - так можно определить длину
-           txt.Clear;
+           txt.Text:='1';
            s:='';
            if wr.showcomm then  s:=s+wr.comm+wr.pict else
              begin // многоэтажная запись
@@ -1442,21 +1451,14 @@ begin
                      s:=s+wr.comm+wr.pict;
                until (wr.xl<>l) or eof(fl);
              end;
-           j:=1;
-           i:=1;
-           repeat
-             if s[i]=#1 then
-                begin
-                   txt.Add(copy(s, j, i-j));
-                   j:=i+1;
-                end;
-           inc(i);
-           until s[i]=#2 ;
-           form1.AddLbs(txt, wr.Alignment);
+           form1.AddLbs(s);
+           txt.Text:='';
            lbs[lbscou-1].list:=wr.rot;
            lbs[lbscou-1].top:=wr.top;
            lbs[lbscou-1].left:=wr.left;
            lbs[lbscou-1].z:=wr.z;
+           lbs[lbscou-1].transp:=wr.transp;
+           lbs[lbscou-1].fon_color:=wr.fon_color;
            lbs[lbscou-1].fnt_Name:=wr.fnt_Name;
            lbs[lbscou-1].fnt_Size:=wr.fnt_Size;
            lbs[lbscou-1].fnt_Style:=wr.fnt_Style;
@@ -1564,6 +1566,8 @@ begin
        wr.rot:=lbs[i].list;
        wr.show:=lbs[i].show;
        wr.z:=lbs[i].z;
+       wr.transp:=lbs[i].transp;
+       wr.fon_color:=lbs[i].fon_color;
        wr.fnt_Name:=lbs[i].fnt_Name;
        wr.fnt_Size:=lbs[i].fnt_Size;
        wr.fnt_Style:=lbs[i].fnt_Style;
@@ -1615,13 +1619,14 @@ begin
  // зачистка памяти
 
 
- for i:=0 to 19 do if ex[i]  then begin showp[i].free;  showl[i].free; end;
- for i:=0 to high(toprint) do toprint[i].pct.free; //Destroy;
+ for i:=0 to 19 do if ex[i]  then begin showp[i].Destroy;  showl[i].Destroy; end;
+ for i:=0 to high(toprint) do toprint[i].pct.Destroy; //Destroy;
  for i:=0 to lbscoupic-1 do
    begin
-     lbspic[i].free;
+     lbspic[i].Destroy;
    end;
-  for i:=0 to high(lbs) do lbs[i].text.free;
+// freeandnil(lbs);
+// for i:=0 to high(lbs) do lbs[i].text.free;
 
 
 end;

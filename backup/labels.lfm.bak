@@ -1,12 +1,12 @@
 object Form4: TForm4
-  Left = 652
-  Height = 333
-  Top = 274
-  Width = 626
+  Left = 618
+  Height = 377
+  Top = 315
+  Width = 625
   BorderIcons = [biSystemMenu]
   Caption = 'Редактор надписей'
-  ClientHeight = 333
-  ClientWidth = 626
+  ClientHeight = 377
+  ClientWidth = 625
   Font.Height = -13
   Font.Name = 'Sans'
   OnCreate = FormCreate
@@ -15,9 +15,17 @@ object Form4: TForm4
   Position = poScreenCenter
   LCLVersion = '0.9.30.4'
   Visible = True
+  object GroupBox2: TGroupBox
+    Left = 480
+    Height = 96
+    Top = 216
+    Width = 128
+    Caption = 'Фон'
+    TabOrder = 10
+  end
   object Memo1: TMemo
     Left = 130
-    Height = 271
+    Height = 336
     Top = 24
     Width = 341
     Color = clWhite
@@ -42,7 +50,7 @@ object Form4: TForm4
   object Button2: TButton
     Left = 504
     Height = 29
-    Top = 288
+    Top = 331
     Width = 100
     Caption = 'Ok'
     OnClick = Button2Click
@@ -138,19 +146,22 @@ object Form4: TForm4
     ParentColor = False
   end
   object CheckBox1: TCheckBox
-    Left = 480
+    Left = 490
     Height = 24
-    Top = 216
-    Width = 126
-    Caption = 'Включить фон'
+    Top = 240
+    Width = 95
+    Caption = 'Включить'
+    OnChange = CheckBox1Change
     TabOrder = 8
   end
   object Button7: TButton
     Left = 504
     Height = 29
-    Top = 247
+    Top = 272
     Width = 100
-    Caption = 'Цвет фона'
+    Caption = 'Цвет '
+    Enabled = False
+    OnClick = Button7Click
     TabOrder = 9
   end
   object FontDialog1: TFontDialog
