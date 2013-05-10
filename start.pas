@@ -6,10 +6,7 @@ interface
 
 uses
   Classes, SysUtils, process, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons, ActnList;
-
-procedure ToFontVar(f: tFont);          // передать фонт в буфер
-function  FromfontVar():tfont;  // получить фонт из буфера
+  ExtCtrls, StdCtrls, printers, ComCtrls, Menus, Buttons;
 
 type
 
@@ -290,7 +287,10 @@ type
     top: integer;      // X
     left: integer;     // Y
     list: integer;     // номер листа, к которому привязана надпись
-    font: tFont;       // font
+    fnt_Name: string[31]; // имя фонта подписи
+    fnt_Size: integer; // размер фонта подписи
+    fnt_Style: tfontstyles; // стиль фонта подписи
+    fnt_Color: tColor; // цвет
     z: integer;        // z-порядок
     show: boolean;     // признак того, что текущее значение уже отображено
     index: integer;    // индекс pictere, с которым связана надпись
@@ -318,13 +318,6 @@ type
      image: boolean; // признак того, что это картинка, а не надпись
    end;
 
-  tRealFont = record            // Заплатка от глюка в Лазарусе   Никогда не присваивайте значения фонтов друг-другу - будет ошибка!!!
-     Name     : string[32];     // Имя шрифта
-     Size     : integer;        // Размер шрифта
-     Style    : tfontstyles;    // Стиль шрифта
-     Color    : tColor;         // Цвет
-     Heigth   : integer;        // Высота шрифта
-  end;
 
   var
     Form1: TForm1;
@@ -384,8 +377,9 @@ type
     lbscou: integer; // количество надписей
     sclfont: integer; // масштаб для шрифта при предпросмотре, для А4 = 2
     noshowlabs: boolean; // запрет работы процедуры ShowLabs  true - не исполнять
-    gFont: tRealFont; //текущие значения шрифта для передачи параметров
     sesName: string; // имя открытого сеанса
+
+    fff: integer;
 
 
 implementation
@@ -406,7 +400,7 @@ begin
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
   for i:=0 to 19 do ex[i]:=false;
-  userprinter:=loadsett('printer');
+  userprinter:=loadsett('printer');          fff:=0;
   form1.BorderStyle:=bsSingle;
   flagmove:=false;
   showindex := 0;
@@ -451,14 +445,6 @@ begin
   setbtnpos;  // расстановка словестных кнопок
 end;
 
-procedure ToFontVar(f: tFont);
-begin
-   gfont.Name:=f.Name;
-   gfont.Size:=f.Size;
-   gfont.Color:=f.Color;
-   gfont.Heigth:=f.Height;
-   gfont.Style:=f.Style;
-end;
 
 procedure tForm1.ClearSNS; // удалить сеанс
 var
@@ -483,15 +469,6 @@ begin
    setlength(lbspic, 0);
 end;
 
-function  FromfontVar():tfont;  // получить фонт из буфера
-begin
-  result:=tfont.Create;
-  result.Name:=gfont.Name;
-  result.Size:=gfont.Size;
-  result.Height:=gfont.Heigth;
-  result.Color:=gfont.Color;
-  result.Style:=gfont.Style;
-end;
 
 procedure tform1.setbtnpos;
 begin
@@ -616,8 +593,10 @@ begin
     lbs[lbscou].top:=10;
     inc(curz);
     lbs[lbscou].z:=curz;
-    lbs[lbscou].font:=tfont.Create;
-    lbs[lbscou].font:=FromFontVar;  // form4.FontDialog1.Font;
+    lbs[lbscou].fnt_Name:=Form4.Memo1.Font.Name;
+    lbs[lbscou].fnt_Size:=Form4.Memo1.font.Size;
+    lbs[lbscou].fnt_Style:=Form4.Memo1.font.Style;
+    lbs[lbscou].fnt_Color:=Form4.Memo1.font.Color;
     lbs[lbscou].show:=false;
     lbs[lbscou].index:=-1;
     lbs[lbscou].list:=curlist;
@@ -629,28 +608,27 @@ end;
 procedure tform1.ShowLabs; // показать(обновить) все надписи текущего листа
 var
   i, j, k: integer;
-  h: integer; // высота строки
+  hs: integer; // высота строки
+  h: integer; // высота текста
   w: integer; // макс. длина строки
-  fon: tfont;
 begin
   if noshowlabs then exit;
-  fon:=tfont.Create;
   for i:=0 to lbscou-1 do
     begin
       if (lbs[i].list=curlist) and not(lbs[i].show) then
         begin
            if lbs[i].index=-1 then AddNewLabsPicture(i);
-          // настройки шрифта
-           tofontvar(lbs[i].font);
-           lbspic[lbs[i].index].Canvas.Font:=fromfontvar;
-           lbspic[lbs[i].index].Canvas.Font.Size:=gfont.Size div sclfont;
-           with lbspic[lbs[i].index].Picture.Bitmap do begin
-              Canvas.Font:=fromfontvar;
-              Canvas.Font.Size:=gFont.Size div sclfont;
-            end;
-           h:= lbspic[lbs[i].index].Picture.Bitmap.Canvas.font.GetTextHeight('|'); // высота строки
+
+           // настройки шрифта
+           lbspic[lbs[i].index].Canvas.Font.Name:=lbs[i].fnt_Name;
+           lbspic[lbs[i].index].Canvas.Font.Style:=lbs[i].fnt_Style;
+           lbspic[lbs[i].index].Canvas.Font.Color:=lbs[i].fnt_Color;
+           lbspic[lbs[i].index].Canvas.Font.Size:=lbs[i].fnt_Size div sclfont;
+           // высота строки
+           hs:= lbspic[lbs[i].index].Canvas.font.GetTextHeight('|');
            //высота image
-           lbspic[lbs[i].index].Height:=h*lbs[i].text.Count;
+           h:=hs*lbs[i].text.Count;
+           lbspic[lbs[i].index].Height:= h;
            // расчет длины image
            w:=0;
            for j:=0 to lbs[i].text.Count-1 do
@@ -662,13 +640,15 @@ begin
            // настройка bitmap image
            with lbspic[lbs[i].index].Picture.Bitmap do
              begin
-              Clear;
-              Width := lbspic[lbs[i].index].Width;
-              Height := lbspic[lbs[i].index].Height;
+             // Clear;
+              Width :=  w;
+              Height := h;
               Canvas.Brush.Color := clWhite;
-              Canvas.FillRect(Canvas.ClipRect);
+              Canvas.FillRect(0, 0, w, h);
+              Transparent:=true;
               TransparentColor:=clWhite;
              end;
+           //lbspic[lbs[i].index].Transparent:=true;
            //нарисовать текст
            for j:=0 to lbs[i].text.Count-1 do
              begin
@@ -677,10 +657,10 @@ begin
                   k:=w-lbspic[lbs[i].index].Picture.Bitmap.Canvas.Font.GetTextWidth(lbs[i].text.Strings[j]);
                 if lbs[i].alignment=taCenter then
                   k:=(w-lbspic[lbs[i].index].Picture.Bitmap.Canvas.Font.GetTextWidth(lbs[i].text.Strings[j])) div 2;
-                lbspic[lbs[i].index].Picture.Bitmap.Canvas.TextOut(k, j*h, lbs[i].text.Strings[j]);
+                lbspic[lbs[i].index].Canvas.TextOut(k, j*hs, lbs[i].text.Strings[j]);
              end;
-           lbs[i].show:=true;
-        end;
+            lbs[i].show:=true;
+         end;
       end;
   end;
 
@@ -689,9 +669,9 @@ begin
   setlength(lbspic, lbscoupic+1);
   lbspic[lbscoupic]:=timage.Create(panel1);
   lbspic[lbscoupic].Parent := panel1;
-  lbspic[lbscoupic].AutoSize:=false;
+  lbspic[lbscoupic].AutoSize:=true;
   lbspic[lbscoupic].Visible:=true;
-  lbspic[lbscoupic].Enabled:=true;
+   //lbspic[lbscoupic].Enabled:=true;
   lbspic[lbscoupic].Top:=lbs[index].top;
   lbspic[lbscoupic].Left:=lbs[index].left;
   lbspic[lbscoupic].OnMouseDown:=@MoveStartLbs;
@@ -699,13 +679,21 @@ begin
   lbspic[lbscoupic].OnMouseUp:=@MoveEndLbs;
   lbspic[lbscoupic].PopupMenu:=popupmenu2;
   lbspic[lbscoupic].Transparent:=true;
-  lbspic[lbscoupic].Canvas.Font:=tfont.Create;
-  lbspic[lbscoupic].Picture.Bitmap:=tbitmap.Create;
-  lbspic[lbscoupic].Picture.Bitmap.Canvas.Font:=tFont.Create;
+  {with lbspic[lbscoupic].Picture.Bitmap do
+    begin
+     Canvas.Brush.Color := clWhite;
+     Transparent:=true;
+     TransparentColor:=clWhite;
+    end; }
+  //lbspic[lbscoupic].Transparent:=true;
+  //lbspic[lbscoupic].Canvas.Font:=tfont.Create;
+  //lbspic[lbscoupic].Picture.Bitmap:=tbitmap.Create;
+  //lbspic[lbscoupic].Picture.Bitmap.Canvas.Font:=tFont.Create;
   lbs[index].index:=lbscoupic;
   lbspic[lbscoupic].Tag:=index;
   lbspic[lbscoupic].Name:='cp'+inttostr(lbscoupic);
   inc(lbscoupic);
+  //label1.Caption:=lbs[index].fnt_Name;
 end;
 
 procedure tform1.DeleteLabs(index: integer);  // удалить надпись № index
@@ -1411,10 +1399,6 @@ begin
      begin
        if l=wr.xl then read(fl, wr);
        l:=wr.xl;
-       gfont.Name:=wr.fnt_Name;
-       gfont.Color:=wr.fnt_Color;
-       gfont.Size:=wr.fnt_Size;
-       gfont.Style:=wr.fnt_Style;
        if wr.image then   // это картинка
          begin
            toprint[i].pict:=trim(wr.pict);
@@ -1431,10 +1415,10 @@ begin
            toprint[i].yl:=wr.yl;
            toprint[i].xl:=wr.xl;
            toprint[i].showcomm:=wr.showcomm;
-           toprint[i].fnt_Color:=gfont.Color;
-           toprint[i].fnt_Name:=gfont.Name;
-           toprint[i].fnt_Style:=gfont.Style;
-           toprint[i].fnt_Size:=gfont.Size;
+           toprint[i].fnt_Color:=wr.fnt_Color;
+           toprint[i].fnt_Name:=wr.fnt_Name;
+           toprint[i].fnt_Style:=wr.fnt_Style;
+           toprint[i].fnt_Size:=wr.fnt_Size;
          end else begin   // это надпись
            // l не изменится для длинных записей до конца - так можно определить длину
            txt.Clear;
@@ -1462,10 +1446,12 @@ begin
            lbs[lbscou-1].top:=wr.top;
            lbs[lbscou-1].left:=wr.left;
            lbs[lbscou-1].z:=wr.z;
-           lbs[lbscou-1].font.Name:=wr.fnt_Name;
-           lbs[lbscou-1].font.Size:=wr.fnt_Size;
-           lbs[lbscou-1].font.Style:=wr.fnt_Style;
-           lbs[lbscou-1].font.Color:=wr.fnt_Color;
+           lbs[lbscou-1].fnt_Name:=wr.fnt_Name;
+           lbs[lbscou-1].fnt_Size:=wr.fnt_Size;
+           lbs[lbscou-1].fnt_Style:=wr.fnt_Style;
+           lbs[lbscou-1].fnt_Color:=wr.fnt_Color;
+           lbs[lbscou-1].alignment:=wr.alignment;
+           lbs[lbscou-1].show:=false;
          end;
        inc(i);
      end;
@@ -1567,10 +1553,10 @@ begin
        wr.rot:=lbs[i].list;
        wr.show:=lbs[i].show;
        wr.z:=lbs[i].z;
-       wr.fnt_Name:=lbs[i].font.Name;
-       wr.fnt_Size:=lbs[i].font.Size;
-       wr.fnt_Style:=lbs[i].font.Style;
-       wr.fnt_Color:=lbs[i].font.Color;
+       wr.fnt_Name:=lbs[i].fnt_Name;
+       wr.fnt_Size:=lbs[i].fnt_Size;
+       wr.fnt_Style:=lbs[i].fnt_Style;
+       wr.fnt_Color:=lbs[i].fnt_Color;
        wr.alignment:=lbs[i].alignment;
        wr.showcomm:=(length(s)<511); // Надпись не будет продолжаться в следующей записи
        wr.yl:=length(s);
@@ -1609,11 +1595,27 @@ begin
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-//автосохранение при закрытии
+// завершение работы
+var
+  i: integer;
 begin
- if form3.CheckBox7.Checked and (imuser<>'') then
-      SaveSNS('/home/'+imuser+'/.config/vap/auto.sns');
+ //автосохранение при закрытии
+ if form3.CheckBox7.Checked and (imuser<>'') then SaveSNS('/home/'+imuser+'/.config/vap/auto.sns');
+ // зачистка памяти
+
+
+ for i:=0 to 19 do if ex[i]  then begin showp[i].free;  showl[i].free; end;
+ for i:=0 to high(toprint) do toprint[i].pct.free; //Destroy;
+ for i:=0 to lbscoupic-1 do
+   begin
+     lbspic[i].free;
+   end;
+  for i:=0 to high(lbs) do lbs[i].text.free;
+
+
 end;
+
+
 
 procedure TForm1.BitBtn9Click(Sender: TObject);
 //Сохранить сеанс   (file select)
@@ -1736,6 +1738,8 @@ begin
 end;
 
 
+
+
 procedure TForm1.Button3Click(Sender: TObject);
 // печать
 var
@@ -1843,10 +1847,10 @@ begin
      for i:=0 to lbscou-1 do // надписи
           if (lbs[i].list=clist) and (lbs[i].z=j) then
              begin
-              printer.Canvas.Font.Name:=lbs[i].font.Name;
-              printer.Canvas.Font.Size:=lbs[i].font.Size;
-              printer.Canvas.Font.Style:=lbs[i].font.Style;
-              printer.Canvas.Font.Color:=lbs[i].font.Color;
+              printer.Canvas.Font.Name:=lbs[i].fnt_Name;
+              printer.Canvas.Font.Size:=lbs[i].fnt_Size;
+              printer.Canvas.Font.Style:=lbs[i].fnt_Style;
+              printer.Canvas.Font.Color:=lbs[i].fnt_Color;
               x :=  sm0+trunc(kh * lbs[i].left);
               y :=  sm1+trunc(kv * lbs[i].top);
               y1 := printer.Canvas.Font.GetTextHeight('|');

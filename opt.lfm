@@ -1,7 +1,7 @@
 object Form3: TForm3
-  Left = 658
+  Left = 415
   Height = 325
-  Top = 181
+  Top = 24
   Width = 437
   BorderIcons = []
   BorderStyle = bsSingle
@@ -112,6 +112,7 @@ object Form3: TForm3
       Top = 95
       Width = 159
       Caption = 'Gnome Commander'
+      Enabled = False
       OnChange = CheckBox5Change
       TabOrder = 4
     end

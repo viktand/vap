@@ -103,7 +103,6 @@ begin
    fontdialog1.Font.Size:=pict.fnt_Size;
    fontdialog1.Font.Style:=pict.fnt_Style;
    fontdialog1.Font.Color:=pict.fnt_Color;
-   fontdialog1.Font.Height:=pict.fnt_heigth;
    colordialog1.Color:=pict.fnt_Color;
    ledit1.Font.Name:=pict.fnt_Name;
    ledit1.Font.Style:=pict.fnt_Style;

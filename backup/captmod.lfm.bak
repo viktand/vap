@@ -1,5 +1,5 @@
 object Form2: TForm2
-  Left = 350
+  Left = 351
   Height = 262
   Top = 24
   Width = 548
@@ -8,7 +8,9 @@ object Form2: TForm2
   Caption = 'Подпись'
   ClientHeight = 262
   ClientWidth = 548
+  Font.Color = clBlack
   Font.Height = -13
+  Font.Name = 'Ubuntu'
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poMainFormCenter
@@ -24,15 +26,15 @@ object Form2: TForm2
   end
   object LEdit1: TLabeledEdit
     Left = 24
-    Height = 27
+    Height = 26
     Top = 224
     Width = 380
     EditLabel.AnchorSideLeft.Control = LEdit1
     EditLabel.AnchorSideBottom.Control = LEdit1
     EditLabel.Left = 24
-    EditLabel.Height = 18
-    EditLabel.Top = 203
-    EditLabel.Width = 101
+    EditLabel.Height = 17
+    EditLabel.Top = 204
+    EditLabel.Width = 92
     EditLabel.Caption = 'Текст подписи'
     EditLabel.ParentColor = False
     TabOrder = 0
@@ -50,7 +52,7 @@ object Form2: TForm2
     Left = 164
     Height = 24
     Top = 192
-    Width = 197
+    Width = 176
     Caption = 'Показывать эту подпись'
     OnChange = CheckBox1Change
     TabOrder = 3
@@ -88,9 +90,9 @@ object Form2: TForm2
   end
   object Label1: TLabel
     Left = 413
-    Height = 18
+    Height = 17
     Top = 233
-    Width = 60
+    Width = 54
     Caption = 'Размер='
     ParentColor = False
   end
@@ -107,9 +109,9 @@ object Form2: TForm2
   end
   object Label2: TLabel
     Left = 474
-    Height = 18
+    Height = 17
     Top = 233
-    Width = 17
+    Width = 15
     Caption = '10'
     ParentColor = False
   end

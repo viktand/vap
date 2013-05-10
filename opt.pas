@@ -176,17 +176,20 @@ begin
   checkbox2.Enabled:=false;  checkbox2.Checked:=false;
   checkbox3.Enabled:=false;  checkbox3.Checked:=false;
   checkbox4.Enabled:=false;  checkbox4.Checked:=false;
-        pt:=p+'/.gnome2/nautilus-scripts';
-        if DirectoryExists(pt) then // to gnome
+        if FileExists('/usr/bin/nautilus') then // to gnome
           begin
              checkbox1.Enabled:=true;
+             pt:=p+'/.gnome2/nautilus-scripts';             // nautilus <3.6
+             if FileExists(pt+'/Печать') then checkbox1.Checked:=true;
+             if FileExists(pt+'/Print') then checkbox1.Checked:=true;
+             pt:=p+'/.local/share/nautilus/scripts';        // nautilus >=3.6
              if FileExists(pt+'/Печать') then checkbox1.Checked:=true;
              if FileExists(pt+'/Print') then checkbox1.Checked:=true;
           end;
         pt:=p+'/.gnome-commander';
         if DirectoryExists(pt) then // to gnome commander
           begin
-             checkbox1.Enabled:=true;
+             checkbox5.Enabled:=true;
              if GetGCinfo then checkbox5.Checked:=true;
           end;
         pt:=p+'/.config/caja/scripts';  // to caja
@@ -274,13 +277,13 @@ var
   pt, p: string;
   fl: textfile;
   prnt: string;
-begin
+begin                             // to Nauntilus
   try
   if not flag then exit;
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
         pt:=p+'/.gnome2/nautilus-scripts';
-        if DirectoryExists(pt) then
+        if not(DirectoryExists(pt)) then pt:=p+'/.local/share/nautilus/scripts';
             if checkbox1.Checked then
               begin
                  assignfile(fl, pt+'/'+prnt);

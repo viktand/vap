@@ -1,12 +1,12 @@
 object Form4: TForm4
-  Left = 579
-  Height = 303
-  Top = 166
-  Width = 618
+  Left = 652
+  Height = 333
+  Top = 274
+  Width = 626
   BorderIcons = [biSystemMenu]
   Caption = 'Редактор надписей'
-  ClientHeight = 303
-  ClientWidth = 618
+  ClientHeight = 333
+  ClientWidth = 626
   Font.Height = -13
   Font.Name = 'Sans'
   OnCreate = FormCreate
@@ -42,7 +42,7 @@ object Form4: TForm4
   object Button2: TButton
     Left = 504
     Height = 29
-    Top = 256
+    Top = 288
     Width = 100
     Caption = 'Ok'
     OnClick = Button2Click
@@ -136,6 +136,22 @@ object Form4: TForm4
     Width = 43
     Caption = 'Label1'
     ParentColor = False
+  end
+  object CheckBox1: TCheckBox
+    Left = 480
+    Height = 24
+    Top = 216
+    Width = 126
+    Caption = 'Включить фон'
+    TabOrder = 8
+  end
+  object Button7: TButton
+    Left = 504
+    Height = 29
+    Top = 247
+    Width = 100
+    Caption = 'Цвет фона'
+    TabOrder = 9
   end
   object FontDialog1: TFontDialog
     MinFontSize = 0

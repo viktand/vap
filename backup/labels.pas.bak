@@ -5,8 +5,8 @@ unit Labels;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  SynMemo, SynHighlighterAny, SynEdit;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
+
 
 type
 
@@ -19,6 +19,8 @@ type
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
+    Button7: TButton;
+    CheckBox1: TCheckBox;
     ColorDialog1: TColorDialog;
     FontDialog1: TFontDialog;
     GroupBox1: TGroupBox;
@@ -64,7 +66,6 @@ procedure TForm4.FormCreate(Sender: TObject);
 begin
   form4.Visible:=false;
   fontdialog1.Font:=form4.Font;
-  tofontvar(form4.Font);
   name:='';
   index:=-1;
 end;
@@ -75,6 +76,8 @@ begin
   memo1.Height:=form4.Height-32;
   button1.Left:=form4.Width-114;
   button6.left:=form4.width-114;
+  button7.left:=form4.width-114;
+  checkbox1.left:=form4.width-114;
   groupbox1.Left:=form4.Width-138;
   button2.left:=form4.width-114;
   button2.top:=form4.Height-47;
@@ -96,7 +99,10 @@ begin
            memo1.Text:=memo1.Text + start.lbs[index].text.Strings[i];
            if i <> start.lbs[index].text.Count-1 then memo1.Text:=memo1.Text+#13;
         end;
-      memo1.Font:=start.lbs[index].font;
+      memo1.Font.Name:=start.lbs[index].fnt_Name;
+      memo1.Font.Color:=start.lbs[index].fnt_Color;
+      memo1.Font.Size:=start.lbs[index].fnt_Size;
+      memo1.Font.Style:=start.lbs[index].fnt_Style;
       fontdialog1.Font:=memo1.Font;
       radiobutton1.Checked:=true;
       if start.lbs[index].alignment=taCenter then radiobutton2.Checked:=true;
@@ -159,18 +165,23 @@ var
   txt: tstringlist;
   i: integer;
 begin
-  tofontvar(memo1.Font);
   txt:=tstringlist.Create;
   for i:=0 to memo1.Lines.Count-1 do
     begin
        txt.Add(memo1.Lines[i]);
     end;
-  if index=-1 then form1.AddLbs(txt, memo1.Alignment)
+  if index=-1 then
+    begin
+     form1.AddLbs(txt, memo1.Alignment);
+    end
    else
      begin
         start.lbs[index].alignment:=memo1.Alignment;
         start.lbs[index].text:=txt;
-        start.lbs[index].font:=FromFontVar;
+        start.lbs[index].fnt_Name:=memo1.Font.Name;
+        start.lbs[index].fnt_Style:=memo1.Font.Style;
+        start.lbs[index].fnt_Size:=memo1.Font.Size;
+        start.lbs[index].fnt_Color:=memo1.Font.Color;
         start.lbs[index].show:=false;
         form1.ShowLabs;
         index:=-1;
