@@ -33,6 +33,7 @@ type
     Button14: TButton;
     Button15: TButton;
     Button16: TButton;
+    Button17: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -131,6 +132,7 @@ type
      procedure Button14Click(Sender: TObject);
      procedure Button15Click(Sender: TObject);
      procedure Button16Click(Sender: TObject);
+     procedure Button17Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -390,7 +392,7 @@ implementation
 
 {$R *.lfm}
 
-uses about, opt, CaptMod, Labels;
+uses about, opt, CaptMod, Labels, Uptd;
 
 { TForm1 }
 
@@ -892,16 +894,19 @@ begin
   assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
   errt:='Открытие файла конфигурации для перезаписи';
   rewrite(fl);
-  AProcess := TProcess.Create(nil);
-  AProcess.CommandLine := 'chmod 666 ' + myfolder + imuser+'/.config/vap/vapsett';
-  AProcess.Options := AProcess.Options + [poWaitOnExit];   // ждать окончания
-  AProcess.Execute;
-  AProcess.Free;
   errt:='Запись в файл конфигурации новых значений';
   for i:=0 to config.Count-1 do writeln(fl, config[i]);
   errt:='Попытка закрыть файл конфигурации после сохранения новых значений';
   closefile(fl);
   errt:='Запись успешно завершена! Выход из процедуры.';
+  if GetEnvironmentVariable('LOGNAME') = 'root' then //разрешить запись в файл, если было из-под рута
+     begin
+        AProcess := TProcess.Create(nil);
+        AProcess.CommandLine := 'chmod 666 ' + myfolder + imuser+'/.config/vap/vapsett';
+        AProcess.Options := AProcess.Options + [poWaitOnExit];   // ждать окончания
+        AProcess.Execute;
+        AProcess.Free;
+     end;
 end;
 
 procedure tform1.GetUserSize;
@@ -1751,6 +1756,11 @@ begin
   showl[(sndr as timage).Tag].top:=yll;
   Shape1.Visible:=false;
   trackbar1.Position:=0;
+end;
+
+procedure TForm1.Button17Click(Sender: TObject);
+begin
+  form6.Show;
 end;
 
 

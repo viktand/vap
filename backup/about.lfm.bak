@@ -1,15 +1,13 @@
 object Form5: TForm5
-  Left = 343
+  Left = 432
   Height = 233
-  Top = 24
+  Top = 448
   Width = 565
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'About'
   ClientHeight = 233
   ClientWidth = 565
-  Font.Height = -13
-  Font.Name = 'Ubuntu'
   OnCreate = FormCreate
   Position = poMainFormCenter
   LCLVersion = '0.9.30.4'

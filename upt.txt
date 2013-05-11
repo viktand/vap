@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<base href="http://uploadingit.com/" />
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="description" content="Uploadingit allows you to upload, download, sync and share files easily across the web. Sign up today and get 10 GB of free storage!" />
+	<meta name="keywords" content="uploadingit,fast,simple,easy,file,image,cloud,cloud hosting,cloud file hosting,file hosting,free cloud storage,cloud storage,web,hosting,sharing,download,upload,free,file site,file hosting,free file host,file host,rar host,upload zips,ipad,iphone,ipad touch,mobile file hosting,ipad file hosting,ipad file sharing,html5,css3,appstore,apple,computer,googlechrome,safari,firefox,opera,ie9,upgrades,premium,ajax,javascript,referral" />
+	<meta name="robots" content="index, follow" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta name="google-site-verification" content="EygUsbHk52Vn-ec7H1JqPP6uuFEGufuNK80isXTebEQ" />
+
+	<title>Downloading: uptd.vap - Uploadingit</title>
+	<link rel="shortcut icon" href="http://uploadingit.com//favicon.ico" >
+	<link rel="stylesheet" type="text/css" href="http://uploadingit.com/resources/web/scripts/style.css" media="all" />
+	<!--[if IE 9]><link rel="stylesheet" type="text/css" href="http://uploadingit.com/resources/web/scripts/ie9.css" media="all" /><![endif]-->
+	<!--[if IE 8]><link rel="stylesheet" type="text/css" href="http://uploadingit.com/resources/web/scripts/ie8.css" media="all" /><![endif]-->
+	<!--[if IE 7]><link rel="stylesheet" type="text/css" href="http://uploadingit.com/resources/web/scripts/ie7.css" media="all" /><![endif]-->
+
+	<script type="text/javascript" src="http://uploadingit.com/resources/web/scripts/library.2.min.js"></script>
+	<script type="text/javascript" src="http://uploadingit.com/resources/web/scripts/javascript.2.min.js"></script>
+	
+	<script type="text/javascript">
+	// Constants
+	CONST = {
+		URLSERVER: 'http://uploadingit.com/',
+		WEBSERVER: 'http://uploadingit.com/',
+		IMGSERVER: 'http://uploadingit.com/resources/web/images/',
+		DEBUG: false,
+		USER: {}
+	};
+	if (typeof(console)=='undefined'||!CONST.DEBUG){console={'log':function(){},'profile':function(){},'profileEnd':function(){}};}
+	</script>
+
+</head>
+<body>
+
+		<!-- BuySellAds Ad Code -->
+	<script type="text/javascript">
+	(function(){
+	  var bsa = document.createElement('script');
+	     bsa.type = 'text/javascript';
+	     bsa.async = true;
+	     bsa.src = 'http://s3.buysellads.com/ac/bsa.js';
+	  (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+	})();
+	</script>
+	<!-- End BuySellAds Ad Code -->
+	
+	<div id="alertBox" class="alert" style="display:none">
+		<div class="alertContent">
+			<div class="alertTitle"></div>
+			<p></p>
+		</div>
+	</div>
+
+	<div id="container">
+		<div id="header">
+			<div id="headerLeft"><a href="http://uploadingit.com/"><img src="http://uploadingit.com/resources/web/images/logo.png" class="logo"></a></div>
+			<div id="headerRight">
+				<div id="navigation">
+					<ul>
+						<li><a class="" href="http://uploadingit.com/">Home</a></li>
+						<li><a class="" href="http://uploadingit.com/features">Features</a></li>
+						<li><a class="" href="http://uploadingit.com/apps">Apps</a></li>
+						<li><a class="" href="http://uploadingit.com/forum">Forum</a></li>
+						<li><a class="" href="http://uploadingit.com/blog">Blog</a></li>
+						<li><a class="" href="http://uploadingit.com/login">Login</a></li>
+						<li><a class="" href="http://uploadingit.com/plans">Register</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div id="content">
+			<div class="clearme"><!-- tpl_view.php -->
+<div id="downloadAD">
+		<div class="downloadADInner">
+		<div class="downloadADInner768">
+			<!-- BuySellAds.com Zone Code -->
+			<div id="bsap_1272411" class="bsarocks bsap_8cf6984777df8a0352300ef715bbcc5e"></div>
+			<!-- End BuySellAds.com Zone Code -->
+		</div>
+	</div>
+</div>
+<div class="downloadADSpacer"></div>
+
+
+<div class="downloadTitle">uptd.vap</div>
+<div class="downloadSize">(6.0 B)</div>
+
+<div class="downloadContainer">
+	<div class="downloadBox">
+		<form action="file/download/0nn5hpy0fcl6qrac/uptd.vap" method="POST" onclick="return false;" id="downloadForm">
+			<input type="hidden" name="a" value="download" />
+			<button class="downloadButton" style="width:500px;" id="downloadButton">Fetching file for download...</button>
+		</form>
+		<a href="http://uploadingit.com/help/plans" style="text-decoration:none;"><div class="downloadUpgrade"><img src="http://uploadingit.com/resources/web/images/pro_badge.png" class="imageMiddle">&nbsp;&nbsp;Upgrade to Pro for ad free browsing, direct linking, and more...</div></a>
+		<div class="downloadShare">
+			<div class="downloadShareHeader">Share this file</div>
+				<div class="downloadShareURL">
+				URL: <input type="text" name="email" class="popupTextBox" value="http://uploadingit.com/file/view/0nn5hpy0fcl6qrac/uptd.vap" onmouseup="try{this.focus();this.select();}catch(e){}" style="width:340px" />
+			</div>
+			<div class="downloadShareIcons">
+				<a href="http://www.facebook.com/sharer.php?u=http://uploadingit.com/file/view/0nn5hpy0fcl6qrac/uptd.vap&t=uptd.vap" onclick="window.open(this.href,'sharer','toolbar=0,status=0,resizable=1,width=626,height=436');return false;"><img src="http://uploadingit.com/resources/web/images/icon_fb.png"></a>
+				<a href="http://twitter.com/home?status=Check%20out%20this%20file%20http://uploadingit.com/file/view/0nn5hpy0fcl6qrac/uptd.vap"><img src="http://uploadingit.com/resources/web/images/icon_twitter.png"></a>
+				<a href="http://digg.com/submit?phase=2&url=http://uploadingit.com/file/view/0nn5hpy0fcl6qrac/uptd.vap"><img src="http://uploadingit.com/resources/web/images/icon_digg.png"></a>
+				<a href="http://www.stumbleupon.com/submit?url=http://uploadingit.com/file/view/0nn5hpy0fcl6qrac/uptd.vap"><img src="http://uploadingit.com/resources/web/images/icon_su.png"></a>
+			</div>
+		</div>
+	</div>
+
+		<div class="downloadSmallAd">
+		<!-- Advertisement -->
+				<!-- BuySellAds.com Zone Code -->
+				<div id="bsap_1272410" class="bsarocks bsap_8cf6984777df8a0352300ef715bbcc5e"></div>
+				<!-- End BuySellAds.com Zone Code -->
+	</div>
+		<script type="text/javascript">Event.observe(window,'load',function(){var s=10,db=$('downloadButton'),df=$('downloadForm'),d=function(){clearInterval(di);df.writeAttribute('onclick','return true;');db.update('Click here to begin download...');},di=setInterval(function(){s=s-0.1;db.update('Your download will be ready in '+Math.round(s)+' seconds!');},100);d.delay(9);});</script></div>
+		<div class="downloadBottomAd">
+		<div class="downloadADInner768Bottom">
+			<!-- BuySellAds.com Zone Code -->
+			<div id="bsap_1272412" class="bsarocks bsap_8cf6984777df8a0352300ef715bbcc5e"></div>
+			<!-- End BuySellAds.com Zone Code -->
+		</div>
+	</div>
+	</div>
+		</div>
+
+		<div id="footer">
+			<div id="leftColumn">
+				<ul id="footerMenu">
+					<div class="footerMenuHeader">Uploadingit</div>
+					<li><a href="/">Home</a></li>
+					<li><a href="filemanager">File Manager</a></li>
+					<li><a href="plans">Pricing</a></li>
+					<li><a href="features">Features</a></li>
+					<li><a href="apps">Apps</a></li>
+				</ul>
+				<ul id="footerMenu">
+					<div class="footerMenuHeader">Community</div>
+					<li><a href="blog">Blog</a></li>
+					<li><a href="forum">Forum</a></li>
+					<li><a href="http://www.twitter.com/uploadingit">Twitter</a></li>
+					<li><a href="http://www.facebook.com/uploadingit">Facebook</a></li>
+					<li><a href="#" onclick="Settings.shareFeedback(); return false;">Feedback</a></li>
+				</ul>
+				<ul id="footerMenu">
+					<div class="footerMenuHeader">Support</div>
+					<li><a href="help/faq">FAQ</a></li>
+					<li><a href="kb">Knowledge Base</a></li>
+					<li><a href="help/tos">Terms of Service</a></li>
+					<li><a href="help/pp">Privacy Policy</a></li>
+					<li><a href="support/open">Contact Support</a></li>
+				</ul>
+			</div>
+			<div id="rightColumn" style="text-align:right">Copyright © 2013 Uploadingit.com&nbsp; <a href="http://twitter.com/uploadingit"><img src="http://uploadingit.com/resources/web/images/twitter_footer.png" class="imageMiddle" /></a></div>
+		</div>
+
+	</div>
+
+	<!-- Standard PopOver -->
+	<div id="popupStd" style="display:none">
+		<div class="popupStdContainer">
+			<form class="popupStdInner" onsubmit="return false;">
+				<div class="popupStdTop"></div>
+				<div class="popupStdContent"></div>
+				<div class="popupSplit"></div>
+				<div class="popupStdBottom">
+					<img class="popupStdWorking" style="display:none;" src="http://uploadingit.com/resources/web/images/popup_working.gif" />
+					<button type="button" class="buttonGray" style="display:none;margin-top:0px;position:relative;"></button>
+					<button type="submit" class="buttonBlue" style="display:none;margin-top:0px;position:relative;"></button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+
+	<div style="display:none" id="shareFeedback">
+		Send us your suggestions, ideas, bugs, and your comments. If you want to interact with your fellow users, check out our <a href="http://uploadingit.com/forum">forums</a>.
+		<textarea name="feedback_info" class="feedbackBox"></textarea>
+	</div>
+
+	<div style="display:none" id="editPost">
+		Edit the content of your post/thread below, click "Save" when finished.
+		<textarea name="edit_content" class="feedbackBox"></textarea>
+	</div>
+
+	<!-- Dummy Divider -->
+	<div style="display:none;" id="dummyDiv"></div>
+
+	<!-- NoScript Popup -->
+	<noscript>
+		<div id="popupStdNoscript">
+			<div class="popupStdContainer" style="height:220px;">
+				<div class="popupStdInner">
+					<div class="popupStdTop">JavaScript Required!</div>
+					<div class="popupStdContent">
+						In order to access the content on our site you must have a JavaScript Enabled browser. Please enable JavaScript and click Refresh.<br /><br />This popup will disappear when JavaScript has been enabled.
+					</div>
+					<div class="popupSplit"></div>
+					<div class="popupStdBottom">
+						<a href="http://uploadingit.com/file/0nn5hpy0fcl6qrac/uptd.vap" style="text-decoration:none;"><div class="buttonBlue">Refresh</div></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</noscript>
+
+	<!-- Google Analytics -->
+	<script type="text/javascript">
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-5529793-2']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+	</script>
+</body>
+</html>

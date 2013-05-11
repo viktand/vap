@@ -1,0 +1,28 @@
+object Form6: TForm6
+  Left = 892
+  Height = 240
+  Top = 359
+  Width = 320
+  Caption = 'Form6'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '0.9.30.4'
+  Visible = True
+  object Button1: TButton
+    Left = 88
+    Height = 30
+    Top = 189
+    Width = 94
+    Caption = 'Button1'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 16
+    Height = 18
+    Top = 18
+    Width = 44
+    Caption = 'Label1'
+    ParentColor = False
+  end
+end

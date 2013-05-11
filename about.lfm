@@ -1,7 +1,7 @@
 object Form5: TForm5
-  Left = 432
+  Left = 352
   Height = 233
-  Top = 448
+  Top = 24
   Width = 565
   BorderIcons = []
   BorderStyle = bsDialog
@@ -11,7 +11,6 @@ object Form5: TForm5
   OnCreate = FormCreate
   Position = poMainFormCenter
   LCLVersion = '0.9.30.4'
-  Visible = True
   object Image1: TImage
     Left = 18
     Height = 64
@@ -111,7 +110,7 @@ object Form5: TForm5
     Top = 24
     Width = 453
     Alignment = taCenter
-    Caption = 'View And Print'#10'Программа быстрой компоновки и печати изображений.'#10'V 2.0 (05 may 2013)'#10#10'Автор Власов Андрей <vikand@bk.ru>'#10#10'Сайт программы viktand.ru'#10#10'Ограничений на некоммерческое использование и '#10'распространение нет.'
+    Caption = 'View And Print'#10'Программа быстрой компоновки и печати изображений.'#10'V 2.1 (10 may 2013)'#10#10'Автор Власов Андрей <vikand@bk.ru>'#10#10'Сайт программы viktand.ru'#10#10'Ограничений на некоммерческое использование и '#10'распространение нет.'
     TabOrder = 0
   end
 end
