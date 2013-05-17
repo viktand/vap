@@ -2080,8 +2080,8 @@ begin
   // поднять картинки
   for j:=1 to curz do
     begin
-      for i:=0 to steplist(comp)-1 do
-        if toprint[i+showindex].z = j then showp[i].BringToFront;
+      for i:=0 to steplist(comp)-1 do if i+showindex < buf then
+                  if toprint[i+showindex].z = j then showp[i].BringToFront;
       for i:=0 to lbscoupic-1 do
         if lbs[lbspic[i].Tag].z=j then lbspic[i].BringToFront;
     end;
@@ -2902,6 +2902,8 @@ begin
          menuitem22.Caption:='О программе';
          menuitem23.Caption:='Подпись';
          menuitem24.Caption:='Вставить надпись';
+         menuitem25.Caption:='Редактировать';
+         menuitem26.Caption:='Удалить';
 
        end;
     1: begin
@@ -2985,6 +2987,8 @@ begin
          menuitem22.Caption:='About';
          menuitem23.Caption:='Caption';
          menuitem24.Caption:='Insert inscription';
+         menuitem25.Caption:='Edit';
+         menuitem26.Caption:='Delete';
     end;
   end;
 end;
