@@ -131,7 +131,6 @@ type
      procedure Button14Click(Sender: TObject);
      procedure Button15Click(Sender: TObject);
      procedure Button16Click(Sender: TObject);
-     procedure Button17Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -391,7 +390,7 @@ implementation
 
 {$R *.lfm}
 
-uses about, opt, CaptMod, Labels, Uptd;
+uses about, opt, CaptMod, Labels;
 
 { TForm1 }
 
@@ -2902,6 +2901,8 @@ begin
          menuitem22.Caption:='О программе';
          menuitem23.Caption:='Подпись';
          menuitem24.Caption:='Вставить надпись';
+         menuitem25.Caption:='Редактировать';
+         menuitem26.Caption:='Удалить';
 
        end;
     1: begin
@@ -2985,6 +2986,8 @@ begin
          menuitem22.Caption:='About';
          menuitem23.Caption:='Caption';
          menuitem24.Caption:='Insert inscription';
+         menuitem25.Caption:='Edit';
+         menuitem26.Caption:='Delete';
     end;
   end;
 end;

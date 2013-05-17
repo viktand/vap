@@ -131,7 +131,6 @@ type
      procedure Button14Click(Sender: TObject);
      procedure Button15Click(Sender: TObject);
      procedure Button16Click(Sender: TObject);
-     procedure Button17Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -391,7 +390,7 @@ implementation
 
 {$R *.lfm}
 
-uses about, opt, CaptMod, Labels, Uptd;
+uses about, opt, CaptMod, Labels;
 
 { TForm1 }
 
@@ -1756,13 +1755,6 @@ begin
   Shape1.Visible:=false;
   trackbar1.Position:=0;
 end;
-
-procedure TForm1.Button17Click(Sender: TObject);
-begin
-  form6.Show;
-end;
-
-
 
 
 procedure TForm1.Button3Click(Sender: TObject);
