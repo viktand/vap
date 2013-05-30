@@ -1,5 +1,5 @@
 object Form3: TForm3
-  Left = 415
+  Left = 412
   Height = 325
   Top = 24
   Width = 437
@@ -126,6 +126,15 @@ object Form3: TForm3
       OnClick = Button4Click
       ParentFont = False
       TabOrder = 5
+    end
+    object CheckBox9: TCheckBox
+      Left = 230
+      Height = 24
+      Top = 95
+      Width = 66
+      Caption = 'Nemo'
+      OnChange = CheckBox9Change
+      TabOrder = 6
     end
   end
   object Button1: TButton

@@ -94,6 +94,9 @@ type
     MenuItem24: TMenuItem;
     MenuItem25: TMenuItem;
     MenuItem26: TMenuItem;
+    MenuItem27: TMenuItem;
+    MenuItem28: TMenuItem;
+    MenuItem29: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
@@ -141,6 +144,7 @@ type
      procedure CheckBox2Change(Sender: TObject);
      procedure CheckBox3Change(Sender: TObject);
      procedure ComboBox1Change(Sender: TObject);
+     procedure FormActivate(Sender: TObject);
      procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
      procedure FormCreate(Sender: TObject);
      procedure Image12Click(Sender: TObject);
@@ -167,6 +171,8 @@ type
      procedure MenuItem23Click(Sender: TObject);
      procedure MenuItem25Click(Sender: TObject);
      procedure MenuItem26Click(Sender: TObject);
+     procedure MenuItem28Click(Sender: TObject);
+     procedure MenuItem29Click(Sender: TObject);
      procedure MenuItem2Click(Sender: TObject);
      procedure MenuItem3Click(Sender: TObject);
      procedure MenuItem6Click(Sender: TObject);
@@ -184,8 +190,7 @@ type
      procedure PopupMenu2Popup(Sender: TObject);
      function steplist(i: integer): integer; // шаг листания картинок в зависит от компоновки
      procedure AddPict(p: string); // Загрузить картинку в буфер для компоновки p - путь к файлу
-     procedure ShowPict(index: integer); // предпросмотр  начиная с картинки № index
-     procedure CreateList; // создать лист в соответствии с вариантом компоновки
+     procedure ShowPictures; //Показать картинки текущего листа
      procedure List1; // создать лист  с 1 картинкой  (далее процедуры аналогично по смыслу)
      procedure List2;
      procedure List3;
@@ -195,7 +200,6 @@ type
      procedure List9;
      procedure List15;
      procedure List20;
-     procedure ShowPic(index: integer; cou: integer); // показать cou+1картинок начиная с картинки index
      procedure Button2Click(Sender: TObject);
      procedure Button1Click(Sender: TObject); // показать картинку по первому варианту компоновки
      procedure OpenFolder;
@@ -204,12 +208,9 @@ type
      procedure SetPos(im: timage); // уточнить позицию image
      function GetmX: integer;
      function GetmY: integer;
-     procedure DrawList2(index: integer); // Нарисовать лист сразу в принтере
+     procedure DrawList2; // Нарисовать лист сразу в принтере
      procedure showlistnum; // показать номер текущего листа предпросмотра и сколько всего листов
      procedure EndClick(im: timage); // завершение перехода на новую компоновку (общее для всех)
-     procedure EndStep(index: integer); // завершение перелистывания страниц (общее для всех)
-     procedure EndList(i: integer);//завершение построения листа предпросмотра (общее для всех)
-     procedure RefreshScreen; // обновить изображение (после игр с настройками)
      procedure FillList; // Заполнение листа картинкой
      procedure TrackBar1Change(Sender: TObject);
      procedure TrackBar3MouseUp(Sender: TObject; Button: TMouseButton;
@@ -225,7 +226,6 @@ type
      procedure MoveEndLbs(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
      procedure GetUserSize; // установить произвольные размеры листа
      procedure EndFrms; // завершение изменения формата листа
-     function GetPictIndex(sender:  TObject): integer; // получить номер картинки в общем списке по image, в котором ее видно
      procedure LoadFiles; // загрузка файлов из командной строки, т.е. переданных как параметры запуска (выделенных мышкой перед запуском)
      procedure SetPg(p: string); // Установить формат бумаги из командной строки при запуске программы
      procedure SetPg2(p: string); // -//- для пользовательского формата
@@ -243,7 +243,6 @@ type
      function EscToUTF8(word: string):string; // преобразование строки из escape последовательности в UTF8
      function HexToInt(ch: char):integer; // преобразование символа из шестнадцатеричного счисления в десятичное
      procedure setbtnpos; // установка координат буквенных кнопок
-     procedure ShowCapts(key: boolean); // включить/выключить подписи к картинкам
      procedure AddLbs(txt: string); // Создать новую надпись
      procedure ShowLabs; // показать (обновить) надписи текущего листа
      procedure AddNewLabsPicture(index: integer); // создать новый Pictutre, привязанный к надписи № index
@@ -251,6 +250,18 @@ type
      procedure EnableButtons; // установить доступность кнопок
      procedure LoadCompPicture; // Установить титульную картинку компоновки (при загрузке сеанса)
      procedure ClearSNS; // очистить память от текущего сеанса
+     procedure ReSetLabelPos(index: integer); //переустановка подписи
+     procedure SaveDxy(index: integer); // сохранить относительное положение подписи
+     procedure getint; // проверка интеграции
+     procedure ClearList; // очистить лист предпросмотра
+     function CreateImage: integer; //  создать на листе предпросмотра новый объект для вывода картинки и подписи к ней  - получить его индекс
+     function GetIndexImage(nm: string): integer; // получить индекс toprint'а, связанного с картикой name
+     function Img(index: integer): integer; // получить индекс showim по индексу toprint
+     procedure SetPositions; // расчитать начальные координаты картинок для выбранной компоновки
+     function maxZ: integer; // расчитать макисмальный z-порядок для текущего листа
+     procedure ReLoadComp; // перезагрузить компоновку и обновить картинку
+     procedure ReLoadCompForCurList; // перезагрузить компоновку и обновить картинку для текущего листа
+     procedure NewList; // Добавить новый элемент в массиы ориентаций листов (если надо)
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -261,66 +272,82 @@ type
     { public declarations }
   end;
 
-  tpict = record
-    pict: string; // путь к файлу
-    rot: integer; // 0 - нормально, угол поворота по часовой стрелке
-    pct: tPicture;  // картинка
-    left: integer; // координата Х
-    top: integer;  // координата Y
-    heigth: integer; // высота
-    width: integer; // ширина
-    show: boolean; // флаг того, что картинка уже была расчитана для данной компоновки, ее надо просто показать
-    load: boolean; // флаг того, картинка уже загружена в память
-    z: integer; // z-порядок
-    comm: string; // комментарий (подпись) к картинке
-    showcomm: boolean; // показывать подпись или нет
-    xl: integer; // Х подписи
-    yl: integer; // Y подписи
-    fnt_Name: string[31]; // имя фонта подписи
-    fnt_Size: integer; // размер фонта подписи
-    fnt_Style: tfontstyles; // стиль фонта подписи
-    fnt_Color: tColor; // цвет
+  tpict = record              // загруженная картинка и все ее свойства
+    pict     : string;        // путь к файлу
+    rot      : integer;       // 0 - нормально, угол поворота по часовой стрелке
+    pct      : tPicture;      // картинка
+    left     : integer;       // координата Х
+    top      : integer;       // координата Y
+    heigth   : integer;       // высота
+    width    : integer;       // ширина
+    show     : boolean;       // флаг того, что картинка уже была расчитана для данной компоновки, ее надо просто показать
+    list     : integer;       // номер страницы этой картинки
+    load     : boolean;       // флаг того, картинка уже загружена в память
+    z        : integer;       // z-порядок
+    comm     : string;        // комментарий (подпись) к картинке
+    showcomm : boolean;       // показывать подпись или нет
+    xl       : integer;       // Х подписи
+    yl       : integer;       // Y подписи
+    fnt_Name : string[31];    // имя фонта подписи
+    fnt_Size : integer;       // размер фонта подписи
+    fnt_Style: tfontstyles;   // стиль фонта подписи
+    fnt_Color: tColor;        // цвет
+    dxl      : integer;       // относительное смещение положения подписи от картинки (по Х)
+    dyl      : integer;       // относительное смещение положения подписи от картинки (по Y)
   end;
 
-  tlabs = record     // Надпись
-    text: tStringList; // текст надписи
-    top: integer;      // X
-    left: integer;     // Y
-    list: integer;     // номер листа, к которому привязана надпись
-    fnt_Name: string[31]; // имя фонта подписи
-    fnt_Size: integer; // размер фонта подписи
-    fnt_Style: tfontstyles; // стиль фонта подписи
-    fnt_Color: tColor; // цвет
-    z: integer;        // z-порядок
-    show: boolean;     // признак того, что текущее значение уже отображено
-    index: integer;    // индекс pictere, с которым связана надпись
-    alignment: tAlignment; //выравнивание
-    transp: boolean; // прозрачность фона
-    fon_color: tColor; // цвет фона
+  tlabs = record             // Надпись
+    text      : tStringList; // текст надписи
+    top       : integer;     // X
+    left      : integer;     // Y
+    list      : integer;     // номер листа, к которому привязана надпись
+    fnt_Name  : string[31];  // имя фонта подписи
+    fnt_Size  : integer;     // размер фонта подписи
+    fnt_Style : tfontstyles; // стиль фонта подписи
+    fnt_Color : tColor;      // цвет
+    z         : integer;     // z-порядок
+    show      : boolean;     // признак того, что текущее значение уже отображено
+    index     : integer;     // индекс pictere, с которым связана надпись
+    alignment : tAlignment;  // выравнивание
+    transp    : boolean;     // прозрачность фона
+    fon_color : tColor;      // цвет фона
   end;
 
-  tSvPict = record   //модефикация tpict для записи в файл
-     pict: string[255]; // путь к файлу с картинкой
-     comm: string[255]; // комментарий (подпись) к картинке
-     rot: integer; // 0 - нормально, угол поворота по часовой стрелке
-     left: integer; // координата Х
-     top: integer;  // координата Y
-     heigth: integer; // высота
-     width: integer; // ширина
-     show: boolean; // флаг того, что картинка уже была расчитана для данной компоновки, ее надо просто показать
-     z: integer; // z-порядок
-     xl: integer; // Х подписи
-     yl: integer; // Y подписи
-     fnt_Name: string[31]; // имя фонта подписи
-     fnt_Size: integer; // размер фонта подписи
+  tSvPict = record           // модефикация tpict для записи в файл
+     pict     : string[255]; // путь к файлу с картинкой
+     comm     : string[255]; // комментарий (подпись) к картинке
+     rot      : integer;     // 0 - нормально, угол поворота по часовой стрелке
+     left     : integer;     // координата Х
+     top      : integer;     // координата Y
+     heigth   : integer;     // высота
+     width    : integer;     // ширина
+     show     : boolean;     // флаг того, что картинка уже была расчитана для данной компоновки, ее надо просто показать
+     z        : integer;     // z-порядок
+     xl       : integer;     // Х подписи
+     yl       : integer;     // Y подписи
+     fnt_Name : string[31];  // имя фонта подписи
+     fnt_Size : integer;     // размер фонта подписи
      fnt_Style: tfontstyles; // стиль фонта подписи
-     fnt_Color: tColor; // цвет
-     alignment: tAlignment; //выравнивание
-     showcomm: boolean; // показывать подпись или нет
-     image: boolean; // признак того, что это картинка, а не надпись
-     transp: boolean; // прозрачность фона
-     fon_color: tColor; // цвет фона
+     fnt_Color: tColor;      // цвет
+     alignment: tAlignment;  // выравнивание
+     showcomm : boolean;     // показывать подпись или нет
+     image    : boolean;     // признак того, что это картинка, а не надпись
+     transp   : boolean;     // прозрачность фона
+     fon_color: tColor;      // цвет фона
+     orn      : boolean;     // ориентация листа этой картинки
+     list     : integer;     // номер листа этой картинки
    end;
+
+  tShowPict = record         // объект для вывода картики на экран
+     picture  : timage;      // картинка
+     caption  : tlabel;      // подпись
+     index    : integer;     // индекс toprint, который показан тут
+  end;
+
+  tPosition = record         // просто координаты
+     X: integer;
+     Y: integer;
+  end;
 
 
   var
@@ -328,7 +355,7 @@ type
     cmbx: integer; // Выбранная в комбобокс1 позиция
     num: integer; // временная переменная для передачи параметров
     pol, tmp_pol: integer; // Ширина полей
-    orn: integer; // ориентация 0 - книжная, 1 - альбомная
+    orn: boolean; // ориентация true - книжная, false - альбомная
     frm: integer; // формат листа 0 - А4, 1 - A5
     ver, gor: integer; // текущие размеры листа
     lists, curlist: integer; // всего листов и текущий лист
@@ -340,14 +367,11 @@ type
     s: string;
     toprint: array of tpict; // массив картинок для печати
     buf: integer; // количество загруженных картинок
-    comp: integer;// вариант компановки
+    comp: integer;// вариант компановки    1,2...
     tstr: string; // временная строковая переменная
-    showp: array[0..19] of timage; // массив картинок предпросмотра
-    showl: array[0..19] of tlabel; // массив подписей
-    ex: array[0..19] of boolean; // Массив существования картинок
-    showindex: integer; // смещение картинок предпросмотра,
-                        //т.е. с какой по номеру загруженной картинки
-                        //начинать рисовать предпросмотр (чтобы листать страницы)
+    showim: array of tshowpict; // массив объектов предпросмотра
+    OrnList: array of boolean; // массив ориентаций листа. true - портретная
+    PosIm: array of tPosition; // массив начальных координат для варианта компоновки
     getx, gety: integer; // максимальный размер image для текущей компоновки
     FlagMove, flagmove2, flagmove3: boolean; // флаг разрешения передвижения
     ttx, tty: integer; // координаты мышки, где она была нажата для расчета перемещения
@@ -382,6 +406,7 @@ type
     sclfont: integer; // масштаб для шрифта при предпросмотре, для А4 = 2
     noshowlabs: boolean; // запрет работы процедуры ShowLabs  true - не исполнять
     sesName: string; // имя открытого сеанса
+    indx: integer; // переменная для временного хранения индекса при передаче параметров
 
     fff: integer;
 
@@ -403,17 +428,16 @@ begin
   noshowlabs:=false;
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
-  for i:=0 to 19 do ex[i]:=false;
   userprinter:=loadsett('printer');          fff:=0;
   form1.BorderStyle:=bsSingle;
   flagmove:=false;
-  showindex := 0;
   sesName:='';
   sclfont:=2;
   lbscou:=0;
+  curlist:=1;
   scl := 1;
   pol := 10;
-  orn := 0;
+  orn := true;
   frm := 0;
   ver := 594;
   gor := 420;
@@ -442,39 +466,47 @@ begin
   frms[5][0]:=0; frms[5][1]:=0; frms[5][2]:=0; // Users format
   loadconfig;
   if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
-  for i := 0 to 19 do ex[i] := false;
   setcomp(comp); // установить компоновку
-  if orn=1 then panel4click(panel4);
+  if not(orn) then panel4click(panel4);
   if lng=1 then setlng;
   setbtnpos;  // расстановка словестных кнопок
 end;
 
+
+procedure TForm1.FormActivate(Sender: TObject);  // проверка интеграции
+begin
+  if imuser<>'' then getint;
+end;
+
+procedure tform1.NewList; // Добавить новый лист, если надо
+// точнее просто задать его ориентацию
+begin
+  if length(OrnList)=lists then exit;
+  setlength(OrnList, lists);
+  OrnList[lists-1]:=orn;
+end;
 
 procedure tForm1.ClearSNS; // удалить сеанс
 var
   i: integer;
 begin
   if  buf>0 then
-  for i:=0 to steplist(comp)-1 do
-    if ex[i] then
-      begin
-        showp[i].Visible:=false;
-        showl[i].Visible:=false;
-      end;
-   buf:=0;
-   setlength(toprint, 0);
-   lbscou:=0;
-   setlength(lbs, 0);
-   for i:=0 to lbscoupic-1 do
+  clearlist;
+  buf:=0;
+  setlength(toprint, 0);
+  lbscou:=0;
+  setlength(lbs, 0);
+  for i:=0 to lbscoupic-1 do
        begin
          lbspic[i].Destroy;
        end;
    lbscoupic:=0;
    setlength(lbspic, 0);
+   setlength(ornlist, 0);
 end;
 
 
-procedure tform1.setbtnpos;
+procedure tform1.setbtnpos; // раскидать кнопки по своим местам
 begin
   button5.Top:=0;
   button5.left:=0;
@@ -492,6 +524,16 @@ begin
   button13.left:=520;
   button7.Top:=0;
   button7.left:=625;
+end;
+
+procedure tform1.getint;
+// проверка интеграции
+var
+  p: string;
+begin
+  p:=LoadSett('integ');
+  if (p='') or (p='0') then showmessage('Требуется интеграция! Сделайте настройку.'+#13+
+                                        'Requires integration! Make the setting.');
 end;
 
 procedure tform1.getim;
@@ -541,7 +583,6 @@ begin
 end;
 
 
-
 procedure tform1.LoadConfig; // загрузить конфигурацию из файла
 var
   s: string;
@@ -552,8 +593,7 @@ begin
   s:=loadsett('comp');
   if s<>'' then comp:=strtoint(s);
   s:=loadsett('orn');
-  if s<>'' then
-     if s='L' then orn:=1 else orn:=0;
+  if s<>'' then orn:=(s<>'L');
   s:=loadsett('lang');
   if s<>'' then lng:=strtoint(s);
   s:=loadsett('mrg');
@@ -562,12 +602,6 @@ begin
   CheckBox3.Checked:=(s<>'');
   s:=loadsett('sml');
   CheckBox2.Checked:=(s='');
-  s:=loadsett('button_pict');
-  form3.CheckBox6.Checked:=(s='');
-  s:=loadsett('autosave');
-  form3.CheckBox7.Checked:=(s='');
-  s:=loadsett('view');
-  form3.CheckBox8.Checked:=(s='');
   flagsett:=true;
 end;
 
@@ -691,29 +725,16 @@ begin
   lbspic[lbscoupic].Parent := panel1;
   lbspic[lbscoupic].AutoSize:=true;
   lbspic[lbscoupic].Visible:=true;
-   //lbspic[lbscoupic].Enabled:=true;
   lbspic[lbscoupic].Top:=lbs[index].top;
   lbspic[lbscoupic].Left:=lbs[index].left;
   lbspic[lbscoupic].OnMouseDown:=@MoveStartLbs;
   lbspic[lbscoupic].OnMouseMove:=@MoveNowLbs;
   lbspic[lbscoupic].OnMouseUp:=@MoveEndLbs;
   lbspic[lbscoupic].PopupMenu:=popupmenu2;
-  //lbspic[lbscoupic].Transparent:=true;
-  {with lbspic[lbscoupic].Picture.Bitmap do
-    begin
-     Canvas.Brush.Color := clWhite;
-     Transparent:=true;
-     TransparentColor:=clWhite;
-    end; }
-  //lbspic[lbscoupic].Transparent:=true;
-  //lbspic[lbscoupic].Canvas.Font:=tfont.Create;
-  //lbspic[lbscoupic].Picture.Bitmap:=tbitmap.Create;
-  //lbspic[lbscoupic].Picture.Bitmap.Canvas.Font:=tFont.Create;
   lbs[index].index:=lbscoupic;
   lbspic[lbscoupic].Tag:=index;
   lbspic[lbscoupic].Name:='cp'+inttostr(lbscoupic);
   inc(lbscoupic);
-  //label1.Caption:=lbs[index].fnt_Name;
 end;
 
 procedure tform1.DeleteLabs(index: integer);  // удалить надпись № index
@@ -759,7 +780,7 @@ procedure tform1.AddPict(p: string);
 // добавить картинку
 var
   s: string;
-  i: integer;
+  i, j: integer;
 begin
   p:=trim(p);
   s := uppercase(copy(p, (length(p)-3), 4));
@@ -787,6 +808,14 @@ begin
       toprint[buf-1].fnt_Size:=12;
       toprint[buf-1].yl:=-100;
       toprint[buf-1].xl:=-100;
+      if buf=1 then lists:=1 else
+       begin
+         i:=0;
+         for j:=0 to buf-1 do if toprint[j].list=lists then inc(i); // сколько картинок уже есть на последнем листе
+         if i>= steplist(comp) then inc(lists);
+       end;
+         toprint[buf-1].list:=lists;
+         newlist;
     end;
 end;
 
@@ -926,22 +955,28 @@ begin
   if button=mbLeft then
     begin
       (sender as timage).Cursor:=crsizeall;
-      i:=strtoint(copy((sender as timage).Name, 3, 2));
-      num:=showindex+i;
+      i:=GetIndexImage((sender as timage).Name); // index showim
+      num:=showim[i].index; // index to print
       inc(curz);
       toprint[num].z:=curz;
       flagmove:=true;
       ttx:=x;
       tty:=y;
       (sender as timage).BringToFront;
-      showl[i].BringToFront;
-      if toprint[num].yl= -100 then
-                     showl[i].Top:=(sender as timage).top+(sender as timage).Height;
-       if toprint[showindex+i].xl= -100 then
-                     showl[i].Left:=(sender as timage).left+((sender as timage).Width-showl[i].Width) div 2;
-      difx:=showl[i].Left - (sender as timage).Left;
-      dify:=showl[i].top - (sender as timage).top;
+
+      if toprint[num].showcomm or checkbox1.Checked then
+        begin
+           showim[i].caption.BringToFront;
+           difx:=showim[i].caption.Left - (sender as timage).Left;
+           dify:=showim[i].caption.top - (sender as timage).top;
+        end;
     end;
+end;
+
+procedure tform1.ReSetLabelPos(index: integer); //переустановка подписи
+begin
+  toprint[index].xl:=toprint[index].left+toprint[index].dxl;
+  toprint[index].yl:=toprint[index].top+toprint[index].dyl;
 end;
 
 procedure tform1.MoveStartLab(Sender: TObject; Button: TMouseButton;Shift: TShiftState; X, Y: Integer);
@@ -951,7 +986,8 @@ begin
     begin
       (sender as tlabel).Cursor:=crsizeall;
       tstr:=(sender as tlabel).Name;
-      num:=showindex+strtoint(copy((sender as tlabel).Name, 3, 2));
+      num:=GetIndexImage((sender as tlabel).Name); // index showim
+      num:=showim[num].index; // index to print
       inc(curz);
       toprint[num].z:=curz;
       flagmove2:=true;
@@ -1002,12 +1038,16 @@ end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 // сохранить измение размера image
+var
+  i: integer;
 begin
-  num:=showindex+strtoint(copy((sndr as timage).Name, 3, 2));
-  toprint[num].width:=(sndr as timage).Width;
-  toprint[num].heigth:=(sndr as timage).Height;
-  toprint[num].xl:=showl[(sndr as timage).Tag].Left;
-  toprint[num].yl:=showl[(sndr as timage).Tag].top;
+  i:=GetIndexImage((sndr as timage).Name);
+  num:=showim[i].index;
+  toprint[num].width:=showim[i].picture.Width;
+  toprint[num].heigth:=showim[i].picture.Height;
+  toprint[num].xl:=showim[i].caption.Left;
+  toprint[num].yl:=showim[i].caption.top;
+  SaveDxy(num);
   panel7.Visible:=false;
   Shape1.Visible:=false;
   trackbar1.Position:=0;
@@ -1025,17 +1065,24 @@ begin
     end;
   if flagmove then
     begin
-      i:=strtoint(copy((sender as timage).Name, 3, 2));
-      num:=showindex+i;
+      i:=GetIndexImage((sender as timage).Name); // index showim
+      num:=showim[i].index; // index to print
       (sender as timage).Left:=(sender as timage).Left + (x-ttx);
       (sender as timage).Top:=(sender as timage).Top + (y-tty);
-      showl[i].Left:=(sender as timage).Left + difx ;
-      showl[i].top:=(sender as timage).top + dify;
+      showim[i].caption.Left:=(sender as timage).Left + difx ;
+      showim[i].caption.top:=(sender as timage).top + dify;
       toprint[num].left:=(sender as timage).Left;
       toprint[num].top:=(sender as timage).Top;
-      toprint[num].xl:=showl[i].Left;
-      toprint[num].yl:=showl[i].top;
+      toprint[num].xl:=showim[i].caption.Left;
+      toprint[num].yl:=showim[i].caption.top;
+      SaveDxy(num);
     end;
+end;
+
+procedure tform1.SaveDxy(index: integer); // сохранить относительное положение подписи
+begin
+    toprint[index].dxl:=toprint[index].xl-toprint[index].left;
+    toprint[index].dyl:=toprint[index].yl-toprint[index].top;
 end;
 
 procedure tform1.MoveNowLab(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -1045,9 +1092,11 @@ begin
     begin
       (sender as tlabel).Left:=(sender as tlabel).Left + (x-ttx);
       (sender as tlabel).Top:=(sender as tlabel).Top + (y-tty);
-      num:=showindex+strtoint(copy((sender as tlabel).Name, 3, 2));
+      num:=GetIndexImage((sender as tlabel).Name); // index showim
+      num:=showim[num].index; // index to print
       toprint[num].xl:=(sender as tlabel).Left;
       toprint[num].yl:=(sender as tlabel).Top;
+      SaveDxy(num);
     end;
 end;
 
@@ -1066,12 +1115,12 @@ var
   i: integer;
 begin
   sndr:=(sender as tpopupmenu).PopupComponent;
-  imindex := GetPictIndex(sndr);
+  i:=GetIndexImage((sndr as timage).Name);  // index showim
+  imindex:=showim[i].index;  // index toprint'a
   sndh:=(sndr as timage).height;
   sndw:=(sndr as timage).Width;
-  i:=strtoint(copy((sndr as timage).Name, 3, 2));
-  xll:=showl[i].Left;
-  yll:=showl[i].top;
+  xll:=showim[i].caption.Left;
+  yll:=showim[i].caption.top;
   Shape1.Height:=sndh;
   Shape1.Width:=sndw;
   Shape1.Top:=(sndr as timage).top;
@@ -1090,6 +1139,7 @@ procedure TForm1.TrackBar1Change(Sender: TObject);
 // изменение размера image
 var
   k: extended;
+  i: integer;
 begin
   if Shape1.Visible then
     begin
@@ -1099,8 +1149,9 @@ begin
        (sndr as timage).Width:=sndw+trunc(trackbar1.Position / k);
        Shape1.Height:=(sndr as timage).Height;
        Shape1.Width:=(sndr as timage).Width;
-       showl[(sndr as timage).Tag].Left:= ((sndr as timage).left+(sndr as timage).Width)+difx;
-       showl[(sndr as timage).Tag].top:= ((sndr as timage).top+(sndr as timage).Height)+dify;
+       i:=GetIndexImage((sndr as timage).Name); // index showim
+       showim[i].caption.Left:=((sndr as timage).left+(sndr as timage).Width)+difx;
+       showim[i].caption.top:=((sndr as timage).top+(sndr as timage).Height)+dify;
      end;
 end;
 
@@ -1112,23 +1163,10 @@ begin
 
 end;
 
-procedure tform1.RefreshScreen; // обновить изображение
-begin
-  if buf=0 then exit;
-  for num:=0 to buf-1 do toprint[num].show:=false;
-  endstep(0);
-end;
-
 
 procedure tform1.showlistnum;
 // показать номер текущего листа предпросмотра и сколько всего листов
-var
-  i: integer;
 begin
-  i := steplist(comp);
-  lists := buf div i;
-  if buf mod i > 0 then inc(lists);
-  curlist := (showindex div i) + 1;
   if lists > 0 then
      label5.Caption:=lngn[lng,5] + inttostr(curlist) + lngn[lng,6] + inttostr(lists)
     else
@@ -1140,8 +1178,6 @@ procedure tform1.SetPos(im: timage);
 begin
   im.Left:=im.left+((getx-im.Width) div 2);
   im.Top:=im.top+((gety-im.Height) div 2);
-  toprint[num].left:=im.Left;
-  toprint[num].top:=im.Top;
 end;
 
 procedure tform1.SetSize(im: timage);
@@ -1162,8 +1198,8 @@ begin
       im.Height:= im.Picture.Height;
       im.Width:= im.Picture.Width;
     end;
-  toprint[num].heigth:=im.Height;
-  toprint[num].width:=im.Width;
+  toprint[num].dxl:=toprint[num].dxl-(toprint[num].heigth - im.Height);
+  toprint[num].dyl:=toprint[num].dyl-(toprint[num].width - im.Width);
 end;
 
 function tform1.GetmX: integer;
@@ -1201,7 +1237,7 @@ begin
   if odl1.Execute then
     begin
       AddPict(odl1.FileName);
-      ShowPict(showindex);
+      ShowPictures;
       showlistnum;
       EnableButtons;
     end;
@@ -1214,18 +1250,41 @@ begin
      form5.Show;
 end;
 
+procedure tform1.ReLoadComp;
+var
+  i: integer;
+begin
+  SetPositions;
+  for i:=0 to buf-1 do toprint[i].show:=false;
+  showpictures;
+end;
+
+procedure tform1.ReLoadCompForCurList;
+var
+  i: integer;
+begin
+  SetPositions;
+  for i:=0 to buf-1 do if toprint[i].list=curlist then toprint[i].show:=false;
+  showpictures;
+end;
+
+
 procedure TForm1.Button8Click(Sender: TObject);
+var
+  i: integer;
 begin
   inc(pol);
   label12.Caption:='['+FloatToStr(pol/2)+']';
-  RefreshScreen;
+  ReLoadComp;
 end;
 
 procedure TForm1.Button9Click(Sender: TObject);
+var
+  i: integer;
 begin
   dec(pol);
   label12.Caption:='['+FloatToStr(pol/2)+']';
-  RefreshScreen;
+  ReLoadComp;
 end;
 
 procedure TForm1.CheckBox1Change(Sender: TObject);
@@ -1234,45 +1293,18 @@ var
 begin
   if buf>0 then
     begin
-     showcapts(checkbox1.Checked);
-    end;
-end;
-
-procedure tform1.ShowCapts(key: boolean);
-// вкл/выкл подписи
-var
-  i: integer;
-begin
-  for i:=0 to  steplist(comp)-1 do
-    begin
-      if showindex+i>buf-1 then exit;
-      showl[i].Parent := panel1;
-      showl[i].Visible:=(toprint[showindex+i].showcomm or key);
-      showl[i].Enabled:=(toprint[showindex+i].showcomm or key);
-      showl[i].Caption:=toprint[showindex+i].comm;
-      if toprint[showindex+i].yl= -100 then
-                    showl[i].Top:=showp[i].top+showp[i].Height else
-                    showl[i].Top:=toprint[showindex+i].yl;
-      if toprint[showindex+i].xl= -100 then
-                    showl[i].Left:=showp[i].left+(showp[i].Width-showl[i].Width) div 2 else
-                    showl[i].left:=toprint[showindex+i].xl;
-      showl[i].OnMouseDown:=@MoveStartLab;
-      showl[i].OnMouseMove:=@MoveNowLab;
-      showl[i].OnMouseUp:=@MoveEndLab;
-      showl[i].Caption:=toprint[showindex+i].comm;
-      showl[i].Font.Name:=toprint[showindex+i].fnt_Name;
-      showl[i].Font.Color:=toprint[showindex+i].fnt_Color;
-      showl[i].Font.Size:=toprint[showindex+i].fnt_Size div sclfont;
-      showl[i].Font.Style:=toprint[showindex+i].fnt_Style;
+      showpictures;
     end;
 end;
 
 procedure TForm1.CheckBox2Change(Sender: TObject);
 begin
-    RefreshScreen;
+    showpictures;
 end;
 
 procedure TForm1.CheckBox3Change(Sender: TObject);
+var
+  i: integer;
 begin
    button8.Enabled:=not checkbox3.Checked;
    button9.Enabled:=not checkbox3.Checked;
@@ -1281,7 +1313,7 @@ begin
       else pol:=tmp_pol;
    if (comp=1) and checkbox3.Checked then FillList;
    label12.Caption:=FloatToStr(pol/2);
-   RefreshScreen;
+   ReLoadComp;
  end;
 
 procedure tform1.FillList;
@@ -1291,18 +1323,20 @@ var
   e: extended;
   x, y: integer;
 begin
-     x:=showp[0].Width; y:=showp[0].Height;
-     e :=  showp[0].Width / showp[0].Height;
-     showp[0].Height:=ver;
-     showp[0].Width:=trunc(showp[0].Height * e);
-     pol := (gor - showp[0].Width) div 2;
+     x:=showim[0].picture.Width;
+     y:=showim[0].picture.Height;
+     e :=  x/y;
+     showim[0].picture.Height:=ver;
+     showim[0].picture.Width:=trunc(showim[0].picture.Height * e);
+     pol := (gor - showim[0].picture.Width) div 2;
      if pol>0 then
        begin
-          showp[0].Width:=x; showp[0].Height:=y;
-          e :=  showp[0].Height / showp[0].Width ;
-          showp[0].Width:=gor;
-          showp[0].Height:=trunc(showp[0].Width * e);
-          pol := (ver - showp[0].height) div 2;
+          showim[0].picture.Width:=x;
+          showim[0].picture.Height:=y;
+          e :=  x/y;
+          showim[0].picture.Width:=gor;
+          showim[0].picture.Height:=trunc(showim[0].picture.Width * e);
+          pol := (ver - showim[0].picture.height) div 2;
        end;
  end;
 
@@ -1313,7 +1347,7 @@ procedure TForm1.TrackBar3MouseUp(Sender: TObject; Button: TMouseButton;
 begin
     pol:=trackbar3.Position * 2;
     label12.Caption:='['+FloatToStr(pol/2)+']';
-    RefreshScreen;
+    ReLoadComp;
 end;
 
 
@@ -1332,13 +1366,12 @@ begin
    endfrms;
 end;
 
-
 procedure tform1.endfrms;
 begin
    scl:=frms[frm][2];
    gor:=frms[frm][0] * scl;
    panel1.Caption:=Cap[frm];
-   if orn = 0 then begin gor:=frms[frm][0] * scl; ver:=scl*frms[frm][1]; end
+   if orn then begin gor:=frms[frm][0] * scl; ver:=scl*frms[frm][1]; end
               else begin gor:=frms[frm][1] * scl; ver:=scl*frms[frm][0]; end;
    panel1.Width:=gor;
    panel1.Height:=ver;
@@ -1380,7 +1413,7 @@ begin
  tmp_pol:=strtoint(copy(wr.pict, 1, i-1));
  wr.pict:=copy(wr.pict, i+1, length(wr.pict));
  i:=pos(':', wr.pict);
- orn:=strtoint(copy(wr.pict, 1, i-1));
+ orn:=(strtoint(copy(wr.pict, 1, i-1))=0);
  wr.pict:=copy(wr.pict, i+1, length(wr.pict));
  i:=pos(':', wr.pict);
  frm:=strtoint(copy(wr.pict, 1, i-1));
@@ -1404,7 +1437,7 @@ begin
  buf:=strtoint(copy(wr.pict, 1, i-1));
  wr.pict:=copy(wr.pict, i+1, length(wr.pict));
  i:=pos(':', wr.pict);
- showindex:=strtoint(copy(wr.pict, 1, i-1));
+ curlist:=strtoint(copy(wr.pict, 1, i-1));
  wr.pict:=copy(wr.pict, i+1, length(wr.pict));
  i:=pos(':', wr.pict);
  getx:=strtoint(copy(wr.pict, 1, i-1));
@@ -1442,6 +1475,9 @@ begin
            toprint[i].fnt_Name:=wr.fnt_Name;
            toprint[i].fnt_Style:=wr.fnt_Style;
            toprint[i].fnt_Size:=wr.fnt_Size;
+           toprint[i].list:=wr.list;
+           if wr.list>length(OrnList) then setlength(Ornlist, wr.list);
+           OrnList[wr.list-1]:=wr.orn;
          end else begin   // это надпись
            // l не изменится для длинных записей до конца - так можно определить длину
            txt.Text:='1';
@@ -1475,8 +1511,18 @@ begin
   noshowlabs:=false;
   form1.combobox1.ItemIndex:=cmbx;
   form1.combobox1.Text:=form1.combobox1.Items[cmbx];
+  orn:=OrnList[curlist];
+  if orn then
+    begin
+       form1.panel3.Caption:='\/';
+       form1.panel4.Caption:='';
+    end else begin
+       form1.panel4.Caption:='\/';
+       form1.panel3.Caption:='';
+    end;
   form1.ComboBox1Change(form1.ComboBox1);
-  form1.endstep(0);
+  form1.SetPositions;
+  form1.ShowPictures;
   form1.ShowLabs;
   form1.GetCurz;
   form1.checkbox1.Checked:=shcom;
@@ -1524,11 +1570,12 @@ begin
  rewrite(fl);
  wr.image:=true;
  wr.rot:=comp;
+ i:=1; if orn then i:=0;
  wr.pict:=inttostr(cmbx)+':';
- wr.pict:=wr.pict + inttostr(pol)+':'+inttostr(tmp_pol)+':'+inttostr(orn)+':';
+ wr.pict:=wr.pict + inttostr(pol)+':'+inttostr(tmp_pol)+':'+inttostr(i)+':';
  wr.pict:=wr.pict + inttostr(frm)+':'+inttostr(ver)+':'+inttostr(gor)+':';
  wr.pict:=wr.pict + inttostr(lists)+':'+inttostr(curlist)+':'+inttostr(scl)+':';
- wr.pict:=wr.pict + inttostr(buf)+':'+inttostr(showindex)+':'+inttostr(getx)+':';
+ wr.pict:=wr.pict + inttostr(buf)+':'+inttostr(curlist)+':'+inttostr(getx)+':';
  wr.pict:=wr.pict + inttostr(gety)+':';
  wr.showcomm:=form1.checkbox1.Checked;
  if form1.CheckBox3.Checked then wr.z:=1 else wr.z:=0;
@@ -1552,6 +1599,8 @@ begin
        wr.fnt_Size:=toprint[i].fnt_Size;
        wr.fnt_Style:=toprint[i].fnt_Style;
        wr.fnt_Color:=toprint[i].fnt_Color;
+       wr.orn:=OrnList[toprint[i].list-1];
+       wr.list:=toprint[i].list;
        write(fl, wr);
      end;
  // надписи
@@ -1620,18 +1669,17 @@ begin
  //автосохранение при закрытии
  if form3.CheckBox7.Checked and (imuser<>'') then SaveSNS('/home/'+imuser+'/.config/vap/auto.sns');
  // зачистка памяти
-
-
- for i:=0 to 19 do if ex[i]  then begin showp[i].Destroy;  showl[i].Destroy; end;
- for i:=0 to high(toprint) do toprint[i].pct.Destroy; //Destroy;
+ for i:=0 to high(showim) do
+   begin
+     showim[i].picture.Destroy;
+     showim[i].caption.Destroy;
+   end;
+ setlength(showim, 0);
+ for i:=0 to high(toprint) do toprint[i].pct.Destroy;
  for i:=0 to lbscoupic-1 do
    begin
      lbspic[i].Destroy;
    end;
-// freeandnil(lbs);
-// for i:=0 to high(lbs) do lbs[i].text.free;
-
-
 end;
 
 
@@ -1746,12 +1794,15 @@ end;
 
 procedure TForm1.Button16Click(Sender: TObject);
 // закрыть регулятор размера image  без изменений
+var
+  i: integer;
 begin
   panel7.Visible:=false;
   (sndr as timage).Height:=sndh;
   (sndr as timage).Width:=sndw;
-  showl[(sndr as timage).Tag].Left:=xll;
-  showl[(sndr as timage).Tag].top:=yll;
+  i:=GetIndexImage((sndr as timage).Name); // index showim
+  showim[i].caption.Left:=xll;
+  showim[i].caption.top:=yll;
   Shape1.Visible:=false;
   trackbar1.Position:=0;
 end;
@@ -1763,10 +1814,7 @@ var
   x: integer;
   sh: integer;
 begin
-  sh:= showindex;
-  showindex := 0;
-  CreateList;
-  showpict(showindex);
+ sh:=curlist;
   if userprinter<>'' then
     begin
       combobox2.Items:=printer.Printers;
@@ -1779,41 +1827,39 @@ begin
     else PrinterIndex:=0;
   // выбрать принтер заданный пользователем
   printer.PrinterIndex:=PrinterIndex;
-  if orn = 0 then printer.Orientation:=poPortrait else printer.Orientation:=poLandscape;
+  curlist:=1;
   repeat // перебор листов для их прорисовки
-    case comp of
-       1,2: drawlist2(0);
-       3: drawlist2(1);
-       4: drawlist2(2);
-       5: drawlist2(3);
-       6: drawlist2(5);
-       7: drawlist2(7);
-       8: drawlist2(8);
-       9: drawlist2(14);
-       10: drawlist2(19);
-     end;
-     showindex:=showindex+steplist(comp);
-  until (showindex>buf-1);
+    drawlist2;
+    inc(curlist);
+  until (curlist>lists);
   showmessage(repo);
-  showindex:=sh;
+  curlist:=sh;
 end;
 
-procedure tform1.drawlist2(index: integer);
+procedure tform1.drawlist2;
 // подготовка и  печать страницы, т.е.  ee рисование
 var
    i, x, x1, y, y1, dphor, dpver: integer;
-   z, j, k, st, w: integer;
+   z, j, k, st, w, pan_w, pan_h: integer;
    mrv, mrh, sm1, sm0: integer;
    kh, kv: extended;
    ImageRect: TRect;
-   clist: integer; // № печатаемого листа
 begin
-   clist:=1+(showindex div comp);
+   if ornlist[curlist-1] then
+     begin
+       printer.Orientation:=poPortrait;
+       pan_w:=frms[frm][0] * scl;
+       pan_h:=scl*frms[frm][1];
+     end else begin
+       printer.Orientation:=poLandscape;
+       pan_w:=frms[frm][1] * scl;
+       pan_h:=scl*frms[frm][0];
+     end;
    printer.BeginDoc;
    printer.Canvas.Clear;
    printer.Title:='pictures';
    //реальный размер заданной области печати
-   if orn=0 then
+   if ornlist[curlist-1] then
     begin
       dphor:=trunc(printer.XDPI * (frms[frm][0] / 25.4)); // точек по горизонтали
       dpver:=trunc(printer.YDPI * (frms[frm][1] / 25.4)); // точек по вертикали
@@ -1827,21 +1873,17 @@ begin
     end;
    mrv:= printer.PaperSize.Height - printer.PageHeight; // непечатные поля слева
    mrh:= printer.PaperSize.Width - printer.PageWidth; // непечатные поля сверху
-   kh := (dphor-mrh) / panel1.Width; // масштаб между предпросмотром и листом
-   kv := (dpver-mrv) / panel1.Height; // масштаб между предпросмотром и листом
+   kh := (dphor-mrh) / pan_w; // масштаб между предпросмотром и листом
+   kv := (dpver-mrv) / pan_h; // масштаб между предпросмотром и листом
 
    // сортировка миниатюр по z-порядку и их прорисовка в принтере
-   //"глубина" картинки, т.е. максимальный z
-   z:=0;
-   if showindex+index > buf-1 then st:=buf-1 else st:=showindex+index;
-   for i:=showindex to st do if toprint[i].z > z then z:=toprint[i].z;
-   for i:=0 to lbscou-1 do if (lbs[i].z>z) and (lbs[i].list=clist) then z:=lbs[i].z;
+   z:=maxZ;  //"глубина" картинки, т.е. максимальный z
    // рисование
    for j:=0 to z do
      begin
-     for i:=showindex to st do
+     for i:=0 to buf-1 do
        begin
-            if toprint[i].z = j then
+            if (toprint[i].z=j) and (toprint[i].list=curlist) then
                begin
                   x :=  sm0+trunc(kh * toprint[i].Left);
                   y :=  sm1+trunc(kv * toprint[i].Top);
@@ -1862,7 +1904,7 @@ begin
                 end;
        end;
      for i:=0 to lbscou-1 do // надписи
-          if (lbs[i].list=clist) and (lbs[i].z=j) then
+          if (lbs[i].list=curlist) and (lbs[i].z=j) then
              begin
               printer.Canvas.Font.Name:=lbs[i].fnt_Name;
               printer.Canvas.Font.Size:=lbs[i].fnt_Size;
@@ -1910,7 +1952,7 @@ begin
       if buf = 0 then showmessage (lngn[lng,2])
          else begin
            label2.Caption := lngn[lng,0];
-           ShowPict(showindex);
+           ShowPictures;
            showlistnum;
            EnableButtons;
          end;
@@ -1921,96 +1963,147 @@ begin
 
 end;
 
-procedure tform1.ShowPict(index: Integer);
+
+procedure tform1.ShowPictures; // показать картинки (с привязкой к листу)
+var
+  i, j: integer;
+  k: integer;
 begin
-  case comp of
-    1, 2: showpic(index, 0);
-    3: showpic(index, 1);
-    4: showpic(index, 2);
-    5: showpic(index, 3);
-    6: showpic(index, 5);
-    7: showpic(index, 7);
-    8: showpic(index, 8);
-    9: showpic(index, 14);
-    10: showpic(index, 19);
-  end;
+  clearList;  // очистить лист
+  k:=0;
+  for i := 0 to buf-1 do
+    begin
+       if toprint[i].list=curlist then   // если картинка принадлежит текущему листу...
+        begin
+          num:=i;
+          if not(toprint[i].load) then
+            begin
+              try
+                toprint[i].pct.loadfromfile(systoUTF8(toprint[i].pict));
+                toprint[i].load:=true;
+              except
+                on E: Exception do
+                  begin
+                    showmessage('Ошибка чтения файла:' + #13#10+ E.Message);
+                    toprint[i].pct := image11.Picture;
+                    toprint[i].load:=true;
+                  end;
+              end;
+             end;
+          j:=CreateImage; //добавить пустую картинку на лист, j - ee индекс
+          showim[j].picture.Picture:=toprint[i].pct;
+          showim[j].index:=i;
+          if toprint[i].show then // картинка уже была показана, просто повторить
+            begin
+              showim[j].picture.Left:=toprint[i].left;
+              showim[j].picture.Top:=toprint[i].top;
+              showim[j].picture.Height:=toprint[i].heigth;
+              showim[j].picture.Width:=toprint[i].width;
+              showim[j].picture.Tag:=toprint[i].z;
+            end else
+            begin
+              if k< steplist(comp) then
+                begin
+                  showim[j].picture.Top:=posim[k].Y;
+                  showim[j].picture.Left:=posim[k].X;
+                end else
+                begin
+                  showim[j].picture.Top:=(k-steplist(comp))*5 + pol;
+                  showim[j].picture.Left:=(k-steplist(comp))*5 + pol;
+                end;
+              inc(k);
+              // подогнать размер
+              setsize(showim[j].picture);
+              // уточнить позицию
+              setpos(showim[j].picture);
+              toprint[i].show:=true;
+              toprint[i].z:=showim[j].picture.Tag;
+              toprint[i].left:=showim[j].picture.Left;
+              toprint[i].top:=showim[j].picture.Top;
+              toprint[i].heigth:=showim[j].picture.Height;
+              toprint[i].width:=showim[j].picture.Width;
+              toprint[i].yl:= -100;
+              toprint[i].xl:= -100;
+            end;
+          showim[j].caption.Visible:=false;
+          if toprint[i].showcomm or checkbox1.Checked then // показать подпись
+            begin
+                showim[j].caption.Tag:=1;
+                showim[j].caption.Font.Name:=toprint[i].fnt_Name;
+                showim[j].caption.Font.Size:=toprint[i].fnt_Size div 2;
+                showim[j].caption.Font.Style:=toprint[i].fnt_Style;
+                showim[j].caption.Font.Color:=toprint[i].fnt_Color;
+                showim[j].caption.Parent := panel1;
+                showim[j].caption.Visible:=true;
+                showim[j].caption.Enabled:=true;
+                showim[j].caption.Caption:=toprint[i].comm;
+                if toprint[i].yl= -100 then
+                  begin
+                    showim[j].caption.Top:=showim[j].picture.top+showim[j].picture.Height;
+                    toprint[i].yl:=showim[j].caption.Top;
+                    toprint[i].dyl:=toprint[i].yl-toprint[i].top;
+                  end else  showim[j].caption.Top:=toprint[i].yl;
+                if toprint[num].xl= -100 then
+                  begin
+                    showim[j].caption.Left:=showim[j].picture.left+(showim[j].picture.Width-showim[j].caption.Width) div 2;
+                    toprint[i].xl:=showim[j].caption.Left;
+                    toprint[i].dxl:=toprint[i].xl-toprint[i].left;
+                  end else  showim[j].caption.left:=toprint[i].xl;
+                ReSetLabelPos(i);  //переустановка подписи для ее пропорционального смещения при коррекции картинки
+              end;
+         end;
+    end;
+  ShowListNum;
+  EnableButtons;
 end;
 
-procedure tform1.ShowPic(index: Integer; cou: integer);
-// показать картинки
+procedure tForm1.ClearList; //очистить лист
 var
   i: integer;
 begin
-  for i := 0 to cou do
-    begin
-      num:=i+index;
-      if num >= buf then
-        begin
-          showp[i].Picture:=nil;
-          continue;
-        end;
-      showp[i].Center := true;
-      if not(toprint[num].load) then
-                                  begin
-                                    try
-                                       toprint[num].pct.loadfromfile(systoUTF8(toprint[num].pict));
-                                       toprint[num].load:=true;
-                                    except
-                                          on E: Exception do
-                                             begin
-                                                showmessage('Ошибка чтения файла:' + #13#10+ E.Message);
-                                                toprint[num].pct := image11.Picture;
-                                                toprint[num].load:=true;
-                                             end;
-                                    end;
+ for i:=0 to high(showim) do
+   begin
+     showim[i].picture.Destroy;
+     showim[i].caption.Destroy;
+   end;
+ setlength(showim, 0);
+end;
 
-                                  end;
-      showp[i].Picture:=toprint[num].pct;
-      if toprint[num].show then
-          begin
-             showp[i].Left:=toprint[num].left;
-             showp[i].Top:=toprint[num].top;
-             showp[i].Height:=toprint[num].heigth;
-             showp[i].Width:=toprint[num].width;
-             showp[i].Tag:=toprint[num].z;
-          end else
-          begin
-             // подогнать размер
-             setsize(showp[i]);
-             // уточнить позицию
-             setpos(showp[i]);
-             toprint[num].show:=true;
-             toprint[num].z:=showp[i].Tag;
-             //привязать процедуры
-             showp[i].OnMouseDown:=@MoveStart;
-             showp[i].OnMouseMove:=@MoveNow;
-             showp[i].OnMouseUp:=@MoveEnd;
-             showp[i].PopupMenu := popupmenu1;
-          end;
-       showl[i].Visible:=false;
-       if toprint[num].showcomm or checkbox1.Checked then
-         // показать подпись
-         begin
-             showl[i].Tag:=1;
-             showl[i].Font.Name:=toprint[num].fnt_Name;
-             showl[i].Font.Size:=toprint[num].fnt_Size div 2;
-             showl[i].Font.Style:=toprint[num].fnt_Style;
-             showl[i].Font.Color:=toprint[num].fnt_Color;
-             showl[i].Parent := panel1;
-             showl[i].Visible:=true;
-             showl[i].Enabled:=true;
-             showl[i].Caption:=toprint[num].comm;
-             if toprint[num].yl= -100 then
-                         showl[i].Top:=showp[i].top+showp[i].Height else
-                         showl[i].Top:=toprint[num].yl;
-             if toprint[num].xl= -100 then
-                         showl[i].Left:=showp[i].left+(showp[i].Width-showl[i].Width) div 2 else
-                         showl[i].left:=toprint[num].xl;
-             showl[i].OnMouseDown:=@MoveStartLab;
-             showl[i].OnMouseMove:=@MoveNowLab;
-             showl[i].OnMouseUp:=@MoveEndLab;
-         end;
-    end;
+function tform1.CreateImage: integer; //создать новую картинку на листе
+var
+  i: integer;
+begin
+  i:=high(showim);
+  setlength(showim, i+2);
+  inc(i);
+  showim[i].picture:=timage.Create(form1.panel1);
+  showim[i].caption:= tlabel.Create(form1.Panel1);
+  showim[i].picture.Name := 'im'+inttostr(i);
+  showim[i].caption.Name := 'lb'+inttostr(i);
+  showim[i].picture.Visible := true;
+  showim[i].picture.Enabled := true;
+  showim[i].picture.Width := getx;
+  showim[i].picture.Height := gety;
+  showim[i].picture.Stretch := true;
+  showim[i].picture.Proportional := true;
+  showim[i].picture.Parent := panel1;
+  showim[i].picture.Tag:=i;
+  showim[i].picture.Tag:=0;
+  showim[i].picture.Center:=true;
+  showim[i].picture.OnMouseDown:=@MoveStart;
+  showim[i].picture.OnMouseMove:=@MoveNow;
+  showim[i].picture.OnMouseUp:=@MoveEnd;
+  showim[i].picture.PopupMenu:=popupmenu1;
+  showim[i].caption.OnMouseDown:=@MoveStartLab;
+  showim[i].caption.OnMouseMove:=@MoveNowLab;
+  showim[i].caption.OnMouseUp:=@MoveEndLab;
+  result:=i;
+end;
+
+function tform1.GetIndexImage(nm: string): integer; // получить индекс toprint для картинки
+begin
+  nm:=copy(nm, 3, 2);
+  result:=strtoint(nm);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -2020,17 +2113,31 @@ var
 begin
   label6.visible:=true;
   self.Repaint;
-  i := 0 - steplist(comp);
-  if showindex  > 0  then endstep(i);
-  for i:=0 to lbscoupic-1 do lbspic[i].Destroy;
-  lbscoupic:=0;
-  for i:=0 to lbscou-1 do
+  if curlist <> 1  then
     begin
-      lbs[i].show:=false;
-      lbs[i].index:=-1;
-    end;
-  ShowLabs;
-  GetCurz; // расчитать значение curz и при необходимости поднять картинки
+      dec(curlist);
+      orn:=OrnList[curlist-1];
+        if orn then
+          begin
+             form1.panel3.Caption:='\/';
+             form1.panel4.Caption:='';
+          end else begin
+             form1.panel4.Caption:='\/';
+             form1.panel3.Caption:='';
+          end;
+      ComboBox1Change(ComboBox1);
+      SetPositions;
+      showpictures;
+      for i:=0 to lbscoupic-1 do lbspic[i].Destroy;
+      lbscoupic:=0;
+      for i:=0 to lbscou-1 do
+        begin
+          lbs[i].show:=false;
+          lbs[i].index:=-1;
+        end;
+       ShowLabs;
+       GetCurz; // расчитать значение curz и при необходимости поднять картинки
+  end;
   label6.visible:=false;
 end;
 
@@ -2041,17 +2148,31 @@ var
 begin
   label6.visible:=true;
   self.Repaint;
-  i := steplist(comp);
-  if showindex + i < buf   then endstep(i);
-  for i:=0 to lbscoupic-1 do lbspic[i].Destroy;
-  lbscoupic:=0;
-  for i:=0 to lbscou-1 do
+  if curlist<>lists then
     begin
-      lbs[i].show:=false;
-      lbs[i].index:=-1;
+      inc(curlist);
+      orn:=OrnList[curlist-1];
+        if orn then
+          begin
+             form1.panel3.Caption:='\/';
+             form1.panel4.Caption:='';
+          end else begin
+             form1.panel4.Caption:='\/';
+             form1.panel3.Caption:='';
+          end;
+      ComboBox1Change(ComboBox1);
+      SetPositions;
+      showpictures;
+      for i:=0 to lbscoupic-1 do lbspic[i].Destroy;
+      lbscoupic:=0;
+      for i:=0 to lbscou-1 do
+      begin
+           lbs[i].show:=false;
+           lbs[i].index:=-1;
+      end;
+      ShowLabs;
+      GetCurz; // расчитать значение curz и при необходимости поднять картинки
     end;
-  ShowLabs;
-  GetCurz; // расчитать значение curz и при необходимости поднять картинки
   label6.visible:=false;
 end;
 
@@ -2060,33 +2181,42 @@ procedure tform1.getcurz;
 var
   i, j: integer;
 begin
-  curz:=0;
-  //определить диапазон (глубину z-порядка)
-  for i:=showindex to showindex+steplist(comp)-1 do
-    begin
-      if i>high(toprint) then break;
-      if toprint[i].z > curz then curz:=toprint[i].z;
-    end;
-  for i:=0 to lbscou-1 do if (lbs[i].list=curlist) and (lbs[i].z>curz) then curz:=lbs[i].z;
-  if curz=0 then exit;
+  curz:=maxZ;  //определить диапазон (глубину z-порядка)
   // поднять картинки
   for j:=1 to curz do
     begin
-      for i:=0 to steplist(comp)-1 do if i+showindex < buf then
-                  if toprint[i+showindex].z = j then showp[i].BringToFront;
+      for i:=0 to buf-1 do
+          if toprint[i].list=curlist then
+             if toprint[i].z = j then showim[img(i)].picture.BringToFront;
       for i:=0 to lbscoupic-1 do
         if lbs[lbspic[i].Tag].z=j then lbspic[i].BringToFront;
     end;
 end;
 
-procedure tform1.endstep(index: integer);
+function tform1.maxZ: integer; //определить глубину z-порядка
+var
+  i, curz: integer;
 begin
-  showindex := showindex + index;
-  createlist;
-  showpict(showindex);
-  showlistnum;
+   curz:=0;
+   for i:=0 to buf-1 do
+      if toprint[i].list=curlist then
+          if toprint[i].z > curz then curz:=toprint[i].z;
+  for i:=0 to lbscou-1 do if (lbs[i].list=curlist) and (lbs[i].z>curz) then curz:=lbs[i].z;
+  result:=curz;
 end;
 
+function tform1.Img(index: integer): integer; // получить индекс showim по индексу toprint
+var
+  i: integer;
+begin
+  result:=-1;
+  for i:=0 to high(showim) do
+      if showim[i].index=index then
+        begin
+          result:=i;
+          exit;
+        end;
+    end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
@@ -2109,23 +2239,6 @@ begin
     end;
 end;
 
-Procedure tform1.CreateList;
-begin
-  getx := getmx;
-  gety := getmy;
-  case comp of
-    1, 2: list1;
-    3: list2;
-    4: list3;
-    5: list4;
-    6: list6;
-    7: list8;
-    8: list9;
-    9: list15;
-    10: list20;
-  end;
-  EnableButtons;
-end;
 
 procedure tform1.EnableButtons;
 begin
@@ -2141,80 +2254,23 @@ begin
   MenuItem20.Enabled:=(buf>0);
 end;
 
-procedure tform1.endlist(i: integer);
-//завершение построения листа предпросмотра
-begin
-  showp[i].Visible := true;
-  showp[i].Enabled := true;
-  showp[i].Width := getx;
-  showp[i].Height := gety;
-  showp[i].Stretch := true;
-  showp[i].Proportional := true;
-  showp[i].Parent := panel1;
-  showp[i].Tag:=i;
-  showl[i].Tag:=0;
-
-  if buf>0 then
-     begin
-       showp[i].OnMouseDown:=@MoveStart;
-       showp[i].OnMouseMove:=@MoveNow;
-       showp[i].OnMouseUp:=@MoveEnd;
-       showp[i].PopupMenu := popupmenu1;
-     end;
-
-end;
-
 
 procedure tform1.List1;
-var
-  i: integer;
 begin
-  for i := 1 to 19 do
-   if ex[i] then
-    begin
-      ex[i] := false;
-      showp[i].Destroy;
-      showl[i].Destroy;
-    end;
-  if not ex[0] then
-    begin
-      showp[0] := timage.Create(form1.Panel1);
-      showl[0] := tlabel.Create(form1.Panel1);
-      showp[0].Name := 'im0';
-      showl[0].Name := 'lb0';
-      ex[0] := true;
-    end;
-  showp[0].Top := pol;
-  showp[0].Left := pol;
-  endlist(0);
+  setlength(posIm, 1);
+  posim[0].X := pol;
+  posim[0].Y := pol;
 end;
 
 procedure tform1.List2;
 var
   i: integer;
 begin
-  for i := 2 to 19 do
-   if ex[i] then
-    begin
-      ex[i] := false;
-      showp[i].Destroy;
-      showl[i].Destroy;
-    end;
+  setlength(posim, 2);
   for i := 0 to 1 do
     begin
-      if not ex[i] then
-        begin
-          showp[i] := timage.Create(form1.Panel1);
-          showl[i] := tlabel.Create(form1.Panel1);
-          s := 'im' + inttostr(i);
-          showp[i].Name := s;
-          s := 'lb' + inttostr(i);
-          showl[i].Name := s;
-          ex[i] := true;
-        end;
-      showp[i].Top := pol + (i * (gety + pol));
-      showp[i].Left := pol;
-      endlist(i);
+      posim[i].Y := pol + (i * (gety + pol));
+      posim[i].X := pol;
     end;
 end;
 
@@ -2222,28 +2278,11 @@ procedure tform1.List3;
 var
   i: integer;
 begin
-  for i := 3 to 19 do
-   if ex[i] then
-    begin
-      ex[i] := false;
-      showp[i].Destroy;
-      showl[i].Destroy;
-    end;
+  setlength(posim, 3);
   for i := 0 to 2 do
     begin
-      if not ex[i] then
-        begin
-          showp[i] := timage.Create(form1.Panel1);
-          showl[i] := tlabel.Create(form1.Panel1);
-          s := 'im' + inttostr(i);
-          showp[i].Name := s;
-          s := 'lb' + inttostr(i);
-          showl[i].Name := s;
-          ex[i] := true;
-        end;
-      showp[i].Top := pol + (i * (gety + pol));
-      showp[i].Left := pol;
-      endlist(i);
+      posim[i].Y := pol + (i * (gety + pol));
+      posim[i].X := pol;
     end;
 end;
 
@@ -2251,30 +2290,13 @@ procedure tform1.List4;
 var
   i, j: integer;
 begin
-  for i := 4 to 19 do
-   if ex[i] then
-    begin
-      ex[i] := false;
-      showp[i].Destroy;
-      showl[i].Destroy;
-    end;
+  setlength(posim, 4);
   for i := 0 to 3 do
     begin
-      if not ex[i] then
-        begin
-          showp[i] := timage.Create(form1.Panel1);
-          showl[i] := tlabel.Create(form1.Panel1);
-          s := 'im' + inttostr(i);
-          showp[i].Name := s;
-          s := 'lb' + inttostr(i);
-          showl[i].Name := s;
-          ex[i] := true;
-        end;
       if i < 2 then j := 0 else j := 1;
-      showp[i].Top := pol + (j * (gety + pol));
+      posim[i].Y := pol + (j * (gety + pol));
       if i mod 2 = 0 then j := 0 else j := 1;
-      showp[i].Left := pol + (j * (getx + pol));
-      endlist(i);
+      posim[i].X := pol + (j * (getx + pol));
     end;
 end;
 
@@ -2282,30 +2304,13 @@ procedure tform1.List6;
 var
   i, j: integer;
 begin
-  for i := 6 to 19 do
-   if ex[i] then
-    begin
-      ex[i] := false;
-      showp[i].Destroy;
-      showl[i].Destroy;
-    end;
+  setlength(posim, 6);
   for i := 0 to 5 do
     begin
-      if not ex[i] then
-        begin
-          showp[i] := timage.Create(form1.Panel1);
-          showl[i] := tlabel.Create(form1.Panel1);
-          s := 'im' + inttostr(i);
-          showp[i].Name := s;
-          s := 'lb' + inttostr(i);
-          showl[i].Name := s;
-          ex[i] := true;
-        end;
       j := i div 2;
-      showp[i].Top := pol + (j * (gety + pol));
+      posim[i].Y := pol + (j * (gety + pol));
       if i mod 2 = 0 then j := 0 else j := 1;
-      showp[i].Left := pol + (j * (getx + pol));
-      endlist(i);
+      posim[i].X := pol + (j * (getx + pol));
     end;
 end;
 
@@ -2313,30 +2318,13 @@ procedure tform1.List8;
 var
   i, j: integer;
 begin
-  for i := 8 to 19 do
-   if ex[i] then
-    begin
-      ex[i] := false;
-      showp[i].Destroy;
-      showl[i].Destroy;
-    end;
+  setlength(posim, 8);
   for i := 0 to 7 do
     begin
-      if not ex[i] then
-        begin
-          showp[i] := timage.Create(form1.Panel1);
-          showl[i] := tlabel.Create(form1.Panel1);
-          s := 'im' + inttostr(i);
-          showp[i].Name := s;
-          s := 'lb' + inttostr(i);
-          showl[i].Name := s;
-          ex[i] := true;
-        end;
       j := i div 2;
-      showp[i].Top := pol + (j * (gety + pol));
+      posim[i].Y := pol + (j * (gety + pol));
       if i mod 2 = 0 then j := 0 else j := 1;
-      showp[i].Left := pol + (j * (getx + pol));
-      endlist(i);
+      posim[i].X := pol + (j * (getx + pol));
     end;
 end;
 
@@ -2344,38 +2332,21 @@ procedure tform1.List9;
 var
   i, j: integer;
 begin
-  for i := 9 to 19 do
-   if ex[i] then
-    begin
-      ex[i] := false;
-      showp[i].Destroy;
-      showl[i].Destroy;
-    end;
+  setlength(posim, 9);
   for i := 0 to 8 do
     begin
-      if not ex[i] then
-        begin
-          showp[i] := timage.Create(form1.Panel1);
-          showl[i] := tlabel.Create(form1.Panel1);
-          s := 'im' + inttostr(i);
-          showp[i].Name := s;
-          s := 'lb' + inttostr(i);
-          showl[i].Name := s;
-          ex[i] := true;
-        end;
       case i of
         0..2: j := 0;
         3..5: j := 1;
         6..8: j := 2;
       end;
-      showp[i].Top := pol + (j * (gety + pol));
+      posim[i].Y := pol + (j * (gety + pol));
       case i of
         0, 3, 6: j := 0;
         1, 4, 7: j := 1;
         2, 5, 8: j := 2;
       end;
-      showp[i].Left := pol + (j * (getx + pol));
-      endlist(i);
+      posim[i].X := pol + (j * (getx + pol));
     end;
 end;
 
@@ -2383,25 +2354,9 @@ procedure tform1.List15;
 var
   i, j: integer;
 begin
-  for i := 15 to 19 do
-    if ex[i] then
-     begin
-       ex[i] := false;
-       showp[i].Destroy;
-       showl[i].Destroy;
-     end;
+  setlength(posim, 15);
   for i := 0 to 14 do
     begin
-      if not ex[i] then
-        begin
-          showp[i] := timage.Create(form1.Panel1);
-          showl[i] := tlabel.Create(form1.Panel1);
-          s := 'im' + inttostr(i);
-          showp[i].Name := s;
-          s := 'lb' + inttostr(i);
-          showl[i].Name := s;
-          ex[i] := true;
-        end;
       case i of
         0..2: j := 0;
         3..5: j := 1;
@@ -2409,14 +2364,13 @@ begin
         9..11: j := 3;
         12..14: j := 4;
       end;
-      showp[i].Top := pol + (j * (gety + pol));
+      posim[i].Y := pol + (j * (gety + pol));
       case i of
         0, 3, 6, 9, 12: j := 0;
         1, 4, 7, 10, 13: j := 1;
         2, 5, 8, 11, 14: j := 2;
       end;
-      showp[i].Left := pol + (j * (getx + pol));
-      endlist(i);
+      posim[i].X := pol + (j * (getx + pol));
     end;
 end;
 
@@ -2425,18 +2379,9 @@ procedure tform1.List20;
 var
   i, j: integer;
 begin
+  setlength(posim, 20);
   for i := 0 to 19 do
     begin
-      if not ex[i] then
-        begin
-          showp[i] := timage.Create(form1.Panel1);
-          showl[i] := tlabel.Create(form1.Panel1);
-          s := 'im' + inttostr(i);
-          showp[i].Name := s;
-          s := 'lb' + inttostr(i);
-          showl[i].Name := s;
-          ex[i] := true;
-        end;
       case i of
         0..3: j := 0;
         4..7: j := 1;
@@ -2444,19 +2389,18 @@ begin
         12..15: j := 3;
         16..19: j := 4;
       end;
-      showp[i].Top := pol + (j * (gety + pol));
+      posim[i].Y := pol + (j * (gety + pol));
       case i of
         0, 4, 8, 12, 16: j := 0;
         1, 5, 9, 13, 17: j := 1;
         2, 6, 10, 14, 18: j := 2;
         3, 7, 11, 15, 19: j := 3;
       end;
-      showp[i].Left := pol + (j * (getx + pol));
-      endlist(i);
+      posim[i].X := pol + (j * (getx + pol));
     end;
 end;
 
-procedure tform1.endclick(im: timage);
+procedure tform1.endclick(im: timage);    // завершение выбора компоновки - общее для всех
 begin
   for num:=0 to buf-1 do
     begin
@@ -2464,18 +2408,37 @@ begin
       toprint[num].z:=0;
       toprint[num].xl:=-100;
       toprint[num].yl:=-100;
+      toprint[num].list:=(num div steplist(comp))+1;
     end;
   label6.visible:=true;
+  getx:=getmx;
+  gety:=getmy;
   self.Repaint;
-  showindex := 0;
-  createlist;
-  showpict(showindex);
+  curlist:=1;
+  lists:=buf div steplist(comp) + 1;
+  SetPositions;
+  ShowPictures;
   image8.Picture := im.Picture;
-  showlistnum;
   label6.Visible:=false;
   curz:=0;
 end;
 
+procedure tform1.SetPositions;
+begin
+  getx:=getmx;
+  gety:=getmy;
+  case comp of
+    1,2: list1;
+    3: list2;
+    4: list3;
+    5: list4;
+    6: list6;
+    7: list8;
+    8: list9;
+    9: list15;
+    10: list20;
+  end;
+end;
 
 procedure TForm1.Image1Click(Sender: TObject);
 begin
@@ -2598,14 +2561,6 @@ begin
   Button3Click(Sender);
 end;
 
-function tform1.getpictindex(sender:  TObject): integer;
-// получить номер картинки в общем списке по image, в котором ее видно
-var
-  s: string;
-begin
-  s:= (sender as timage).Name;
-  result:=strtoint(copy(s, 3, 2))+showindex;
-end;
 
 procedure TForm1.MenuItem1Click(Sender: TObject);
 // удалить картинку совсем
@@ -2622,9 +2577,8 @@ begin
          begin
            buf:=0;
            toprint[0].show:=false;
-           endstep(0);
          end;
-  refreshscreen;
+  ShowPictures;
 end;
 
 procedure TForm1.MenuItem20Click(Sender: TObject);
@@ -2636,8 +2590,7 @@ end;
 procedure TForm1.MenuItem23Click(Sender: TObject);
 // индивидуальная коррекция подписи
 begin
-  num:=showindex+strtoint(copy((sndr as timage).Name, 3, 2));
-  captmod.pict:=toprint[num];
+  captmod.pict:=toprint[imindex];
   form2.Image1.Picture:=(sndr as timage).Picture;
   form2.show;
 end;
@@ -2654,6 +2607,44 @@ begin
    DeleteLabs((sndr as timage).Tag);
 end;
 
+procedure TForm1.MenuItem28Click(Sender: TObject);
+// отправить картинку на предыдущий лист
+var
+  j: integer;
+begin
+  if buf=1 then exit;
+  if curlist>1 then toprint[imindex].list:=curlist-1 else
+    begin
+      for j:=0 to buf-1 do
+        if imindex<>j then inc(toprint[j].list);
+    end;
+  lists:=0;
+  for j:=0 to buf-1 do
+    if toprint[j].list>lists then lists:=toprint[j].list;
+  for j:=0 to lbscoupic-1 do
+    if lbs[j].list>lists then lists:=lbs[j].list;
+  if curlist=1 then // Если был создан новый лист...
+     begin
+       setlength(ornlist, lists);
+       for j:=lists-1 downto 1 do ornlist[j]:=ornlist[j-1];
+       ornlist[0]:=true;
+     end;
+  showpictures;
+end;
+
+procedure TForm1.MenuItem29Click(Sender: TObject);
+// отправить картинку на следующий лист
+begin
+  toprint[imindex].list:=curlist+1;
+  if lists<curlist+1 then
+    begin
+      inc(lists);
+      setlength(ornlist, lists);
+      ornlist[lists-1]:=true;
+    end;
+  showpictures;
+end;
+
 procedure TForm1.MenuItem2Click(Sender: TObject);
 //удалить картинку, но ee место не занимать
 var
@@ -2661,18 +2652,21 @@ var
 begin
   i:=imindex;
   toprint[i].pict := '';
-  toprint[i].pct:=nil;
+  toprint[i].pct.Bitmap.Clear;
   toprint[i].comm:='';
-  refreshscreen;
+  ShowPictures;
 end;
 
 procedure TForm1.MenuItem3Click(Sender: TObject);
 // открыть окошко регулятора размера
+var
+  i: integer;
 begin
    panel7.Visible:=true;
    Shape1.Visible:=true;
-   difx:=showl[(sndr as timage).Tag].Left - ((sndr as timage).left+(sndr as timage).Width);
-   dify:=showl[(sndr as timage).Tag].Top - ((sndr as timage).Top+(sndr as timage).Height);
+   i:=GetIndexImage((sndr as timage).Name); // index showim
+   difx:=showim[i].caption.Left - ((sndr as timage).left+(sndr as timage).Width);
+   dify:=showim[i].caption.Top - ((sndr as timage).Top+(sndr as timage).Height);
 end;
 
 procedure TForm1.MenuItem6Click(Sender: TObject);
@@ -2704,9 +2698,10 @@ procedure TForm1.Panel3Click(Sender: TObject);
 begin
   panel3.Caption:='\/';
   panel4.Caption:='';
-  orn:=0;
+  orn:=true;
+  if length(ornlist)>0 then OrnList[curlist-1]:=orn;
   ComboBox1Change(ComboBox1);
-  RefreshScreen;
+  ReLoadCompForCurList;
 end;
 
 procedure TForm1.Panel3MouseDown(Sender: TObject; Button: TMouseButton;
@@ -2727,9 +2722,10 @@ procedure TForm1.Panel4Click(Sender: TObject);
 begin
   panel4.Caption:='\/';
   panel3.Caption:='';
-  orn:=1;
+  orn:=false;
+  if length(ornlist)>0 then OrnList[curlist-1]:=orn;
   ComboBox1Change(ComboBox1);
-  RefreshScreen;
+  ReLoadCompForCurList;
 end;
 
 
@@ -2896,7 +2892,9 @@ begin
          menuitem24.Caption:='Вставить надпись';
          menuitem25.Caption:='Редактировать';
          menuitem26.Caption:='Удалить';
-
+         menuitem27.Caption:='Переместить';
+         menuitem28.Caption:='На предыдущий лист';
+         menuitem29.Caption:='На следующий лист';
        end;
     1: begin
          if upr = '' then upr := 'default';
@@ -2981,6 +2979,9 @@ begin
          menuitem24.Caption:='Insert inscription';
          menuitem25.Caption:='Edit';
          menuitem26.Caption:='Delete';
+         menuitem27.Caption:='Move';
+         menuitem28.Caption:='On the previous page';
+         menuitem29.Caption:='On the next page';
     end;
   end;
 end;

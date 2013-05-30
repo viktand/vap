@@ -111,6 +111,7 @@ begin
       fontdialog1.Font:=memo1.Font;
       fontdialog1.Font.Color:=start.lbs[index].fnt_Color;
       radiobutton1.Checked:=true;
+      checkbox1.Checked:=not(start.lbs[index].transp);
       if start.lbs[index].alignment=taCenter then radiobutton2.Checked:=true;
       if start.lbs[index].alignment=taRightJustify then radiobutton3.Checked:=true;
     end;

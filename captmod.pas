@@ -90,8 +90,8 @@ end;
 procedure TForm2.Button2Click(Sender: TObject);   // Ok
 begin
    pict.comm:=ledit1.Text;
-   start.toprint[start.num]:=pict;
-   form1.ShowCapts(form1.CheckBox1.Checked);
+   start.toprint[start.imindex]:=pict;
+   form1.ShowPictures;
    form2.Close;
 end;
 

@@ -24,6 +24,7 @@ type
     CheckBox6: TCheckBox;
     CheckBox7: TCheckBox;
     CheckBox8: TCheckBox;
+    CheckBox9: TCheckBox;
     ComboBox1: TComboBox;
     GroupBox1: TGroupBox;
     Label1: TLabel;
@@ -44,6 +45,7 @@ type
     procedure CheckBox6Change(Sender: TObject);
     procedure CheckBox7Change(Sender: TObject);
     procedure CheckBox8Change(Sender: TObject);
+    procedure CheckBox9Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject); // выбор языка программы
@@ -52,6 +54,8 @@ type
     procedure DoRoot; // перезапуск прграммы под рутом
     function GetGCinfo: boolean; // узнать есть ли интеграция в gnome-commander
     procedure Save; // Сохранить настройки
+    procedure SetInte(b: boolean); // изменить количество подключенных fm: b=true -> добавить одну
+
   private
     { private declarations }
   public
@@ -81,25 +85,36 @@ begin
   save;
 end;
 
-
+procedure tform3.SetInte(b: boolean);
+var
+  i: integer;
+  p: string;
+begin
+  p:=form1.LoadSett('integ');
+  if p='' then p:='0';
+  i:= strtoint(p);
+  if b then inc(i) else dec(i);
+  p:=inttostr(i);
+  form1.SaveSett('integ', p);
+end;
 
 procedure TForm3.FormCreate(Sender: TObject);
+var
+    s: string;
 begin
   pram:='';
   lng;
   form3.close;
   if GetEnvironmentVariable('LOGNAME') = 'root' then button1.Visible:=false;
-  { для строгой рут-версии
-  if GetEnvironmentVariable('LOGNAME') = 'root' then
-        begin
-          button1.Enabled:=false;
-          groupbox1.Enabled:=true;
-        end else
-        begin
-          button1.Enabled:=true;
-          groupbox1.Enabled:=false;
-        end;
-        }
+
+  flagsett:=false;
+  s:=form1.loadsett('button_pict');
+  CheckBox6.Checked:=(s='');
+  s:=form1.loadsett('autosave');
+  CheckBox7.Checked:=(s='');
+  s:=form1.loadsett('view');
+  CheckBox8.Checked:=(s='');
+  flagsett:=true;
 end;
 
 procedure TForm3.FormShow(Sender: TObject);
@@ -176,6 +191,7 @@ begin
   checkbox2.Enabled:=false;  checkbox2.Checked:=false;
   checkbox3.Enabled:=false;  checkbox3.Checked:=false;
   checkbox4.Enabled:=false;  checkbox4.Checked:=false;
+  checkbox9.Enabled:=false;  checkbox9.Checked:=false;
         if FileExists('/usr/bin/nautilus') then // to gnome
           begin
              checkbox1.Enabled:=true;
@@ -186,10 +202,17 @@ begin
              if FileExists(pt+'/Печать') then checkbox1.Checked:=true;
              if FileExists(pt+'/Print') then checkbox1.Checked:=true;
           end;
+        if FileExists('/usr/bin/nemo') then // to nemo
+          begin
+             checkbox9.Enabled:=true;
+             pt:=p+'/.gnome2/nemo-scripts';
+             if FileExists(pt+'/Печать') then checkbox9.Checked:=true;
+             if FileExists(pt+'/Print') then checkbox9.Checked:=true;
+          end;
         pt:=p+'/.gnome-commander';
         if DirectoryExists(pt) then // to gnome commander
           begin
-             checkbox1.Enabled:=true;
+             checkbox5.Enabled:=true;
              if GetGCinfo then checkbox5.Checked:=true;
           end;
         pt:=p+'/.config/caja/scripts';  // to caja
@@ -213,7 +236,6 @@ begin
               checkbox4.Enabled:=true;
               if FileExists(pt+'/vap.desktop') then checkbox4.Checked:=true;
             end;
-
 end;
 
 procedure savecomp;
@@ -286,7 +308,7 @@ begin                             // to Nauntilus
         if not(DirectoryExists(pt)) then pt:=p+'/.local/share/nautilus/scripts';
             if checkbox1.Checked then
               begin
-                 assignfile(fl, pt+'/'+prnt);
+                assignfile(fl, pt+'/'+prnt);
                 rewrite(fl);
                 writeln(fl, '#!/bin/sh');
                 writeln(fl, ' ');
@@ -298,6 +320,7 @@ begin                             // to Nauntilus
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
                  if FileExists(pt+'/Print') then deletefile(pt+'/Print');
               end;
+              SetInte(checkbox1.Checked);
   Except
       case start.lng of
         0: showmessage('Конфигурационный файл Nautilus потребовал особых прав доступа. Включите root.');
@@ -334,12 +357,13 @@ begin
                   writeln(fl, 'Icon=vap');
                   writeln(fl, 'MimeType=image');
                   writeln(fl, 'Name=' + prnt);
-                  closefile(fl);                     ;
+                  closefile(fl);
               end else
               begin
                   if FileExists(pt+'/Печать.desktop') then deletefile(pt+'/Печать.desktop');
                   if FileExists(pt+'/Print.desktop') then deletefile(pt+'/Print.desktop');
               end;
+              SetInte(checkbox2.Checked);
   Except
       case start.lng of
         0: showmessage('Конфигурационный файл Dolphin потребовал особых прав доступа. Включите root.');
@@ -374,6 +398,7 @@ begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
                  if FileExists(pt+'/Print') then deletefile(pt+'/Print');
               end;
+              SetInte(checkbox3.Checked);
   Except
       case start.lng of
         0: showmessage('Конфигурационный файл Caja потребовал особых прав доступа. Включите root.');
@@ -412,7 +437,10 @@ begin
            AProcess.Execute;
            AProcess.Free;
         end else
-           if FileExists(pt+'/vap.desktop') then deletefile(pt+'/vap.desktop');
+           begin
+             if FileExists(pt+'/vap.desktop') then deletefile(pt+'/vap.desktop');
+           end;
+           SetInte(checkbox1.Checked);
 
   Except
       case start.lng of
@@ -459,6 +487,7 @@ begin
                  deletefile(pt+'/fav-apps');
                  RenameFile(pt+'/fav-apps2', pt+'/fav-apps');
               end;
+        SetInte(checkbox1.Checked);
         AProcess := TProcess.Create(nil);
         AProcess.CommandLine := 'chmod 666 ' + pt+'/fav-apps';
         AProcess.Options := AProcess.Options + [poWaitOnExit];   // ждать окончания
@@ -505,6 +534,40 @@ end;
 procedure TForm3.CheckBox8Change(Sender: TObject);
 begin
   savecomp;
+end;
+
+procedure TForm3.CheckBox9Change(Sender: TObject);
+var
+  pt, p: string;
+  fl: textfile;
+  prnt: string;
+begin                             // to Nemo
+  try
+  if not flag then exit;
+  p:=MyFolder+imuser;
+  if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
+        pt:=p+'/.gnome2/nemo-scripts';
+            if checkbox9.Checked then
+              begin
+                assignfile(fl, pt+'/'+prnt);
+                rewrite(fl);
+                writeln(fl, '#!/bin/sh');
+                writeln(fl, ' ');
+                writeln(fl, '/usr/bin/vap $NEMO_SCRIPT_SELECTED_FILE_PATHS');
+                closefile(fl);
+                fpChmod (pt+'/'+prnt,&777);
+              end else
+              begin
+                 if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
+                 if FileExists(pt+'/Print') then deletefile(pt+'/Print');
+              end;
+              SetInte(checkbox1.Checked);
+  Except
+      case start.lng of
+        0: showmessage('Конфигурационный файл Nemo потребовал особых прав доступа. Включите root.');
+        1: showmessage('The configuration file Nemo requested special privileges. Turn on the root.');
+      end;
+  end;
 end;
 
 

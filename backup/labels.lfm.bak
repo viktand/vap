@@ -1,7 +1,7 @@
 object Form4: TForm4
-  Left = 618
+  Left = 469
   Height = 377
-  Top = 315
+  Top = 362
   Width = 625
   BorderIcons = [biSystemMenu]
   Caption = 'Редактор надписей'
