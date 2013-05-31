@@ -2041,13 +2041,13 @@ begin
                   begin
                     showim[j].caption.Top:=showim[j].picture.top+showim[j].picture.Height;
                     toprint[i].yl:=showim[j].caption.Top;
-                    toprint[index].dyl:=toprint[index].yl-toprint[index].top;
+                    toprint[i].dyl:=toprint[i].yl-toprint[i].top;
                   end else  showim[j].caption.Top:=toprint[i].yl;
                 if toprint[num].xl= -100 then
                   begin
                     showim[j].caption.Left:=showim[j].picture.left+(showim[j].picture.Width-showim[j].caption.Width) div 2;
                     toprint[i].xl:=showim[j].caption.Left;
-                    toprint[index].dxl:=toprint[index].xl-toprint[index].left;
+                    toprint[i].dxl:=toprint[i].xl-toprint[i].left;
                   end else  showim[j].caption.left:=toprint[i].xl;
                 ReSetLabelPos(i);  //переустановка подписи для ее пропорционального смещения при коррекции картинки
               end;
@@ -2151,6 +2151,7 @@ begin
   if curlist<>lists then
     begin
       inc(curlist);
+      i:=high(ornlist);
       orn:=OrnList[curlist-1];
         if orn then
           begin

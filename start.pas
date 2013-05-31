@@ -2415,7 +2415,8 @@ begin
   gety:=getmy;
   self.Repaint;
   curlist:=1;
-  lists:=buf div steplist(comp) + 1;
+  lists:=buf div steplist(comp);
+  if lists*steplist(comp)<buf then inc(lists);
   SetPositions;
   ShowPictures;
   image8.Picture := im.Picture;
