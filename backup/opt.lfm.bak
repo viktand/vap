@@ -1,7 +1,7 @@
 object Form3: TForm3
-  Left = 671
+  Left = 417
   Height = 325
-  Top = 227
+  Top = 24
   Width = 437
   BorderIcons = []
   BorderStyle = bsSingle

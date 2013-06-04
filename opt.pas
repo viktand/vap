@@ -151,6 +151,7 @@ begin
   label1.Caption:='for '+start.imuser;
   flag:=false;
   setcheck;
+  start.confflag:=false;
   flag:=true;
   RadioGroup1.Enabled:=true;
   GroupBox1.Enabled:=true;
@@ -604,6 +605,7 @@ begin
           checkbox7.Caption:='Автосохранение при выходе';
           checkbox8.Caption:='Стандартная начальная компоновка';
           button4.Caption:='Включить все доступное';
+          button1.Caption:='Включить root';
          end;
         1: begin
            form3.Caption:='Settings';
@@ -612,6 +614,7 @@ begin
            checkbox7.Caption:='Auto save on exit';
            checkbox8.Caption:='Standard initial layout';
            button4.Caption:='Enable all available';
+           button1.Caption:='Turn on the root';
          end;
    end;
 end;

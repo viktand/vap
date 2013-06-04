@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Compiler Value="/usr/bin/fpc" Date="1349458212"/>
-  <Params Value=" -MObjFPC -Scghi -CX -O3 -g -gl -gw -Xg -Xs -XX -vew -Fi/home/and/vap/lib/i386-linux -Fu/usr/lib/lazarus/0.9.30.4/components/rtticontrols/lib/i386-linux/gtk2 -Fu/usr/lib/lazarus/0.9.30.4/ideintf/units/i386-linux -Fu/usr/lib/lazarus/0.9.30.4/components/turbopower_ipro/units/i386-linux -Fu/usr/lib/lazarus/0.9.30.4/components/printers/lib/i386-linux/gtk2 -Fu/usr/lib/lazarus/0.9.30.4/lcl/units/i386-linux -Fu/usr/lib/lazarus/0.9.30.4/lcl/units/i386-linux/gtk2 -Fu/usr/lib/lazarus/0.9.30.4/packager/units/i386-linux -Fu/home/and/vap/ -Fu. -FU/home/and/vap/lib/i386-linux/ -ovap -dLCL -dLCLgtk2 vap.lpr"/>
+  <Params Value=" -MObjFPC -Scghi -CX -O3 -Xg -Xs -XX -vew -Fi/home/and/vap/lib/i386-linux -Fu/usr/lib/lazarus/0.9.30.4/components/rtticontrols/lib/i386-linux/gtk2 -Fu/usr/lib/lazarus/0.9.30.4/ideintf/units/i386-linux -Fu/usr/lib/lazarus/0.9.30.4/components/turbopower_ipro/units/i386-linux -Fu/usr/lib/lazarus/0.9.30.4/components/printers/lib/i386-linux/gtk2 -Fu/usr/lib/lazarus/0.9.30.4/lcl/units/i386-linux -Fu/usr/lib/lazarus/0.9.30.4/lcl/units/i386-linux/gtk2 -Fu/usr/lib/lazarus/0.9.30.4/packager/units/i386-linux -Fu/home/and/vap/ -Fu. -FU/home/and/vap/lib/i386-linux/ -ovap -dLCL -dLCLgtk2 vap.lpr"/>
 </CONFIG>

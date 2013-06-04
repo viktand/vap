@@ -262,6 +262,7 @@ type
      procedure ReLoadComp; // перезагрузить компоновку и обновить картинку
      procedure ReLoadCompForCurList; // перезагрузить компоновку и обновить картинку для текущего листа
      procedure NewList; // Добавить новый элемент в массиы ориентаций листов (если надо)
+     procedure SetDefLng; // Установить язык пограммы как в системе
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -473,6 +474,28 @@ begin
 end;
 
 
+procedure tform1.SetDefLng; // установить язык программы как в системе
+// точнее или русский или английский
+var
+   AProcess   : TProcess;
+   AStringList: TStringList;
+   i          : integer;
+begin
+   AProcess := TProcess.Create(nil);
+   AStringList := TStringList.Create;
+   AProcess.CommandLine := 'locale';
+   AProcess.Options := AProcess.Options + [poWaitOnExit, poUsePipes];
+   AProcess.Execute;
+   AStringList.LoadFromStream(AProcess.Output);
+   lng:=1;
+   for i:=0 to AStringList.Count-1 do
+     begin
+       if copy(AStringList[i], 6, 5)='rr_RU' then lng:=0;
+     end;
+   AStringList.Free;
+   AProcess.Free;
+ end;
+
 procedure TForm1.FormActivate(Sender: TObject);  // проверка интеграции
 begin
   if imuser<>'' then getint;
@@ -532,8 +555,8 @@ var
   p: string;
 begin
   p:=LoadSett('integ');
-  if (p='') or (p='0') then showmessage('Требуется интеграция! Сделайте настройку.'+#13+
-                                        'Requires integration! Make the setting.');
+  if (p='') or (p='0') then showmessage('Требуется интеграция! Сделайте настройку.'+#13+'(или это root)'+#13+
+                                        'Requires integration! Make the setting.'+#13+'(or this is root)');
 end;
 
 procedure tform1.getim;
@@ -603,6 +626,7 @@ begin
   s:=loadsett('sml');
   CheckBox2.Checked:=(s='');
   flagsett:=true;
+  if loadsett('lang')='' then setdeflng; // установить язык как в системе
 end;
 
 procedure tForm1.LoadCompPicture;
@@ -2151,7 +2175,6 @@ begin
   if curlist<>lists then
     begin
       inc(curlist);
-      i:=high(ornlist);
       orn:=OrnList[curlist-1];
         if orn then
           begin
@@ -2416,7 +2439,8 @@ begin
   gety:=getmy;
   self.Repaint;
   curlist:=1;
-  lists:=buf div steplist(comp) + 1;
+  lists:=buf div steplist(comp);
+  if lists*steplist(comp)<buf then inc(lists);
   SetPositions;
   ShowPictures;
   image8.Picture := im.Picture;

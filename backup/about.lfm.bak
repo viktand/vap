@@ -19,8 +19,8 @@ object Form5: TForm5
     Height = 262
     Top = 8
     Width = 608
-    ActivePage = TabSheet4
-    TabIndex = 3
+    ActivePage = TabSheet1
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Русский'
@@ -341,6 +341,7 @@ object Form5: TForm5
           ''
           '1.11 - 03.03.13 - День рождения deb-пакета'
         )
+        ScrollBars = ssVertical
         TabOrder = 0
       end
     end
