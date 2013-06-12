@@ -151,7 +151,7 @@ begin
   label1.Caption:='for '+start.imuser;
   flag:=false;
   setcheck;
-  form1.LoadConfig;
+  start.confflag:=false;
   flag:=true;
   RadioGroup1.Enabled:=true;
   GroupBox1.Enabled:=true;

@@ -33,6 +33,7 @@ type
     Button14: TButton;
     Button15: TButton;
     Button16: TButton;
+    Button17: TButton;
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
@@ -44,6 +45,7 @@ type
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
     CheckBox3: TCheckBox;
+    CheckBox4: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
     GroupBox1: TGroupBox;
@@ -134,6 +136,7 @@ type
      procedure Button14Click(Sender: TObject);
      procedure Button15Click(Sender: TObject);
      procedure Button16Click(Sender: TObject);
+     procedure Button17Click(Sender: TObject);
      procedure Button3Click(Sender: TObject);
      procedure Button5Click(Sender: TObject);
      procedure Button6Click(Sender: TObject);
@@ -143,6 +146,7 @@ type
      procedure CheckBox1Change(Sender: TObject);
      procedure CheckBox2Change(Sender: TObject);
      procedure CheckBox3Change(Sender: TObject);
+     procedure CheckBox4Change(Sender: TObject);
      procedure ComboBox1Change(Sender: TObject);
      procedure FormActivate(Sender: TObject);
      procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -264,6 +268,7 @@ type
      procedure NewList; // Добавить новый элемент в массиы ориентаций листов (если надо)
      procedure SetDefLng; // Установить язык пограммы как в системе
 
+
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
 
@@ -352,64 +357,65 @@ type
 
 
   var
-    Form1: TForm1;
-    cmbx: integer; // Выбранная в комбобокс1 позиция
-    num: integer; // временная переменная для передачи параметров
-    pol, tmp_pol: integer; // Ширина полей
-    orn: boolean; // ориентация true - книжная, false - альбомная
-    frm: integer; // формат листа 0 - А4, 1 - A5
-    ver, gor: integer; // текущие размеры листа
-    lists, curlist: integer; // всего листов и текущий лист
-    frms: array[0..5,0..3] of integer; // массив размеров: первый индекс - формат А4, А6 ... (frm)
-                                       // второй индекс 0 - X, 1 - Y - размеры листа в мм 2 - scl
-    scl: integer; // Масштаб на экране - чтобы красиво вписать в форму
-    cap: array[0..5] of string; // массив заготовок надписей в центре листа предпросмотра
-                  //листы разного формата в окно программы A4 - scl = 1;
-    s: string;
-    toprint: array of tpict; // массив картинок для печати
-    buf: integer; // количество загруженных картинок
-    comp: integer;// вариант компановки    1,2...
-    tstr: string; // временная строковая переменная
-    showim: array of tshowpict; // массив объектов предпросмотра
-    OrnList: array of boolean; // массив ориентаций листа. true - портретная
-    PosIm: array of tPosition; // массив начальных координат для варианта компоновки
-    getx, gety: integer; // максимальный размер image для текущей компоновки
-    FlagMove, flagmove2, flagmove3: boolean; // флаг разрешения передвижения
-    ttx, tty: integer; // координаты мышки, где она была нажата для расчета перемещения
-    difx, dify: integer; //разница координат рисунка и подписи (для синхронного перемещения)
-    imindex: integer; // индекс картинки, на image которой нажали кнопку мышки
-    fl: boolean; // просто флаг для промежуточных операций
-    lng: integer; // 0 - русский язык, 1 - английский язык
-    lngn: array[0..1,0..100] of string; // массив надписей рус/анг
-    labs: array[0..9] of string; // массив заготовок подписей под выбранной компоновкой
-    userprinter: string; // Выбранный принтер
-    config: tstringlist; // копия конфига в памяти - чтобы не читать диск каждый раз
-    confflag: boolean;  // признак необходимости прочитать конфиг с диска
-    MyFolder: string; // Папка программы
-    PrinterIndex: integer; // index выбранного принтера
-    repo: string; // рапорт о завершении печати
-    sndr: TObject; // ссылка на имадж, на котором нажата и отпущена кнопка мыши
-    sndh, sndw: integer; // исходные размеры имадже перед корректировкой
-    imuser: string; // current user
-    curz: integer; // z порядок для текущей страницы, используется для расчета наложений
-    errt: string; // текст ошибки
-    xll, yll: integer; // временные переменные хранения координат подписи
-    alp: array[1040..1103] of string[3] = ('А','Б','В','Г','Д','Е','Ж','З','И',
+    Form1          : TForm1;
+    cmbx           : integer; // Выбранная в комбобокс1 позиция
+    num            : integer; // временная переменная для передачи параметров
+    pol, tmp_pol   : integer; // Ширина полей
+    orn            : boolean; // ориентация true - книжная, false - альбомная
+    frm            : integer; // формат листа 0 - А4, 1 - A5
+    ver, gor       : integer; // текущие размеры листа
+    lists, curlist : integer; // всего листов и текущий лист
+    frms           : array[0..5,0..3] of integer; // массив размеров: первый индекс - формат А4, А6 ... (frm)
+                                                  // второй индекс 0 - X, 1 - Y - размеры листа в мм 2 - scl
+    scl            : integer; // Масштаб на экране - чтобы красиво вписать в форму
+    cap            : array[0..5] of string; // массив заготовок надписей в центре листа предпросмотра
+                                            //листы разного формата в окно программы A4 - scl = 1;
+    s              : string;
+    toprint        : array of tpict; // массив картинок для печати
+    buf            : integer; // количество загруженных картинок
+    comp           : integer;// вариант компановки    1,2...
+    tstr           : string; // временная строковая переменная
+    showim         : array of tshowpict; // массив объектов предпросмотра
+    OrnList        : array of boolean; // массив ориентаций листа. true - портретная
+    PosIm          : array of tPosition; // массив начальных координат для варианта компоновки
+    getx, gety     : integer; // максимальный размер image для текущей компоновки
+    FlagMove,
+    flagmove2,
+    flagmove3      : boolean; // флаг разрешения передвижения
+    ttx, tty       : integer; // координаты мышки, где она была нажата для расчета перемещения
+    difx, dify     : integer; //разница координат рисунка и подписи (для синхронного перемещения)
+    imindex        : integer; // индекс картинки, на image которой нажали кнопку мышки
+    fl             : boolean; // просто флаг для промежуточных операций
+    lng            : integer; // 0 - русский язык, 1 - английский язык
+    lngn           : array[0..1,0..100] of string; // массив надписей рус/анг
+    labs           : array[0..9] of string; // массив заготовок подписей под выбранной компоновкой
+    userprinter    : string; // Выбранный принтер
+    config         : tstringlist; // копия конфига в памяти - чтобы не читать диск каждый раз
+    confflag       : boolean;  // признак необходимости прочитать конфиг с диска
+    MyFolder       : string; // Папка программы
+    PrinterIndex   : integer; // index выбранного принтера
+    repo           : string; // рапорт о завершении печати
+    sndr           : TObject; // ссылка на имадж, на котором нажата и отпущена кнопка мыши
+    sndh, sndw     : integer; // исходные размеры имадже перед корректировкой
+    imuser         : string; // current user
+    curz           : integer; // z порядок для текущей страницы, используется для расчета наложений
+    errt           : string; // текст ошибки
+    xll, yll       : integer; // временные переменные хранения координат подписи
+    alp            : array[1040..1103] of string[3] = ('А','Б','В','Г','Д','Е','Ж','З','И',
          'Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ',
          'Ъ','Ы','Ь','Э','Ю','Я','а','б','в','г','д','е','ж','з','и','й','к',
          'л','м','н','о','п', 'р','с','т','у','ф','х','ц','ч','ш','щ','ъ',
          'ы','ь','э','ю','я');
-    flagsett: boolean; // флаг, разрешающий запись в файл конфигурации
-    lbspic: array of timage; // массив изображений надписей
-    lbscoupic: integer; // количество изображений надписей
-    lbs: array of tlabs; // массив надписей
-    lbscou: integer; // количество надписей
-    sclfont: integer; // масштаб для шрифта при предпросмотре, для А4 = 2
-    noshowlabs: boolean; // запрет работы процедуры ShowLabs  true - не исполнять
-    sesName: string; // имя открытого сеанса
-    indx: integer; // переменная для временного хранения индекса при передаче параметров
-
-    fff: integer;
+    flagsett       : boolean; // флаг, разрешающий запись в файл конфигурации
+    lbspic         : array of timage; // массив изображений надписей
+    lbscoupic      : integer; // количество изображений надписей
+    lbs            : array of tlabs; // массив надписей
+    lbscou         : integer; // количество надписей
+    sclfont        : integer; // масштаб для шрифта при предпросмотре, для А4 = 2
+    noshowlabs     : boolean; // запрет работы процедуры ShowLabs  true - не исполнять
+    sesName        : string; // имя открытого сеанса
+    indx           : integer; // переменная для временного хранения индекса при передаче параметров
+    fff            : integer;
 
 
 implementation
@@ -444,7 +450,7 @@ begin
   gor := 420;
   fl:=true;
   lng:=0;
-  comp:=1;
+  comp:=0;
   buf := 0;
   setwords;
   setlng;
@@ -457,7 +463,7 @@ begin
   labs[7]:='3 x 3';
   labs[8]:='3 x 5';
   labs[9]:='4 x 5';
-  label2.Caption := labs[comp-1];
+  label2.Caption := labs[comp];
   // поддерживаемые размеры (книжная ориентация) (может быть потом будет смысл вынести во внешний файл)
   frms[0][0]:=210; frms[0][1]:=297; frms[0][2]:=2; // A4
   frms[1][0]:=148; frms[1][1]:=210; frms[1][2]:=3; // A5
@@ -490,7 +496,7 @@ begin
    lng:=1;
    for i:=0 to AStringList.Count-1 do
      begin
-       if copy(AStringList[i], 6, 5)='rr_RU' then lng:=0;
+       if copy(AStringList[i], 6, 5)='ru_RU' then lng:=0;
      end;
    AStringList.Free;
    AProcess.Free;
@@ -1222,6 +1228,12 @@ begin
       im.Height:= im.Picture.Height;
       im.Width:= im.Picture.Width;
     end;
+  if checkbox3.Checked and (comp=1) then
+    begin
+     filllist;
+     im.Width:=toprint[num].width;
+     im.Height:=toprint[num].heigth;
+    end;
   toprint[num].dxl:=toprint[num].dxl-(toprint[num].heigth - im.Height);
   toprint[num].dyl:=toprint[num].dyl-(toprint[num].width - im.Width);
 end;
@@ -1326,42 +1338,104 @@ begin
     showpictures;
 end;
 
-procedure TForm1.CheckBox3Change(Sender: TObject);
+procedure TForm1.CheckBox3Change(Sender: TObject);    // заполнить
 var
   i: integer;
 begin
    button8.Enabled:=not checkbox3.Checked;
    button9.Enabled:=not checkbox3.Checked;
    trackbar3.Enabled:=not checkbox3.Checked;
-   if checkbox3.Checked then begin tmp_pol:=pol; pol:=0; end
-      else pol:=tmp_pol;
-   if (comp=1) and checkbox3.Checked then FillList;
+   if checkbox3.Checked then
+      begin
+        tmp_pol:=pol;
+        pol:=0;
+        if (comp=1) and checkbox3.Checked then  for i:=0 to buf-1 do toprint[i].show:=false;
+      end
+      else
+        pol:=tmp_pol;
    label12.Caption:=FloatToStr(pol/2);
    ReLoadComp;
  end;
 
-procedure tform1.FillList;
-// Расчитать значение отрицательных полей для полного заполнения листа
-// в первой компоновке
-var
-  e: extended;
-  x, y: integer;
+procedure TForm1.CheckBox4Change(Sender: TObject);
 begin
-     x:=showim[0].picture.Width;
-     y:=showim[0].picture.Height;
-     e :=  x/y;
-     showim[0].picture.Height:=ver;
-     showim[0].picture.Width:=trunc(showim[0].picture.Height * e);
-     pol := (gor - showim[0].picture.Width) div 2;
-     if pol>0 then
-       begin
-          showim[0].picture.Width:=x;
-          showim[0].picture.Height:=y;
-          e :=  x/y;
-          showim[0].picture.Width:=gor;
-          showim[0].picture.Height:=trunc(showim[0].picture.Width * e);
-          pol := (ver - showim[0].picture.height) div 2;
-       end;
+  if lists=0 then exit;
+  if not checkbox4.Checked then
+    begin
+      orn:=ornlist[0];
+    end;
+  if orn then
+    begin
+     Panel3Click(panel3);
+     end else begin
+       Panel4Click(panel4);
+     end;
+end;
+
+procedure tform1.FillList;
+// Расчитать значения сторон картинки для полного заполнения листа
+// в первой компоновке   (для текущего листа)
+var
+  e :extended;
+  i :integer;
+begin
+    e:=showim[0].picture.Width/showim[0].picture.Height; // соотношение сторон картинки
+    if orn then
+      begin
+       if showim[0].picture.Width >= showim[0].picture.Height then
+         begin
+           i:=trunc(ver*e);
+           if i>gor then
+             begin
+               toprint[curlist-1].width:=i;
+               toprint[curlist-1].heigth:=ver;
+               exit;
+             end else begin
+               toprint[curlist-1].width:=gor;
+               toprint[curlist-1].heigth:=trunc(gor/e);
+               exit;
+             end;
+         end else begin
+            i:=gor div i;
+            if i>ver then
+              begin
+                toprint[curlist-1].width:=gor;
+                toprint[curlist-1].heigth:=i;
+                exit;
+              end else begin
+                toprint[curlist-1].width:=trunc(ver*e);
+                toprint[curlist-1].heigth:=ver;
+                exit;
+              end;
+         end;
+      end else begin
+         if showim[0].picture.Width >= showim[0].picture.Height then
+           begin
+            i:=trinc(gor/e);
+             if i>ver then
+               begin
+                 toprint[curlist-1].width:=gor;
+                 toprint[curlist-1].heigth:=i;
+                 exit;
+               end else begin
+                 toprint[curlist-1].width:=trunc(ver*e);
+                 toprint[curlist-1].heigth:=ver;
+                 exit;
+               end;
+           end else begin
+             i:=trunc(ver*e);
+           if i>gor then
+             begin
+               toprint[curlist-1].width:=i;
+               toprint[curlist-1].heigth:=ver;
+               exit;
+             end else begin
+               toprint[curlist-1].width:=gor;
+               toprint[curlist-1].heigth:=trunc(gor/e);
+               exit;
+             end;
+           end;
+      end;
  end;
 
 
@@ -1535,7 +1609,7 @@ begin
   noshowlabs:=false;
   form1.combobox1.ItemIndex:=cmbx;
   form1.combobox1.Text:=form1.combobox1.Items[cmbx];
-  orn:=OrnList[curlist];
+  if form1.checkbox4.Checked then orn:=OrnList[curlist-1] else orn:=OrnList[0];
   if orn then
     begin
        form1.panel3.Caption:='\/';
@@ -1831,6 +1905,11 @@ begin
   trackbar1.Position:=0;
 end;
 
+procedure TForm1.Button17Click(Sender: TObject);
+begin
+  ReLoadCompForCurList;
+end;
+
 
 procedure TForm1.Button3Click(Sender: TObject);
 // печать
@@ -1868,8 +1947,10 @@ var
    mrv, mrh, sm1, sm0: integer;
    kh, kv: extended;
    ImageRect: TRect;
+   f_orn: boolean;
 begin
-   if ornlist[curlist-1] then
+   if checkbox4.Checked then f_orn:=OrnList[curlist-1] else f_orn:=OrnList[0];
+   if f_orn then
      begin
        printer.Orientation:=poPortrait;
        pan_w:=frms[frm][0] * scl;
@@ -1883,7 +1964,7 @@ begin
    printer.Canvas.Clear;
    printer.Title:='pictures';
    //реальный размер заданной области печати
-   if ornlist[curlist-1] then
+   if f_orn then
     begin
       dphor:=trunc(printer.XDPI * (frms[frm][0] / 25.4)); // точек по горизонтали
       dpver:=trunc(printer.YDPI * (frms[frm][1] / 25.4)); // точек по вертикали
@@ -2140,7 +2221,7 @@ begin
   if curlist <> 1  then
     begin
       dec(curlist);
-      orn:=OrnList[curlist-1];
+      if checkbox4.Checked then orn:=OrnList[curlist-1] else orn:=OrnList[0];
         if orn then
           begin
              form1.panel3.Caption:='\/';
@@ -2175,7 +2256,7 @@ begin
   if curlist<>lists then
     begin
       inc(curlist);
-      orn:=OrnList[curlist-1];
+      if checkbox4.Checked then orn:=OrnList[curlist-1] else orn:=OrnList[0];
         if orn then
           begin
              form1.panel3.Caption:='\/';
@@ -2652,7 +2733,7 @@ begin
      begin
        setlength(ornlist, lists);
        for j:=lists-1 downto 1 do ornlist[j]:=ornlist[j-1];
-       ornlist[0]:=true;
+       ornlist[0]:=ornlist[1];
      end;
   showpictures;
 end;
@@ -2665,7 +2746,7 @@ begin
     begin
       inc(lists);
       setlength(ornlist, lists);
-      ornlist[lists-1]:=true;
+      ornlist[lists-1]:=ornlist[0];
     end;
   showpictures;
 end;
@@ -2725,6 +2806,7 @@ begin
   panel4.Caption:='';
   orn:=true;
   if length(ornlist)>0 then OrnList[curlist-1]:=orn;
+  if not checkbox4.Checked then ornlist[0]:=orn;
   ComboBox1Change(ComboBox1);
   ReLoadCompForCurList;
 end;
@@ -2749,6 +2831,7 @@ begin
   panel3.Caption:='';
   orn:=false;
   if length(ornlist)>0 then OrnList[curlist-1]:=orn;
+  if not checkbox4.Checked then ornlist[0]:=orn;
   ComboBox1Change(ComboBox1);
   ReLoadCompForCurList;
 end;
@@ -2828,7 +2911,7 @@ begin
   combobox1.Items.Add(lngn[lng, 12]);
   combobox1.Items.Add(lngn[lng, 13]);
   combobox1.Text:=combobox1.Items[frm];
-  label2.Caption:=labs[comp-1];
+  label2.Caption:=labs[comp];
   panel1.Caption:=Cap[frm];
   if lists > 0 then label5.Caption:=lngn[lng,5] + inttostr(curlist) + lngn[lng,6] + inttostr(lists)
      else label5.Caption:=lngn[lng, 4];
@@ -2895,6 +2978,10 @@ begin
          checkbox1.Caption:='Подписи';
          checkbox1.Hint:='Короткие подписи к картинкам';
          bitbtn12.Hint:='Вставить надпись';
+         checkbox4.Caption:='Независимая'+#13+'ориентация';
+         checkbox4.Hint:='Каждый лист может иметь свою ориентацию'+#13+'или как у первого листа';
+         button17.Caption:='Компоновать';
+         button17.Hint:='Повторить компоновку для этого листа';
          // main menu
          menuitem1.Caption:='Удалить это изображение';
          menuitem2.Caption:='Удалить, но оставить это место пустым';
@@ -2982,6 +3069,10 @@ begin
          checkbox1.Caption:='Captions';
          checkbox1.Hint:='Short captions for pictures';
          bitbtn12.Hint:='Insert inscription';
+         checkbox4.Caption:='Independent'+#13+'orientation';
+         checkbox4.Hint:='Each sheet can have its own orientation'+#13+'or both of the first sheet';
+         button17.Caption:='Compose';
+         button17.Hint:='Repeat the layout for this sheet';
          // main menu
          menuitem1.Caption:='Delete this image';
          menuitem2.Caption:='Remove, but leave this place empty';

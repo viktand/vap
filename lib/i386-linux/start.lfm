@@ -19222,9 +19222,9 @@ object Form1: TForm1
     end
   end
   object Image11: TImage
-    Left = 216
+    Left = 288
     Height = 72
-    Top = 520
+    Top = 547
     Width = 48
     Picture.Data = {
       1754506F727461626C654E6574776F726B477261706869636B04000089504E47
@@ -20834,7 +20834,7 @@ object Form1: TForm1
   object CheckBox1: TCheckBox
     Left = 195
     Height = 24
-    Top = 432
+    Top = 433
     Width = 109
     Caption = 'Все подписи'
     Font.Height = -12
@@ -20982,6 +20982,30 @@ object Form1: TForm1
     }
     OnClick = BitBtn12Click
     TabOrder = 30
+  end
+  object CheckBox4: TCheckBox
+    Left = 195
+    Height = 24
+    Top = 463
+    Width = 112
+    Caption = 'Независимая'
+    Checked = True
+    Font.Height = -12
+    OnChange = CheckBox4Change
+    ParentFont = False
+    State = cbChecked
+    TabOrder = 31
+  end
+  object Button17: TButton
+    Left = 195
+    Height = 26
+    Top = 517
+    Width = 112
+    Caption = 'Компоновать'
+    Font.Height = -12
+    OnClick = Button17Click
+    ParentFont = False
+    TabOrder = 32
   end
   object SDD1: TSelectDirectoryDialog
     left = 296

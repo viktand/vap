@@ -1,7 +1,7 @@
 object Form5: TForm5
-  Left = 409
+  Left = 323
   Height = 291
-  Top = 341
+  Top = 24
   Width = 627
   BorderIcons = []
   BorderStyle = bsDialog
@@ -32,7 +32,8 @@ object Form5: TForm5
         Top = 17
         Width = 453
         Alignment = taCenter
-        Caption = 'View And Print'#10'Программа быстрой компоновки и печати изображений.'#10'V 2.2 (30 may 2013)'#10#10'Автор Власов Андрей <viktand@bk.ru>'#10#10'Сайт программы viktand.ru'#10#10'Ограничений на некоммерческое использование и '#10'распространение нет.'
+        Caption = 'View And Print'#10'Программа быстрой компоновки и печати изображений.'#10'V 2.3 (12 june 2013)'#10#10'Автор Власов Андрей <viktand@bk.ru>'#10#10'Сайт программы viktand.ru'#10#10'Ограничений на некоммерческое использование и '#10'распространение нет.'
+        DragMode = dmAutomatic
         TabOrder = 0
       end
       object Image2: TImage
@@ -139,7 +140,7 @@ object Form5: TForm5
         Top = 17
         Width = 453
         Alignment = taCenter
-        Caption = 'View And Print'#10'The program for fast layout and printing images.'#10'V 2.2 (30 may 2013)'#10#10'Author Vlasov Andrey <viktand@bk.ru>'#10#10'Program website (russian) viktand.ru'#10#10'Restrictions on non-commercial use '#10'and distribution is not.'
+        Caption = 'View And Print'#10'The program for fast layout and printing images.'#10'V 2.3 (12 june 2013)'#10#10'Author Vlasov Andrey <viktand@bk.ru>'#10#10'Program website (russian) viktand.ru'#10#10'Restrictions on non-commercial use '#10'and distribution is not.'
         TabOrder = 0
       end
       object Image3: TImage
@@ -272,6 +273,16 @@ object Form5: TForm5
         Top = 15
         Width = 581
         Lines.Strings = (
+          '2.3 - 12.06.13'
+          ' Исправлен алгоритм полного заполнения листа картинкой;'
+          ' Добавлена возможность указать единую ориентацию для '
+          ' всех листов;'
+          ' Добавлена кнопка перекомпоновки текущего листа;'
+          ' Исправлены мелкие ошибки.'
+          ''
+          '2.2.2 - 04.06.13'
+          ' Исправлены мелкие ошибки, автоматическое поределение языка системы'
+          ''
           '2.2 - 31.05.13'
           'Добавлено'
           ' 1. Возможность перемещать картинки между листами'

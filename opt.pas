@@ -186,7 +186,9 @@ procedure tform3.setcheck;
 // установка чекбоксов по текущему состоянию интеграции
 var
   pt, p: string;
+  i, j: integer;
 begin
+  i:=0;
   p:=MyFolder+imuser;
   checkbox1.Enabled:=false;  checkbox1.Checked:=false;
   checkbox2.Enabled:=false;  checkbox2.Checked:=false;
@@ -237,6 +239,16 @@ begin
               checkbox4.Enabled:=true;
               if FileExists(pt+'/vap.desktop') then checkbox4.Checked:=true;
             end;
+        if checkbox1.Checked then inc(i);
+        if checkbox2.Checked then inc(i);
+        if checkbox3.Checked then inc(i);
+        if checkbox4.Checked then inc(i);
+        if checkbox5.Checked then inc(i);
+        if checkbox9.Checked then inc(i);
+        p:=form1.LoadSett('integ');
+        if p='' then p:='0';
+        j:=strtoint(p);
+        if i<>j then form1.SaveSett('integ', inttostr(i));
 end;
 
 procedure savecomp;
