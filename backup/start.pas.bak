@@ -1411,7 +1411,7 @@ begin
       end else begin
          if showim[0].picture.Width >= showim[0].picture.Height then
            begin
-            i:=trinc(gor/e);
+            i:=trunc(gor/e);
              if i>ver then
                begin
                  toprint[curlist-1].width:=gor;
@@ -2805,8 +2805,11 @@ begin
   panel3.Caption:='\/';
   panel4.Caption:='';
   orn:=true;
-  if length(ornlist)>0 then OrnList[curlist-1]:=orn;
-  if not checkbox4.Checked then ornlist[0]:=orn;
+  if length(ornlist)>0 then
+    begin
+     OrnList[curlist-1]:=orn;
+     if not checkbox4.Checked then ornlist[0]:=orn;
+    end;
   ComboBox1Change(ComboBox1);
   ReLoadCompForCurList;
 end;
@@ -2944,7 +2947,7 @@ begin
          CheckBox2.Caption:='Не увеличивать мелкие';
          CheckBox2.Hint:='Если снять эту галочку, то изначально мелкие картинки будут растягиваться до максимального возможного размера в соответствии с выбранной компоновкой.';
          CheckBox3.Caption:='Заполнить';
-         CheckBox3.Hint:='Расчитать поля отдельно для каждой картинки для полного заполнения ее места с учетом компоновки';
+         CheckBox3.Hint:='Расcчитать поля отдельно для каждой картинки для полного заполнения ее места с учетом компоновки';
          StaticText2.Hint:='Точное значение полей зависит от соотношения сторон картинки';
          StaticText2.Caption:='Поля между'+#13+'миниатюрами, mm';
          button8.Hint:='Точное значение полей зависит от соотношения сторон картинки';

@@ -55,6 +55,8 @@ type
     function GetGCinfo: boolean; // узнать есть ли интеграция в gnome-commander
     procedure Save; // Сохранить настройки
     procedure SetInte(b: boolean); // изменить количество подключенных fm: b=true -> добавить одну
+    function  GetNautilusVer: boolean; // получить версию наутилуса, true -> ver >=3
+    procedure SetCurOwner(fl: string); // установить для файла fl владельцем указанного пользователя
 
   private
     { private declarations }
@@ -317,9 +319,14 @@ begin                             // to Nauntilus
   if not flag then exit;
   p:=MyFolder+imuser;
   if RadioButton1.Checked then prnt:='Печать' else prnt:='Print';
-        pt:=p+'/.gnome2/nautilus-scripts';
-        if not(DirectoryExists(pt)) then pt:=p+'/.local/share/nautilus/scripts';
-            if checkbox1.Checked then
+        if GetNautilusVer then pt:=p+'/.local/share/nautilus/scripts'
+                          else pt:=p+'/.gnome2/nautilus-scripts';
+        if not(DirectoryExists(pt)) then
+           begin
+             CreateDir(pt);
+             SetCurOwner(pt);
+           end;
+        if checkbox1.Checked then
               begin
                 assignfile(fl, pt+'/'+prnt);
                 rewrite(fl);
@@ -328,6 +335,7 @@ begin                             // to Nauntilus
                 writeln(fl, '/usr/bin/vap $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS');
                 closefile(fl);
                 fpChmod (pt+'/'+prnt,&777);
+                if GetEnvironmentVariable('LOGNAME') = 'root' then SetCurOwner(pt+'/'+prnt);
               end else
               begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
@@ -340,6 +348,33 @@ begin                             // to Nauntilus
         1: showmessage('The configuration file Nautilus requested special privileges. Turn on the root.');
       end;
   end;
+end;
+
+function tform3.GetNautilusVer: boolean;
+var
+   AProcess: TProcess;
+   AStringList: TStringList;
+begin
+   AProcess := TProcess.Create(nil);
+   AStringList := TStringList.Create;
+   AProcess.CommandLine := 'nautilus --version';
+   AProcess.Options := AProcess.Options + [poWaitOnExit, poUsePipes];
+   AProcess.Execute;
+   AStringList.LoadFromStream(AProcess.Output);
+   result:=(ansipos('nautilus 3', AStringList[0])>0);
+   AStringList.Free;
+   AProcess.Free;
+end;
+
+procedure tform3.SetCurOwner(fl: string);
+var
+  AProcess: TProcess;
+begin
+  AProcess := TProcess.Create(nil);
+  AProcess.CommandLine := 'chown '+start.imuser+':'+start.imuser+' '+fl;
+  AProcess.Options := AProcess.Options + [poWaitOnExit];
+  AProcess.Execute;
+  AProcess.Free;
 end;
 
 procedure TForm3.CheckBox2Change(Sender: TObject);
@@ -371,6 +406,7 @@ begin
                   writeln(fl, 'MimeType=image');
                   writeln(fl, 'Name=' + prnt);
                   closefile(fl);
+                  if GetEnvironmentVariable('LOGNAME') = 'root' then SetCurOwner(pt+'/'+prnt+'.desktop');
               end else
               begin
                   if FileExists(pt+'/Печать.desktop') then deletefile(pt+'/Печать.desktop');
@@ -406,6 +442,7 @@ begin
                 writeln(fl, '/usr/bin/vap $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS');
                 closefile(fl);
                 fpChmod (pt+'/'+prnt,&777);
+                if GetEnvironmentVariable('LOGNAME') = 'root' then SetCurOwner(pt+'/'+prnt);
               end else
               begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
@@ -449,6 +486,7 @@ begin
            AProcess.Options := AProcess.Options + [poWaitOnExit];   // ждать окончания
            AProcess.Execute;
            AProcess.Free;
+           if GetEnvironmentVariable('LOGNAME') = 'root' then SetCurOwner(pt+'/vap.desktop');
         end else
            begin
              if FileExists(pt+'/vap.desktop') then deletefile(pt+'/vap.desktop');
@@ -506,6 +544,7 @@ begin
         AProcess.Options := AProcess.Options + [poWaitOnExit];   // ждать окончания
         AProcess.Execute;
         AProcess.Free;
+        if GetEnvironmentVariable('LOGNAME') = 'root' then SetCurOwner(pt+'/fav-apps');
   Except
       case start.lng of
         0: showmessage('Конфигурационный файл Gnome-Commander потребовал особых прав доступа. Включите root.');
@@ -569,6 +608,7 @@ begin                             // to Nemo
                 writeln(fl, '/usr/bin/vap $NEMO_SCRIPT_SELECTED_FILE_PATHS');
                 closefile(fl);
                 fpChmod (pt+'/'+prnt,&777);
+                if GetEnvironmentVariable('LOGNAME') = 'root' then SetCurOwner(pt+'/'+prnt);
               end else
               begin
                  if FileExists(pt+'/Печать') then deletefile(pt+'/Печать');
