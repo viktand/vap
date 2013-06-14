@@ -474,7 +474,7 @@ begin
   loadconfig;
   if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
   setcomp(comp); // установить компоновку
-  if not(orn) then panel4click(panel4);
+  if not(orn) then panel4click(panel4) else panel3click(panel3)
   if lng=1 then setlng;
   setbtnpos;  // расстановка словестных кнопок
 end;
@@ -2833,8 +2833,11 @@ begin
   panel4.Caption:='\/';
   panel3.Caption:='';
   orn:=false;
-  if length(ornlist)>0 then OrnList[curlist-1]:=orn;
-  if not checkbox4.Checked then ornlist[0]:=orn;
+  if length(ornlist)>0 then
+    begin
+     OrnList[curlist-1]:=orn;
+     if not checkbox4.Checked then ornlist[0]:=orn;
+    end;
   ComboBox1Change(ComboBox1);
   ReLoadCompForCurList;
 end;

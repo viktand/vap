@@ -474,7 +474,7 @@ begin
   loadconfig;
   if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
   setcomp(comp); // установить компоновку
-  if not(orn) then panel4click(panel4);
+  if not(orn) then panel4click(panel4) else panel3click(panel3);
   if lng=1 then setlng;
   setbtnpos;  // расстановка словестных кнопок
 end;
