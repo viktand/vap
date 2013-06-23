@@ -114,6 +114,7 @@ type
     Panel5: TPanel;
     Panel6: TPanel;
     Panel7: TPanel;
+    Panel8: TPanel;
     PopupMenu1: TPopupMenu;
     PopupMenu2: TPopupMenu;
     RadioButton1: TRadioButton;
@@ -192,10 +193,10 @@ type
      procedure Panel4Click(Sender: TObject);
      procedure PopupMenu1Popup(Sender: TObject);
      procedure PopupMenu2Popup(Sender: TObject);
-     function steplist(i: integer): integer; // шаг листания картинок в зависит от компоновки
-     procedure AddPict(p: string); // Загрузить картинку в буфер для компоновки p - путь к файлу
-     procedure ShowPictures; //Показать картинки текущего листа
-     procedure List1; // создать лист  с 1 картинкой  (далее процедуры аналогично по смыслу)
+     function  steplist(i: integer): integer; // шаг листания картинок в зависит от компоновки
+     procedure AddPict(p: string);            // Загрузить картинку в буфер для компоновки p - путь к файлу
+     procedure ShowPictures;                  //Показать картинки текущего листа
+     procedure List1;                         // создать лист  с 1 картинкой  (далее процедуры аналогично по смыслу)
      procedure List2;
      procedure List3;
      procedure List4;
@@ -208,17 +209,16 @@ type
      procedure Button1Click(Sender: TObject); // показать картинку по первому варианту компоновки
      procedure OpenFolder;
      procedure Button4Click(Sender: TObject); // Открыть папку (если вход без параметров)
-     procedure SetSize(im: timage); // Подогнать размер image под картинку
-     procedure SetPos(im: timage); // уточнить позицию image
-     function GetmX: integer;
-     function GetmY: integer;
-     procedure DrawList2; // Нарисовать лист сразу в принтере
-     procedure showlistnum; // показать номер текущего листа предпросмотра и сколько всего листов
-     procedure EndClick(im: timage); // завершение перехода на новую компоновку (общее для всех)
-     procedure FillList; // Заполнение листа картинкой
+     procedure SetSize(im: timage);           // Подогнать размер image под картинку
+     procedure SetPos(im: timage);            // уточнить позицию image
+     function  GetmX: integer;
+     function  GetmY: integer;
+     procedure DrawList2;                     // Нарисовать лист сразу в принтере
+     procedure showlistnum;                   // показать номер текущего листа предпросмотра и сколько всего листов
+     procedure EndClick(im: timage);          // завершение перехода на новую компоновку (общее для всех)
+     procedure FillList;                      // Заполнение листа картинкой
      procedure TrackBar1Change(Sender: TObject);
-     procedure TrackBar3MouseUp(Sender: TObject; Button: TMouseButton;
-       Shift: TShiftState; X, Y: Integer);
+     procedure TrackBar3MouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
      procedure MoveStart(Sender: TObject; Button: TMouseButton;Shift: TShiftState; X, Y: Integer); // процедуры перемещения showp[0]
      procedure MoveNow(Sender: TObject; Shift: TShiftState; X, Y: Integer);
      procedure MoveEnd(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -228,46 +228,51 @@ type
      procedure MoveStartLbs(Sender: TObject; Button: TMouseButton;Shift: TShiftState; X, Y: Integer); // процедуры перемещения надписей
      procedure MoveNowLbs(Sender: TObject; Shift: TShiftState; X, Y: Integer);
      procedure MoveEndLbs(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-     procedure GetUserSize; // установить произвольные размеры листа
-     procedure EndFrms; // завершение изменения формата листа
-     procedure LoadFiles; // загрузка файлов из командной строки, т.е. переданных как параметры запуска (выделенных мышкой перед запуском)
-     procedure SetPg(p: string); // Установить формат бумаги из командной строки при запуске программы
-     procedure SetPg2(p: string); // -//- для пользовательского формата
-     procedure SetComp(index: integer); // установка начальной компоновки
-     procedure SetLng; // Установка языка
-     procedure SetWords; // Заготовки фраз на разных языках
+     procedure MoveStartPanel(Sender: TObject; Button: TMouseButton;Shift: TShiftState; X, Y: Integer); // процедуры перемещения панели предпросмотра
+     procedure MoveEndPanel(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+     procedure GetUserSize;                 // установить произвольные размеры листа
+     procedure EndFrms;                     // завершение изменения формата листа
+     procedure LoadFiles;                   // загрузка файлов из командной строки, т.е. переданных как параметры запуска (выделенных мышкой перед запуском)
+     procedure SetPg(p: string);            // Установить формат бумаги из командной строки при запуске программы
+     procedure SetPg2(p: string);           // -//- для пользовательского формата
+     procedure SetComp(index: integer);     // установка начальной компоновки
+     procedure SetLng;                      // Установка языка
+     procedure SetWords;                    // Заготовки фраз на разных языках
      procedure SaveSett(Key, Word: string); // Сoхранить в файле конфигурации значение word c ключем key
-     Procedure ReadSett2; // прочитать существующий файл конфигурации
-     Procedure WriteSett2; // записать новые значения в файл конфигурации
-     function LoadSett(key: string):string; // получить значение ключа key
-     procedure LoadConfig; // загрузить конфигурацию из файла
-     function sign(n: integer): integer;
-     procedure GetIm; // Узнать пользователя
-     procedure GetCurz; // расчитать значение curz и при необходимости поднять картинки
-     function EscToUTF8(word: string):string; // преобразование строки из escape последовательности в UTF8
-     function HexToInt(ch: char):integer; // преобразование символа из шестнадцатеричного счисления в десятичное
-     procedure setbtnpos; // установка координат буквенных кнопок
-     procedure AddLbs(txt: string); // Создать новую надпись
-     procedure ShowLabs; // показать (обновить) надписи текущего листа
+     Procedure ReadSett2;                   // прочитать существующий файл конфигурации
+     Procedure WriteSett2;                  // записать новые значения в файл конфигурации
+     function  LoadSett(key: string):string;// получить значение ключа key
+     procedure LoadConfig;                  // загрузить конфигурацию из файла
+     function  Sign(n: integer): integer;   // знак числа n
+     procedure GetIm;                       // Узнать пользователя
+     procedure GetCurz;                     // расчитать значение curz и при необходимости поднять картинки
+     function  EscToUTF8(word: string):string; // преобразование строки из escape последовательности в UTF8
+     function  HexToInt(ch: char):integer;  // преобразование символа из шестнадцатеричного счисления в десятичное
+     procedure setbtnpos;                   // установка координат буквенных кнопок
+     procedure AddLbs(txt: string);         // Создать новую надпись
+     procedure ShowLabs;                    // показать (обновить) надписи текущего листа
      procedure AddNewLabsPicture(index: integer); // создать новый Pictutre, привязанный к надписи № index
-     procedure DeleteLabs(index: integer); // удалить надпись № index
-     procedure EnableButtons; // установить доступность кнопок
-     procedure LoadCompPicture; // Установить титульную картинку компоновки (при загрузке сеанса)
-     procedure ClearSNS; // очистить память от текущего сеанса
+     procedure DeleteLabs(index: integer);  // удалить надпись № index
+     procedure EnableButtons;               // установить доступность кнопок
+     procedure LoadCompPicture;             // Установить титульную картинку компоновки (при загрузке сеанса)
+     procedure ClearSNS;                    // очистить память от текущего сеанса
      procedure ReSetLabelPos(index: integer); //переустановка подписи
-     procedure SaveDxy(index: integer); // сохранить относительное положение подписи
-     procedure getint; // проверка интеграции
-     procedure ClearList; // очистить лист предпросмотра
-     function CreateImage: integer; //  создать на листе предпросмотра новый объект для вывода картинки и подписи к ней  - получить его индекс
-     function GetIndexImage(nm: string): integer; // получить индекс toprint'а, связанного с картикой name
-     function Img(index: integer): integer; // получить индекс showim по индексу toprint
-     procedure SetPositions; // расчитать начальные координаты картинок для выбранной компоновки
-     function maxZ: integer; // расчитать макисмальный z-порядок для текущего листа
-     procedure ReLoadComp; // перезагрузить компоновку и обновить картинку
-     procedure ReLoadCompForCurList; // перезагрузить компоновку и обновить картинку для текущего листа
-     procedure NewList; // Добавить новый элемент в массиы ориентаций листов (если надо)
-     procedure SetDefLng; // Установить язык пограммы как в системе
-
+     procedure SaveDxy(index: integer);     // сохранить относительное положение подписи
+     procedure getint;                      // проверка интеграции
+     procedure ClearList;                   // очистить лист предпросмотра
+     function  CreateImage: integer;        //  создать на листе предпросмотра новый объект для вывода картинки и подписи к ней  - получить его индекс
+     function  GetIndexImage(nm: string): integer; // получить индекс toprint'а, связанного с картикой name
+     function  Img(index: integer): integer; // получить индекс showim по индексу toprint
+     procedure SetPositions;                // расчитать начальные координаты картинок для выбранной компоновки
+     function  maxZ: integer;               // расчитать макисмальный z-порядок для текущего листа
+     procedure ReLoadComp;                  // перезагрузить компоновку и обновить картинку
+     procedure ReLoadCompForCurList;        // перезагрузить компоновку и обновить картинку для текущего листа
+     procedure NewList;                     // Добавить новый элемент в массиы ориентаций листов (если надо)
+     procedure SetDefLng;                   // Установить язык пограммы как в системе
+     procedure SclForms(Sc: integer);       // Масштабирование окна программы, Sc - % от нормального размера
+     procedure SetScrollBars;               // установить полосы прокрутки
+     function  GetScreenSize: integer;      // Установить масштаб (получить значение) главного окна исходя из размеров экрана
+     procedure BuildLists;                  // построить все листы
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -413,9 +418,10 @@ type
     lbscou         : integer; // количество надписей
     sclfont        : integer; // масштаб для шрифта при предпросмотре, для А4 = 2
     noshowlabs     : boolean; // запрет работы процедуры ShowLabs  true - не исполнять
-    sesName        : string; // имя открытого сеанса
+    sesName        : string;  // имя открытого сеанса
     indx           : integer; // переменная для временного хранения индекса при передаче параметров
-    fff            : integer;
+    sclform        : boolean; // признак того, что экран был подвергнут масшабированию (true)
+    sclp           : integer; // % масштабирования экрана
 
 
 implementation
@@ -435,9 +441,11 @@ begin
   noshowlabs:=false;
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
-  userprinter:=loadsett('printer');          fff:=0;
+  userprinter:=loadsett('printer');
   form1.BorderStyle:=bsSingle;
   flagmove:=false;
+  sclform:=false;
+  sclp:=100;
   sesName:='';
   sclfont:=2;
   lbscou:=0;
@@ -454,6 +462,7 @@ begin
   buf := 0;
   setwords;
   setlng;
+  panel1.Parent:=panel8;
   // labs[0] и labs[1] присваиваются в процедуре setlng
   labs[2]:='1 x 2';
   labs[3]:='1 x 3';
@@ -474,11 +483,208 @@ begin
   loadconfig;
   if paramstr(1) <> '' then loadfiles; // загрузка параметров, т.е. выделенных файлов
   setcomp(comp); // установить компоновку
-  if not(orn) then panel4click(panel4) else panel3click(panel3)
+  if not(orn) then panel4click(panel4) else panel3click(panel3);
   if lng=1 then setlng;
   setbtnpos;  // расстановка словестных кнопок
+  sclforms(getscreensize); // получить размер экрана и установить масштаб
 end;
 
+procedure tform1.BuildLists;
+begin
+  num:=curlist;
+  for curlist:=1 to lists do ShowPictures;
+  curlist:=num;
+  ShowPictures;
+end;
+
+procedure tform1.SetScrollBars;
+begin
+  panel1.Top:=0;
+  panel1.Left:=0;
+  if panel1.Height<panel8.Height then
+    begin
+      panel1.Top:=(panel8.Height-panel1.Height) div 2;
+      panel1.left:=(panel8.Width-panel1.Width) div 2;
+    end;
+end;
+
+procedure tform1.SclForms(Sc: integer);
+var
+  e: extended;
+begin
+  e:=Sc/100;
+  form1.Height:=trunc(745*e);
+  form1.Width:=trunc(773*e);
+  groupbox1.Height:=trunc(655*e);
+  groupbox1.Width:=trunc(179*e);
+  form1.Font.Size:=trunc(10*e);
+  panel2.Height:=trunc(441*e);
+  panel2.Width:=trunc(140*e);
+  panel2.top:=trunc(6*e);
+  panel2.left:=trunc(19*e);
+  image1.Height:=trunc(71*e);
+  image1.Width:=trunc(50*e);
+  image1.top:=trunc(9*e);
+  image1.left:=trunc(9*e);
+  image2.Height:=trunc(71*e);
+  image2.Width:=trunc(50*e);
+  image2.top:=trunc(9*e);
+  image2.left:=trunc(78*e);
+  image3.Height:=trunc(71*e);
+  image3.Width:=trunc(50*e);
+  image3.top:=trunc(94*e);
+  image3.left:=trunc(9*e);
+  image4.Height:=trunc(71*e);
+  image4.Width:=trunc(50*e);
+  image4.top:=trunc(94*e);
+  image4.left:=trunc(78*e);
+  image5.Height:=trunc(71*e);
+  image5.Width:=trunc(50*e);
+  image5.top:=trunc(182*e);
+  image5.left:=trunc(9*e);
+  image6.Height:=trunc(71*e);
+  image6.Width:=trunc(50*e);
+  image6.top:=trunc(182*e);
+  image6.left:=trunc(78*e);
+  image7.Height:=trunc(71*e);
+  image7.Width:=trunc(50*e);
+  image7.top:=trunc(270*e);
+  image7.left:=trunc(9*e);
+  image8.Height:=trunc(120*e);
+  image8.Width:=trunc(84*e);
+  image8.top:=trunc(80*e);
+  image8.left:=trunc(224*e);
+  image9.Height:=trunc(71*e);
+  image9.Width:=trunc(50*e);
+  image9.top:=trunc(270*e);
+  image9.left:=trunc(78*e);
+  image10.Height:=trunc(71*e);
+  image10.Width:=trunc(50*e);
+  image10.top:=trunc(358*e);
+  image10.left:=trunc(9*e);
+  image12.Height:=trunc(71*e);
+  image12.Width:=trunc(50*e);
+  image12.top:=trunc(358*e);
+  image12.left:=trunc(78*e);
+  label7.top:=trunc(455*e);
+  label7.left:=trunc(38*e);
+  combobox1.Height:=trunc(29*e);
+  combobox1.Width:=trunc(152*e);
+  combobox1.top:=trunc(474*e);
+  combobox1.left:=trunc(14*e);
+  label8.top:=trunc(505*e);
+  label8.left:=trunc(25*e);
+  panel3.Height:=trunc(60*e);
+  panel3.Width:=trunc(42*e);
+  panel3.top:=trunc(524*e);
+  panel3.left:=trunc(31*e);
+  panel4.Height:=trunc(42*e);
+  panel4.Width:=trunc(60*e);
+  panel4.top:=trunc(533*e);
+  panel4.left:=trunc(94*e);
+  checkbox2.top:=trunc(591*e);
+  checkbox2.left:=trunc(3*e);
+  label1.Width:=trunc(131*e);
+  label1.top:=trunc(64*e);
+  label1.left:=trunc(198*e);
+  label2.Width:=trunc(139*e);
+  label2.top:=trunc(200*e);
+  label2.left:=trunc(195*e);
+  panel7.Height:=trunc(150*e);
+  panel7.Width:=trunc(291*e);
+  panel7.top:=trunc(87*e);
+  panel7.left:=trunc(16*e);
+  button6.Height:=trunc(27*e);
+  button6.Width:=trunc(102*e);
+  button6.top:=trunc(109*e);
+  button6.left:=trunc(167*e);
+  button16.Height:=trunc(27*e);
+  button16.Width:=trunc(102*e);
+  button16.top:=trunc(109*e);
+  button16.left:=trunc(23*e);
+  trackbar1.Height:=trunc(46*e);
+  trackbar1.Width:=trunc(259*e);
+  trackbar1.top:=trunc(48*e);
+  trackbar1.left:=trunc(14*e);
+  statictext2.Height:=trunc(40*e);
+  statictext2.Width:=trunc(144*e);
+  statictext2.top:=trunc(240*e);
+  statictext2.left:=trunc(192*e);
+  button9.Height:=trunc(25*e);
+  button9.Width:=trunc(25*e);
+  button9.top:=trunc(286*e);
+  button9.left:=trunc(198*e);
+  button8.Height:=trunc(25*e);
+  button8.Width:=trunc(25*e);
+  button8.top:=trunc(286*e);
+  button8.left:=trunc(304*e);
+  label12.Width:=trunc(80*e);
+  label12.top:=trunc(286*e);
+  label12.left:=trunc(224*e);
+  label12.Font.Size:=trunc(15*e);
+  trackbar3.Height:=trunc(48*e);
+  trackbar3.Width:=trunc(144*e);
+  trackbar3.top:=trunc(344*e);
+  trackbar3.left:=trunc(192*e);
+  checkbox3.top:=trunc(400*e);
+  checkbox3.left:=trunc(195*e);
+  checkbox1.top:=trunc(433*e);
+  checkbox1.left:=trunc(195*e);
+  checkbox4.top:=trunc(463*e);
+  checkbox4.left:=trunc(195*e);
+  button17.Height:=trunc(26*e);
+  button17.Width:=trunc(112*e);
+  button17.top:=trunc(517*e);
+  button17.left:=trunc(195*e);
+  panel8.Height:=trunc(panel8.Height*(100/sclp)*e);
+  panel8.Width:=trunc(panel8.Width*(100/sclp)*e);
+  panel8.top:=trunc(panel8.top*(100/sclp)*e)+1;
+  panel8.left:=trunc(336*e);
+  label6.Width:=trunc(87*e);
+  label6.top:=trunc(686*e);
+  label6.left:=trunc(344*e);
+  label6.Font.Size:=trunc(14*e);
+  label5.Width:=trunc(419*e);
+  label5.top:=trunc(56*e);
+  label5.left:=trunc(344*e);
+  Sclp:=Sc;
+  if Sc<>100 then sclform:=true;
+  setscrollbars;
+end;
+
+function tform1.GetScreenSize: integer;
+// предложить вариант масштаба главного окна исходя из размеров экрана
+var
+   AProcess   : TProcess;
+   AStringList: TStringList;
+   i          : integer;
+   s          : string;
+begin
+   result:=100;
+   s:= LoadSett('scale');
+   if s<>'' then
+     begin
+       result:=strtoint(s);
+       exit;
+     end;
+   AProcess := TProcess.Create(nil);
+   AStringList := TStringList.Create;
+   AProcess.CommandLine := 'xdpyinfo -ext XINERAMA';
+   AProcess.Options := AProcess.Options + [poWaitOnExit, poUsePipes];
+   AProcess.Execute;
+   AStringList.LoadFromStream(AProcess.Output);
+   i:=AStringList.Count;
+   for i:=0 to AStringList.Count-1 do     //  head #0: 1280x1024 = 100%
+     begin
+       if ansipos('#0', AStringList[i])>0 then
+         begin
+           if ansipos('1280x1024', AStringList[i])>0 then result:=100;
+           if ansipos('1024x600', AStringList[i])>0 then result:=80;
+         end;
+     end;
+   AStringList.Free;
+   AProcess.Free;
+ end;
 
 procedure tform1.SetDefLng; // установить язык программы как в системе
 // точнее или русский или английский
@@ -496,7 +702,7 @@ begin
    lng:=1;
    for i:=0 to AStringList.Count-1 do
      begin
-       if copy(AStringList[i], 6, 5)='ru_RU' then lng:=0;
+       if ansipos('ru_RU', AStringList[i])>0 then lng:=0;
      end;
    AStringList.Free;
    AProcess.Free;
@@ -539,20 +745,44 @@ procedure tform1.setbtnpos; // раскидать кнопки по своим �
 begin
   button5.Top:=0;
   button5.left:=0;
+  button5.Width:=trunc(106*(sclp/100));
+  button5.Height:=trunc(35*(sclp/100));
+  button5.Font.Size:=trunc(8*(sclp/100));
   button4.Top:=0;
-  button4.left:=105;
+  button4.left:=trunc(105*(sclp/100));
+  button4.Width:=trunc(106*(sclp/100));
+  button4.Height:=trunc(35*(sclp/100));
+  button4.Font.Size:=trunc(8*(sclp/100));
   button1.Top:=0;
-  button1.left:=210;
+  button1.left:=trunc(210*(sclp/100));
+  button1.Width:=trunc(51*(sclp/100));
+  button1.Height:=trunc(35*(sclp/100));
+  button1.Font.Size:=trunc(8*(sclp/100));
   button2.Top:=0;
-  button2.left:=260;
+  button2.left:=trunc(260*(sclp/100));
+  button2.Width:=trunc(51*(sclp/100));
+  button2.Height:=trunc(35*(sclp/100));
+  button2.Font.Size:=trunc(8*(sclp/100));
   button3.Top:=0;
-  button3.left:=310;
+  button3.left:=trunc(310*(sclp/100));
+  button3.Width:=trunc(106*(sclp/100));
+  button3.Height:=trunc(35*(sclp/100));
+  button3.Font.Size:=trunc(8*(sclp/100));
   button12.Top:=0;
-  button12.left:=415;
+  button12.left:=trunc(415*(sclp/100));
+  button12.Width:=trunc(106*(sclp/100));
+  button12.Height:=trunc(35*(sclp/100));
+  button12.Font.Size:=trunc(8*(sclp/100));
   button13.Top:=0;
-  button13.left:=520;
+  button13.left:=trunc(520*(sclp/100));
+  button13.Width:=trunc(106*(sclp/100));
+  button13.Height:=trunc(35*(sclp/100));
+  button13.Font.Size:=trunc(8*(sclp/100));
   button7.Top:=0;
-  button7.left:=625;
+  button7.left:=trunc(625*(sclp/100));
+  button7.Width:=trunc(106*(sclp/100));
+  button7.Height:=trunc(35*(sclp/100));
+  button7.Font.Size:=trunc(8*(sclp/100));
 end;
 
 procedure tform1.getint;
@@ -632,7 +862,9 @@ begin
   s:=loadsett('sml');
   CheckBox2.Checked:=(s='');
   flagsett:=true;
-  if loadsett('lang')='' then setdeflng; // установить язык как в системе
+  s:=loadsett('lang');
+  if s='' then setdeflng // установить язык как в системе
+          else lng:=strtoint(s);
 end;
 
 procedure tForm1.LoadCompPicture;
@@ -947,6 +1179,7 @@ var
   i: integer;
   AProcess: TProcess;
 begin
+  if imuser='' then exit;
   errt:='Подключение к файлу конфигурации для сохранения';
   assignfile(fl, myfolder + imuser+'/.config/vap/vapsett');
   errt:='Открытие файла конфигурации для перезаписи';
@@ -1043,6 +1276,25 @@ begin
     end;
 end;
 
+procedure tform1.MoveStartPanel(Sender: TObject; Button: TMouseButton;Shift: TShiftState; X, Y: Integer);
+// нажатие на кнопку мыши на панеле
+begin
+  if button=mbLeft then
+    begin
+      (sender as tpanel).Cursor:=crsizeall;
+      flagmove3:=true;
+      ttx:=x;
+      tty:=y;
+    end;
+end;
+
+procedure tform1.MoveEndPanel(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+// отпускание кнопки мыши на панеле
+begin
+  flagmove3:=false;
+  (sender as tpanel).Cursor:=crdefault;
+end;
+
 procedure tform1.MoveEndLbs(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // отпускание кнопки мыши на надписи
 begin
@@ -1054,6 +1306,8 @@ end;
 
 procedure tform1.MoveEnd(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // отпускание кнопки мыши
+var
+    i, j: integer;
 begin
   flagmove:=false;
   (sender as timage).Cursor:=crdefault;
@@ -1061,6 +1315,8 @@ end;
 
 procedure tform1.MoveEndLab(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 // отпускание кнопки мыши на подписи
+var
+    i, j: integer;
 begin
   flagmove2:=false;
   (sender as tlabel).Cursor:=crdefault;
@@ -1103,9 +1359,8 @@ begin
       showim[i].caption.top:=(sender as timage).top + dify;
       toprint[num].left:=(sender as timage).Left;
       toprint[num].top:=(sender as timage).Top;
-      toprint[num].xl:=showim[i].caption.Left;
-      toprint[num].yl:=showim[i].caption.top;
-      SaveDxy(num);
+      if toprint[num].xl<>-100 then toprint[num].xl:=showim[i].caption.Left;
+      if toprint[num].yl<>-100 then toprint[num].yl:=showim[i].caption.top;
     end;
 end;
 
@@ -1165,6 +1420,7 @@ begin
   sndr:=(sender as tpopupmenu).PopupComponent;
 end;
 
+
 procedure TForm1.TrackBar1Change(Sender: TObject);
 // изменение размера image
 var
@@ -1214,7 +1470,7 @@ procedure tform1.SetSize(im: timage);
 // Точная подгонка размера timage под место
 var
   a, b, w, h: extended;
-  r: integer;
+  r         : integer;
 begin
   a := im.Picture.Width;
   b := im.Picture.Height;
@@ -1234,8 +1490,8 @@ begin
      im.Width:=toprint[num].width;
      im.Height:=toprint[num].heigth;
     end;
-  toprint[num].dxl:=toprint[num].dxl-(toprint[num].heigth - im.Height);
-  toprint[num].dyl:=toprint[num].dyl-(toprint[num].width - im.Width);
+  //toprint[num].dxl:=toprint[num].dxl-(toprint[num].heigth - im.Height);
+  //toprint[num].dyl:=toprint[num].dyl-(toprint[num].width - im.Width);
 end;
 
 function tform1.GetmX: integer;
@@ -1471,13 +1727,18 @@ begin
    panel1.Caption:=Cap[frm];
    if orn then begin gor:=frms[frm][0] * scl; ver:=scl*frms[frm][1]; end
               else begin gor:=frms[frm][1] * scl; ver:=scl*frms[frm][0]; end;
+   panel8.Width:=trunc(gor*(sclp/100));
+   panel8.Height:=trunc(ver*(sclp/100));
+   panel8.top:=trunc(((594 - ver) div 2 + 80)*(sclp/100));
+   form1.Width := trunc((773 + (gor - 420))*(sclp/100));
+   if form1.Width<trunc(700*(sclp/100)) then form1.Width:=trunc(700*(sclp/100));
+   label5.Width:=trunc(gor*(sclp/100));
+   label5.Top:= panel8.Top - trunc(24*(sclp/100));
+   panel1.Top:=0;
+   panel1.Left:=0;
    panel1.Width:=gor;
    panel1.Height:=ver;
-   panel1.top:=(594 - ver) div 2 + 80;
-   form1.Width := 773 + (gor - 420);
-   if form1.Width<700 then form1.Width:=700;
-   label5.Width:=gor;
-   label5.Top:= panel1.Top - 24;
+   setscrollbars;
 end;
 
 function tobool(i: integer): boolean;
@@ -1918,6 +2179,7 @@ var
   sh: integer;
 begin
  sh:=curlist;
+ buildlists; // построить все листы
   if userprinter<>'' then
     begin
       combobox2.Items:=printer.Printers;
@@ -1978,8 +2240,8 @@ begin
     end;
    mrv:= printer.PaperSize.Height - printer.PageHeight; // непечатные поля слева
    mrh:= printer.PaperSize.Width - printer.PageWidth; // непечатные поля сверху
-   kh := (dphor-mrh) / pan_w; // масштаб между предпросмотром и листом
-   kv := (dpver-mrv) / pan_h; // масштаб между предпросмотром и листом
+   kh := ((dphor-mrh) / pan_w);  // масштаб между предпросмотром и листом
+   kv := ((dpver-mrv) / pan_h);  // масштаб между предпросмотром и листом
 
    // сортировка миниатюр по z-порядку и их прорисовка в принтере
    z:=maxZ;  //"глубина" картинки, т.е. максимальный z
@@ -2072,7 +2334,7 @@ end;
 procedure tform1.ShowPictures; // показать картинки (с привязкой к листу)
 var
   i, j: integer;
-  k: integer;
+  k   : integer;
 begin
   clearList;  // очистить лист
   k:=0;
@@ -2098,6 +2360,14 @@ begin
           j:=CreateImage; //добавить пустую картинку на лист, j - ee индекс
           showim[j].picture.Picture:=toprint[i].pct;
           showim[j].index:=i;
+          showim[j].caption.Tag:=1;
+          showim[j].caption.Font.Name:=toprint[i].fnt_Name;
+          showim[j].caption.Font.Size:=toprint[i].fnt_Size div scl;
+          showim[j].caption.Font.Style:=toprint[i].fnt_Style;
+          showim[j].caption.Font.Color:=toprint[i].fnt_Color;
+          showim[j].caption.Parent := panel1;
+          showim[j].caption.Enabled:=true;
+          showim[j].caption.Caption:=toprint[i].comm;
           if toprint[i].show then // картинка уже была показана, просто повторить
             begin
               showim[j].picture.Left:=toprint[i].left;
@@ -2105,7 +2375,7 @@ begin
               showim[j].picture.Height:=toprint[i].heigth;
               showim[j].picture.Width:=toprint[i].width;
               showim[j].picture.Tag:=toprint[i].z;
-            end else
+             end else
             begin
               if k< steplist(comp) then
                 begin
@@ -2127,35 +2397,14 @@ begin
               toprint[i].top:=showim[j].picture.Top;
               toprint[i].heigth:=showim[j].picture.Height;
               toprint[i].width:=showim[j].picture.Width;
-              toprint[i].yl:= -100;
-              toprint[i].xl:= -100;
+              toprint[i].dyl:=toprint[i].heigth;
+              toprint[i].dxl:=trunc((toprint[i].left+(toprint[i].Width-(showim[j].caption.Width)) / 2)-toprint[i].left);
             end;
-          showim[j].caption.Visible:=false;
-          if toprint[i].showcomm or checkbox1.Checked then // показать подпись
-            begin
-                showim[j].caption.Tag:=1;
-                showim[j].caption.Font.Name:=toprint[i].fnt_Name;
-                showim[j].caption.Font.Size:=toprint[i].fnt_Size div 2;
-                showim[j].caption.Font.Style:=toprint[i].fnt_Style;
-                showim[j].caption.Font.Color:=toprint[i].fnt_Color;
-                showim[j].caption.Parent := panel1;
-                showim[j].caption.Visible:=true;
-                showim[j].caption.Enabled:=true;
-                showim[j].caption.Caption:=toprint[i].comm;
-                if toprint[i].yl= -100 then
-                  begin
-                    showim[j].caption.Top:=showim[j].picture.top+showim[j].picture.Height;
-                    toprint[i].yl:=showim[j].caption.Top;
-                    toprint[i].dyl:=toprint[i].yl-toprint[i].top;
-                  end else  showim[j].caption.Top:=toprint[i].yl;
-                if toprint[num].xl= -100 then
-                  begin
-                    showim[j].caption.Left:=showim[j].picture.left+(showim[j].picture.Width-showim[j].caption.Width) div 2;
-                    toprint[i].xl:=showim[j].caption.Left;
-                    toprint[i].dxl:=toprint[i].xl-toprint[i].left;
-                  end else  showim[j].caption.left:=toprint[i].xl;
-                ReSetLabelPos(i);  //переустановка подписи для ее пропорционального смещения при коррекции картинки
-              end;
+          toprint[i].xl:=toprint[i].left+toprint[i].dxl;
+          toprint[i].yl:=toprint[i].top+toprint[i].dyl;
+          showim[j].caption.Top:=toprint[i].yl;
+          showim[j].caption.left:=toprint[i].xl;
+          showim[j].caption.Visible:=(toprint[i].showcomm or checkbox1.Checked);
          end;
     end;
   ShowListNum;
@@ -2798,6 +3047,11 @@ begin
       (panel1.FindComponent(tstr) as tlabel).Top:=Y-tty;
       (panel1.FindComponent(tstr) as tlabel).Left:=X-ttx;
     end;
+     if flagmove3 then
+    begin
+      panel1.Left:=panel1.Left + (x-ttx);
+      panel1.Top:=panel1.Top + (y-tty);
+    end;
 end;
 
 procedure TForm1.Panel3Click(Sender: TObject);
@@ -2947,7 +3201,7 @@ begin
          GroupBox1.Caption:='Компоновка';
          Label7.Caption:='Формат листа';
          Label8.Caption:='Ориентация листа';
-         CheckBox2.Caption:='Не увеличивать мелкие';
+         CheckBox2.Caption:='Не увеличивать'+#13+'мелкие';
          CheckBox2.Hint:='Если снять эту галочку, то изначально мелкие картинки будут растягиваться до максимального возможного размера в соответствии с выбранной компоновкой.';
          CheckBox3.Caption:='Заполнить';
          CheckBox3.Hint:='Расcчитать поля отдельно для каждой картинки для полного заполнения ее места с учетом компоновки';

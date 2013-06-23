@@ -1,5 +1,5 @@
 object Form3: TForm3
-  Left = 419
+  Left = 422
   Height = 325
   Top = 24
   Width = 437
@@ -8,6 +8,7 @@ object Form3: TForm3
   Caption = 'Настройки'
   ClientHeight = 325
   ClientWidth = 437
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poMainFormCenter
@@ -162,7 +163,7 @@ object Form3: TForm3
   object CheckBox7: TCheckBox
     Left = 152
     Height = 24
-    Top = 48
+    Top = 40
     Width = 225
     Caption = 'Автосохранение при выходе'
     Checked = True
@@ -173,7 +174,7 @@ object Form3: TForm3
   object CheckBox8: TCheckBox
     Left = 152
     Height = 24
-    Top = 80
+    Top = 64
     Width = 276
     Caption = 'Стандартная начальная компоновка'
     Checked = True
@@ -220,5 +221,38 @@ object Form3: TForm3
       OnClick = Button3Click
       TabOrder = 2
     end
+  end
+  object CheckBox10: TCheckBox
+    Left = 152
+    Height = 24
+    Top = 91
+    Width = 88
+    Caption = 'Масштаб'
+    OnChange = CheckBox10Change
+    TabOrder = 7
+  end
+  object Label2: TLabel
+    Left = 256
+    Height = 18
+    Top = 94
+    Width = 44
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Label2'
+    ParentColor = False
+    Visible = False
+  end
+  object UpDown1: TUpDown
+    Left = 306
+    Height = 21
+    Top = 91
+    Width = 30
+    Min = 25
+    Max = 150
+    Position = 25
+    TabOrder = 8
+    Visible = False
+    Wrap = False
+    OnChanging = UpDown1Changing
   end
 end

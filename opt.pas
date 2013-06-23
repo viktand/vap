@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls,  BaseUnix,  Process;
+  StdCtrls, ComCtrls,  BaseUnix,  Process;
 
 type
 
@@ -16,6 +16,7 @@ type
     Button1: TButton;
     Button3: TButton;
     Button4: TButton;
+    CheckBox10: TCheckBox;
     CheckBox5: TCheckBox;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
@@ -28,15 +29,17 @@ type
     ComboBox1: TComboBox;
     GroupBox1: TGroupBox;
     Label1: TLabel;
+    Label2: TLabel;
     Panel1: TPanel;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     RadioGroup1: TRadioGroup;
     StaticText1: TStaticText;
+    UpDown1: TUpDown;
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure CheckBox10Change(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);  // nautilus
     procedure CheckBox2Change(Sender: TObject);  // dolphin
     procedure CheckBox3Change(Sender: TObject);  // caja
@@ -46,6 +49,7 @@ type
     procedure CheckBox7Change(Sender: TObject);
     procedure CheckBox8Change(Sender: TObject);
     procedure CheckBox9Change(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject); // выбор языка программы
@@ -57,6 +61,8 @@ type
     procedure SetInte(b: boolean); // изменить количество подключенных fm: b=true -> добавить одну
     function  GetNautilusVer: boolean; // получить версию наутилуса, true -> ver >=3
     procedure SetCurOwner(fl: string); // установить для файла fl владельцем указанного пользователя
+    procedure UpDown1Changing(Sender: TObject; var AllowChange: Boolean); // изменить масштаб
+    procedure ShowScale; // показать масштаб (если надо)
 
   private
     { private declarations }
@@ -106,10 +112,9 @@ var
 begin
   pram:='';
   lng;
+  flagsett:=false;
   form3.close;
   if GetEnvironmentVariable('LOGNAME') = 'root' then button1.Visible:=false;
-
-  flagsett:=false;
   s:=form1.loadsett('button_pict');
   CheckBox6.Checked:=(s='');
   s:=form1.loadsett('autosave');
@@ -117,6 +122,19 @@ begin
   s:=form1.loadsett('view');
   CheckBox8.Checked:=(s='');
   flagsett:=true;
+end;
+
+procedure tform3.showscale;
+begin
+   s:= form1.LoadSett('scale');
+   if s<>'' then
+     begin
+       CheckBox10.Checked:=true;
+       Label2.Visible:=true;
+       Label2.Caption:=s+'% ';
+       UpDown1.Visible:=true;
+       updown1.Position:=strtoint(s);
+     end;
 end;
 
 procedure TForm3.FormShow(Sender: TObject);
@@ -137,7 +155,7 @@ begin
        CheckBox6.Enabled:=false;
        CheckBox7.Enabled:=false;
        CheckBox8.Enabled:=false;
-     end;
+     end else showscale;
   flag:=false;
   setcheck;
   flag:=true;
@@ -160,6 +178,7 @@ begin
   CheckBox6.Enabled:=true;
   CheckBox7.Enabled:=true;
   CheckBox8.Enabled:=true;
+  showscale;
 end;
 
 procedure TForm3.Button1Click(Sender: TObject);
@@ -168,10 +187,7 @@ begin
    doroot;
 end;
 
-procedure TForm3.Button2Click(Sender: TObject);
-begin
 
-end;
 
 procedure tform3.DoRoot;   // запуск root-экземпляра
 var
@@ -308,6 +324,21 @@ begin
   if checkbox4.Enabled then checkbox4.Checked:=true;
 end;
 
+procedure TForm3.CheckBox10Change(Sender: TObject);
+begin
+  label2.Visible:=checkbox10.Checked;
+  updown1.Visible:=checkbox10.Checked;
+  if checkbox10.Checked then
+    begin
+      updown1.Position:=start.sclp;
+      label2.Caption:=inttostr(start.sclp)+'% ';
+    end else
+    begin
+      form1.SaveSett('scale', 'default');
+      form1.SclForms(form1.GetScreenSize);
+    end;
+end;
+
 
 procedure TForm3.CheckBox1Change(Sender: TObject);
 var
@@ -376,6 +407,13 @@ begin
   AProcess.Execute;
   AProcess.Free;
 end;
+
+procedure TForm3.UpDown1Changing(Sender: TObject; var AllowChange: Boolean);
+begin
+  form1.SclForms(updown1.Position);
+  label2.Caption:=inttostr(start.sclp)+'% ';
+end;
+
 
 procedure TForm3.CheckBox2Change(Sender: TObject);
 var
@@ -575,6 +613,7 @@ begin
        form1.Button12.Visible:=not(checkbox6.Checked);
        form1.Button13.Visible:=not(checkbox6.Checked);
        form1.Button7.Visible:=not(checkbox6.Checked);
+       form1.setbtnpos;
        save;
 end;
 
@@ -621,6 +660,12 @@ begin                             // to Nemo
         1: showmessage('The configuration file Nemo requested special privileges. Turn on the root.');
       end;
   end;
+end;
+
+procedure TForm3.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  if not flagsett then exit;
+  if checkbox10.Checked then form1.SaveSett('scale', inttostr(start.sclp));
 end;
 
 
