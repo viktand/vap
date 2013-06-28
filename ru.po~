@@ -1,0 +1,265 @@
+# Russian translation for vap
+# Copyright (c) 2013 Viktand
+# This file is free.
+# FIRST AUTHOR <viktand@bk.ru>, 2012.
+#
+
+msgid "Ubuntu Builder"
+msgstr "Конструктор Ubuntu"
+
+msgid "default"
+msgstr "по умолчанию"
+
+msgid "Open file"
+msgstr "Открыть файл"
+
+msgid "Open one picture+#13+(or add it to the list is open)"
+msgstr "Открыть одну картинку+#13+(или добавить ее к уже открытым)"
+
+msgid "Open folder"
+msgstr "Открыть папку"
+
+msgid "Select a folder and upload all the pictures of it+#13+(or add them to the list is open)"
+msgstr "Открыть папку и загрузить все картинки из нее+#13+(или добавить их к уже открытым)
+
+msgid "Flipping images back"
+msgstr "Листать картинки назад"
+
+msgid "Flipping images forward"
+msgstr "Листать картинки вперед"
+
+msgid "Print"
+msgstr "Печать"
+
+msgid "Send to print all the pictures+#13+on the selected layout"
+msgstr "Отправить на печать все картинки в+#13+соответствии с выбранной компоновкой"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Program settings"
+msgstr "Настройки программы"
+
+msgid "About"
+msgstr "О программе"
+
+msgid "Selected"
+msgstr "Выбрано"
+
+msgid "Composition"
+msgstr "Компоновка"
+
+msgid "Page format"
+msgstr "Формат листа"
+
+msgid "Page orientation"
+msgstr "Ориентация листа"
+
+msgid "Not increase"
+msgstr "Не увеличивать+#13+мелкие"
+
+msgid "If you clear the check box, then the initially small image will be stretched+#13+to the maximum possible size according to the selected layout."
+msgstr "Если снять эту галочку, то изначально мелкие картинки будут растягиваться+#13+до максимального возможного размера в соответствии с выбранной компоновкой."
+
+msgid "Fill"
+msgstr "Заполнить"
+
+msgid "Calculate field separately for each picture to completely fill its place with the layout"
+msgstr "Расcчитать поля отдельно для каждой картинки для полного заполнения ее места с учетом компоновки"
+
+msgid "The exact value of the fields depends on the aspect ratio of pictures"
+msgstr "Точное значение полей зависит от соотношения сторон картинки"
+
+msgid "Margin between+#13+miniatures, mm"
+msgstr "Поля между+#13+миниатюрами, mm"
+
+msgid "I think..."
+msgstr "Думаю..."
+
+msgid "Fast print"
+msgstr "Быстрая печать"
+
+msgid "Horizontal size"
+msgstr "Горизонтальный размер"
+
+msgid "Vertical size"
+msgstr "Вертикальный размер"
+
+msgid "Enter the size of your paper in millimeters.+13+Do not exceed the paper size of your printer.+#13+Use portrait (like a book) orientation."
+msgstr "Укажите размер Вашего листа в миллиметрах.+#13+Не рекомендуется превышать размер бумаги Вашего принтера.+#13+Используйте портретную (книжную) ориентацию."
+
+msgid "Ок"
+msgstr "Установить"
+
+msgid "Cancel"
+msgstr "Отменить"
+
+msgid "The scale of the preview - only on the screen."
+msgstr "Масштаб предпросмотра - только на экране."
+
+msgid "<--Only numbers! -->"
+msgstr "<--Только цифры! -->"
+
+msgid "<--Only numbers!"
+msgstr "<--Только цифры!"
+
+msgid "Printers"
+msgstr "Принтеры"
+
+msgid "Always use this printer"
+msgstr "Всегда использовать этот принтер"
+
+msgid "Use default printer"
+msgstr "Использовать принтер по умолчанию"
+
+msgid "Selecting a printer"
+msgstr "Выбор принтера"
+
+msgid "Printer selected:"
+msgstr "Выбран принтер:"
+
+msgid "Images sent to the printer"
+msgstr "Изображения отправлены на печать"
+
+msgid "Correction of the image size"
+msgstr "Коррекция размера картинки"
+
+msgid "Save session"
+msgstr "Сохранить текущую сессию"
+
+msgid "Open session"
+msgstr "Открыть сохраненную сессию"
+
+msgid "Open autosaved session"
+msgstr "Открыть автоматически сохраненную сессию"
+
+msgid "Captions"
+msgstr "Подписи"
+
+msgid "Short captions for pictures"
+msgstr "Короткие подписи к картинкам"
+
+msgid "Insert inscription"
+msgstr "Вставить надпись"
+
+msgid "Independent+#13+orientation"
+msgstr "Независимая+#13+ориентация"
+
+msgid "Each sheet can have its own orientation+#13+or both of the first sheet"
+msgstr "Каждый лист может иметь свою ориентацию+#13+или как у первого листа"
+
+msgid "Compose"
+msgstr "Компоновать"
+
+msgid "Repeat the layout for this sheet"
+msgstr "Повторить компоновку для этого листа"
+
+msgid "Delete this image"
+msgstr "Удалить это изображение"
+
+msgid "Remove, but leave this place empty"
+msgstr "Удалить, но оставить это место пустым"
+
+msgid "Change the image size"
+msgstr "Коррекция размера картинки"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "Exit"
+msgstr "Выход"
+
+msgid "View"
+msgstr "Навигация"
+
+msgid "Program"
+msgstr "Программа"
+
+msgid "Help"
+msgstr "Помощь"
+
+msgid "Caption"
+msgstr "Подпись"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Move"
+msgstr "Переместить"
+
+msgid "On the previous page"
+msgstr "На предыдущий лист"
+
+msgid "On the next page"        
+msgstr "На следующий лист"
+  
+msgid "1 in the center"
+msgstr "1 в центре"
+
+msgid "1 top"
+msgstr "1 сверху"
+
+msgid "In this folder, there is no valid image file"
+msgstr "В этой папке допустимых файлов изображений нет"
+
+msgid "You refused to open the folder"
+msgstr "Вы отказались открыть папку"
+
+msgid "Print files are not loaded"
+msgstr "Файлы для печати не загружены"
+
+msgid "Page"
+msgstr "Лист"
+
+msgid "of"
+msgstr "из"
+
+msgid "File suitable for printing is not detected"
+msgstr "Файлов, пригодных для печати не обнаружено"
+
+msgid "Page А4 21 х 29.7"
+msgstr "Лист А4 21 х 29.7"
+
+msgid "Photo 10 х 15"
+msgstr "Фотография 10 х 15"
+
+msgid "Custom size"
+msgstr "Произвольный размер"
+
+'The configuration file Nemo requested special privileges. Turn on the root.'
+'Settings';
+'Integration';
+'Buttons with icons';
+'Auto save on exit';
+'Standard initial layout';
+'Enable all available';
+'Turn on the root';
+'Caption';
+'Color';
+'Size= ';
+'Font';
+'Caption:';
+'Show this caption';
+'Caption - a short text' +#13+'attached to the picture.' +#13+
+        'Only one line.' +#13+'If you need a large amount of text' +#13+
+        'please use the' +#13+'"Insert the inscription."' +#13+
+        'Text in the preview window' +#13+'can differ from species to' +#13+
+        'paper - it is a consequence' +#13+ 'scaling.';        
+'Delete';
+'Remove this caption';
+'Move to the previous sheet';
+'Move to the next sheet';
+'Font';
+'Color';
+'Align';
+'Left';
+'Center';
+'Right';
+'Caption text';
+'Caption editor';
+'Turn on';
+'Color';
+'Background';       

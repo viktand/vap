@@ -490,10 +490,12 @@ begin
 end;
 
 procedure tform1.BuildLists;
+var
+  l : integer;
 begin
-  num:=curlist;
+  l:=curlist;
   for curlist:=1 to lists do ShowPictures;
-  curlist:=num;
+  curlist:=l;
   ShowPictures;
 end;
 

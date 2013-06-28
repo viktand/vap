@@ -332,6 +332,10 @@ begin
     begin
       updown1.Position:=start.sclp;
       label2.Caption:=inttostr(start.sclp)+'% ';
+    end else
+    begin
+      form1.SaveSett('scale', 'default');
+      form1.SclForms(form1.GetScreenSize);
     end;
 end;
 
@@ -661,11 +665,7 @@ end;
 procedure TForm3.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   if not flagsett then exit;
-  if checkbox10.Checked then form1.SaveSett('scale', inttostr(start.sclp))
-                        else begin
-                          form1.SaveSett('scale', 'default');
-                          form1.SclForms(form1.GetScreenSize);
-                        end;
+  if checkbox10.Checked then form1.SaveSett('scale', inttostr(start.sclp));
 end;
 
 
