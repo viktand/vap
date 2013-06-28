@@ -1,11 +1,8 @@
 # Russian translation for vap
 # Copyright (c) 2013 Viktand
 # This file is free.
-# FIRST AUTHOR <viktand@bk.ru>, 2012.
+# FIRST AUTHOR <viktand@bk.ru>, 2013.
 #
-
-msgid "Ubuntu Builder"
-msgstr "Конструктор Ubuntu"
 
 msgid "default"
 msgstr "по умолчанию"
