@@ -237,6 +237,7 @@ type
      procedure SetPg2(p: string);           // -//- для пользовательского формата
      procedure SetComp(index: integer);     // установка начальной компоновки
      procedure SetLng;                      // Установка языка
+     procedure SetLang(w: string);          // Установка языка по настройкам системы или установкам пользователя w - ответ системы о локализации
      procedure SetWords;                    // Заготовки фраз на разных языках
      procedure SaveSett(Key, Word: string); // Сoхранить в файле конфигурации значение word c ключем key
      Procedure ReadSett2;                   // прочитать существующий файл конфигурации
@@ -422,6 +423,7 @@ type
     indx           : integer; // переменная для временного хранения индекса при передаче параметров
     sclform        : boolean; // признак того, что экран был подвергнут масшабированию (true)
     sclp           : integer; // % масштабирования экрана
+    Local          : string;  // локализация
 
 
 implementation
@@ -458,6 +460,7 @@ begin
   gor := 420;
   fl:=true;
   lng:=0;
+  local:=
   comp:=0;
   buf := 0;
   setwords;
@@ -704,11 +707,26 @@ begin
    lng:=1;
    for i:=0 to AStringList.Count-1 do
      begin
-       if ansipos('ru_RU', AStringList[i])>0 then lng:=0;
+       //if ansipos('ru_RU', AStringList[i])>0 then lng:=0;
+       if ansipos('LANG=', AStringList[i])>0 then
+         begin
+           SetLang(AStringList[i]);
+           break;
+         end;
      end;
    AStringList.Free;
    AProcess.Free;
  end;
+
+procedure tform1.SetLang(w: string);
+// Установка языка по настройкам системы или установкам пользователя w - ответ системы о локализации
+var
+   s: string;
+   l:
+begin
+   s:=copy(w, 6, 5); // ru_RU
+
+end;
 
 procedure TForm1.FormActivate(Sender: TObject);  // проверка интеграции
 begin

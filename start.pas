@@ -237,6 +237,7 @@ type
      procedure SetPg2(p: string);           // -//- для пользовательского формата
      procedure SetComp(index: integer);     // установка начальной компоновки
      procedure SetLng;                      // Установка языка
+     procedure SetLang(w: string);          // Установка языка по настройкам системы или установкам пользователя w - ответ системы о локализации
      procedure SetWords;                    // Заготовки фраз на разных языках
      procedure SaveSett(Key, Word: string); // Сoхранить в файле конфигурации значение word c ключем key
      Procedure ReadSett2;                   // прочитать существующий файл конфигурации
@@ -273,6 +274,7 @@ type
      procedure SetScrollBars;               // установить полосы прокрутки
      function  GetScreenSize: integer;      // Установить масштаб (получить значение) главного окна исходя из размеров экрана
      procedure BuildLists;                  // построить все листы
+     procedure LoadPoFile;                  // загрузить *.ро файл для выбранного языка
 
      //function Rotor(im: tImage; g: integer): tImage; // вращение pictute
                          // g = 1 - 90, 2 - 180, 3 - 270 градусов по часой стрелке
@@ -422,6 +424,8 @@ type
     indx           : integer; // переменная для временного хранения индекса при передаче параметров
     sclform        : boolean; // признак того, что экран был подвергнут масшабированию (true)
     sclp           : integer; // % масштабирования экрана
+    Local          : string;  // локализация
+    PoFile         : tstringlist; // загруженный *.ро файл
 
 
 implementation
@@ -441,6 +445,7 @@ begin
   noshowlabs:=false;
   confflag:=false; // файл конфига не прочитан
   config := tstringlist.Create;
+  PoFile := tstringlist.Create;
   userprinter:=loadsett('printer');
   form1.BorderStyle:=bsSingle;
   flagmove:=false;
@@ -458,6 +463,7 @@ begin
   gor := 420;
   fl:=true;
   lng:=0;
+  local:=
   comp:=0;
   buf := 0;
   setwords;
@@ -704,11 +710,26 @@ begin
    lng:=1;
    for i:=0 to AStringList.Count-1 do
      begin
-       if ansipos('ru_RU', AStringList[i])>0 then lng:=0;
+       //if ansipos('ru_RU', AStringList[i])>0 then lng:=0;
+       if ansipos('LANG=', AStringList[i])>0 then
+         begin
+           SetLang(AStringList[i]);
+           break;
+         end;
      end;
    AStringList.Free;
    AProcess.Free;
  end;
+
+procedure tform1.SetLang(w: string);
+// Установка языка по настройкам системы или установкам пользователя w - ответ системы о локализации
+var
+   s: string;
+begin
+   local:=copy(w, 6, 5); // ru_RU
+   s:=loadsett('lang');
+   if s<>'' then lng:=strtoint(s) else s:=3
+end;
 
 procedure TForm1.FormActivate(Sender: TObject);  // проверка интеграции
 begin
@@ -3360,9 +3381,109 @@ begin
          menuitem27.Caption:='Move';
          menuitem28.Caption:='On the previous page';
          menuitem29.Caption:='On the next page';
-    end;
-  end;
+         end;
+    3: begin
+         loadpofile;
+         if upr = '' then upr := 'default';
+         button5.Caption:='Open file';
+         button5.Hint:='Open one picture '+#13+'(or add it to the list is open)';
+         bitbtn4.Hint:='Open one picture '+#13+'(or add it to the list is open)';
+         button4.Caption:='Open folder';
+         button4.Hint:='Select a folder and upload all the pictures of it '+#13+'(or add them to the list is open)';
+         bitbtn5.Hint:='Select a folder and upload all the pictures of it '+#13+'(or add them to the list is open)';
+         button1.Hint:='Flipping selected images back';
+         bitbtn7.Hint:='Flipping selected images back';
+         button2.Hint:='Flipping selected images forward';
+         bitbtn6.Hint:='Flipping selected images forward';
+         button3.Caption:='Print';
+         button3.Hint:='Send to print all the pictures '+#13+'on the selected layout';
+         bitbtn2.Hint:='Send to print all the pictures '+#13+'on the selected layout';
+         button12.Caption:='Settings';
+         button12.Hint:='Program settings';
+         bitbtn1.Hint:='Program settings';
+         button7.Caption:='About';
+         bitbtn8.Hint:='About';
+         label1.Caption:='Selected';
+         GroupBox1.Caption:='Composition';
+         Label7.Caption:='Page format';
+         Label8.Caption:='Page orientation';
+         CheckBox2.Caption:='Not increase';
+         CheckBox2.Hint:='If you clear the check box, then the initially small image will be stretched to the maximum possible size according to the selected layout.';
+         CheckBox3.Caption:='Fill';
+         CheckBox3.Hint:='Calculate field separately for each picture to completely fill its place with the layout';
+         StaticText2.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
+         StaticText2.Caption:='Margin between'+#13+'miniatures, mm';
+         button8.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
+         button9.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
+         label12.Hint:='The exact value of the fields depends on the aspect ratio of pictures';
+         label6.Caption:='I think...';
+         form1.Caption:='Fast print';
+         labelededit1.EditLabel.Caption:='Horizontal size';
+         labelededit2.EditLabel.Caption:='Vertical size';
+         StaticText1.Caption:='Enter the size of your paper in millimeters.'+#13+'Do not exceed the paper size of your printer.'
+                                           +#13+'Use portrait (like a book) orientation.';
+         button10.Caption:='Ок';
+         button6.Caption:='Ок';
+         button11.Caption:='Cancel';
+         button16.Caption:='Cancel';
+          labelededit3.EditLabel.Caption:='The scale of the preview - only on the screen.';
+              label9.Caption:='<--Only numbers! -->';
+              label13.Caption:='<--Only numbers!';
+              button13.Caption:='Printers';
+              button15.Caption:='Cancel';
+              radiobutton1.Caption:='Always use this printer';
+              radiobutton2.Caption:='Use default printer';
+              label11.Caption:='Selecting a printer';
+              button13.Hint:='Printer selected "'+upr+'"';
+              bitbtn3.Hint:='Printer selected "'+upr+'"';
+              repo:='Images sent to the printer';
+              label3.Caption:='Correction of the image size';
+              bitbtn9.Hint:='Save session';
+              bitbtn10.Hint:='Open session';
+              bitbtn11.Hint:='Open autosaved session';
+              checkbox1.Caption:='Captions';
+              checkbox1.Hint:='Short captions for pictures';
+              bitbtn12.Hint:='Insert inscription';
+              checkbox4.Caption:='Independent'+#13+'orientation';
+              checkbox4.Hint:='Each sheet can have its own orientation'+#13+'or both of the first sheet';
+              button17.Caption:='Compose';
+              button17.Hint:='Repeat the layout for this sheet';
+              // main menu
+              menuitem1.Caption:='Delete this image';
+              menuitem2.Caption:='Remove, but leave this place empty';
+              menuitem3.Caption:='Change the image size';
+              menuitem4.Caption:='File';
+              menuitem7.Caption:='Open file';
+              menuitem8.Caption:='Open folder';
+              menuitem17.Caption:='Print';
+              menuitem10.Caption:='Save session';
+              menuitem11.Caption:='Open session';
+              menuitem12.Caption:='Open autosaved session';
+              menuitem14.Caption:='Exit';
+              menuitem20.Caption:='View';
+              menuitem5.Caption:='Settings';
+              menuitem15.Caption:='Program';
+              menuitem16.Caption:='Printer';
+              menuitem6.Caption:='Help';
+              menuitem22.Caption:='About';
+              menuitem23.Caption:='Caption';
+              menuitem24.Caption:='Insert inscription';
+              menuitem25.Caption:='Edit';
+              menuitem26.Caption:='Delete';
+              menuitem27.Caption:='Move';
+              menuitem28.Caption:='On the previous page';
+              menuitem29.Caption:='On the next page';
+      end;
+   end;
+ end;
+
+procedure tform1.LoadPoFile;
+var
+  fl: textfile;
+begin
+  assignfile(fl, 'usr/share/locale/+
 end;
+
 
 procedure tform1.setwords;
 begin

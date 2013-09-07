@@ -76,8 +76,8 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="473"/>
-        <CursorPos X="13" Y="498"/>
+        <TopLine Value="3447"/>
+        <CursorPos X="37" Y="3484"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
           <WindowIndex Value="0"/>
@@ -86,7 +86,7 @@
         </ExtraEditor1>
         <UsageCount Value="200"/>
         <Bookmarks Count="1">
-          <Item0 X="1" Y="2134" ID="0"/>
+          <Item0 X="1" Y="2155" ID="0"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
