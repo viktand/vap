@@ -463,7 +463,7 @@ begin
   gor := 420;
   fl:=true;
   lng:=0;
-  local:=
+  //local:=
   comp:=0;
   buf := 0;
   setwords;
@@ -728,7 +728,7 @@ var
 begin
    local:=copy(w, 6, 5); // ru_RU
    s:=loadsett('lang');
-   if s<>'' then lng:=strtoint(s) else s:=3
+   if s<>'' then lng:=strtoint(s) else s:='3';
 end;
 
 procedure TForm1.FormActivate(Sender: TObject);  // проверка интеграции
@@ -3481,7 +3481,7 @@ procedure tform1.LoadPoFile;
 var
   fl: textfile;
 begin
-  assignfile(fl, 'usr/share/locale/+
+  assignfile(fl, 'usr/share/locale/+')
 end;
 
 

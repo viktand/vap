@@ -1,12 +1,12 @@
 object Form1: TForm1
-  Left = 253
+  Left = 382
   Height = 745
-  Top = 139
+  Top = 67
   Width = 773
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Быстрая печать'
-  ClientHeight = 722
+  ClientHeight = 745
   ClientWidth = 773
   DragKind = dkDock
   Font.Height = -13
@@ -61,7 +61,7 @@ object Form1: TForm1
     Top = 48
     Width = 179
     Caption = 'Компоновка'
-    ClientHeight = 636
+    ClientHeight = 637
     ClientWidth = 175
     TabOrder = 1
     object Panel2: TPanel
@@ -18657,7 +18657,7 @@ object Form1: TForm1
     end
     object ComboBox1: TComboBox
       Left = 13
-      Height = 29
+      Height = 28
       Top = 474
       Width = 152
       ItemHeight = 0
@@ -18668,17 +18668,17 @@ object Form1: TForm1
     end
     object Label7: TLabel
       Left = 38
-      Height = 18
+      Height = 17
       Top = 455
-      Width = 98
+      Width = 88
       Caption = 'Формат листа'
       ParentColor = False
     end
     object Label8: TLabel
       Left = 25
-      Height = 18
+      Height = 17
       Top = 505
-      Width = 129
+      Width = 117
       Caption = 'Ориентация листа'
       ParentColor = False
     end
@@ -18724,7 +18724,7 @@ object Form1: TForm1
       Height = 24
       Hint = 'Если снять эту галочку, то изначально мелкие картинки будут растягиваться до максимального возможного размера в соответствии с выбранной компоновкой.'
       Top = 591
-      Width = 189
+      Width = 176
       Caption = 'Не увеличивать мелкие'
       Checked = True
       OnChange = CheckBox2Change
@@ -18862,9 +18862,9 @@ object Form1: TForm1
   end
   object Label6: TLabel
     Left = 216
-    Height = 24
+    Height = 23
     Top = 656
-    Width = 87
+    Width = 78
     Caption = 'Думаю...'
     Font.Color = clRed
     Font.Height = -19
@@ -18877,7 +18877,7 @@ object Form1: TForm1
     Height = 24
     Hint = 'Расчитать поля отдельно для каждой картинки для полного заполнения ее места с учетом компоновки'
     Top = 400
-    Width = 100
+    Width = 92
     Caption = 'Заполнить'
     OnChange = CheckBox3Change
     ParentShowHint = False
@@ -18962,7 +18962,7 @@ object Form1: TForm1
       EditLabel.Left = 33
       EditLabel.Height = 16
       EditLabel.Top = 68
-      EditLabel.Width = 163
+      EditLabel.Width = 139
       EditLabel.Caption = 'Горизонтальный размер'
       EditLabel.ParentColor = False
       Font.Height = -12
@@ -18992,7 +18992,7 @@ object Form1: TForm1
       EditLabel.Left = 288
       EditLabel.Height = 16
       EditLabel.Top = 69
-      EditLabel.Width = 148
+      EditLabel.Width = 128
       EditLabel.Caption = 'Вертикальный размер'
       EditLabel.ParentColor = False
       TabOrder = 2
@@ -19009,7 +19009,7 @@ object Form1: TForm1
       EditLabel.Left = 33
       EditLabel.Height = 16
       EditLabel.Top = 118
-      EditLabel.Width = 304
+      EditLabel.Width = 255
       EditLabel.Caption = 'Масштаб предпросмотра - только на экране.'
       EditLabel.ParentColor = False
       TabOrder = 3
@@ -19038,7 +19038,7 @@ object Form1: TForm1
       Left = 133
       Height = 16
       Top = 94
-      Width = 139
+      Width = 122
       Caption = '<--Только цифры! -->'
       Font.Color = clRed
       Font.Height = -12
@@ -19050,7 +19050,7 @@ object Form1: TForm1
       Left = 133
       Height = 16
       Top = 140
-      Width = 121
+      Width = 105
       Caption = '<-- Только цифры!'
       Font.Color = clRed
       Font.Height = -12
@@ -19062,7 +19062,7 @@ object Form1: TForm1
       Left = -146
       Height = 16
       Top = 70
-      Width = 50
+      Width = 44
       Caption = 'Label10'
       Color = clMenuText
       ParentColor = False
@@ -19119,7 +19119,7 @@ object Form1: TForm1
     end
     object ComboBox2: TComboBox
       Left = 36
-      Height = 29
+      Height = 28
       Top = 34
       Width = 209
       ItemHeight = 0
@@ -19152,7 +19152,7 @@ object Form1: TForm1
       Left = 10
       Height = 24
       Top = 66
-      Width = 238
+      Width = 205
       Caption = 'Всегда использовать этот принтер'
       Font.Height = -11
       ParentFont = False
@@ -19162,7 +19162,7 @@ object Form1: TForm1
       Left = 10
       Height = 24
       Top = 94
-      Width = 249
+      Width = 222
       Caption = 'Использовать принтер по умолчанию'
       Checked = True
       Font.Height = -11
@@ -19184,7 +19184,7 @@ object Form1: TForm1
     Visible = False
     object Label3: TLabel
       Left = 6
-      Height = 18
+      Height = 17
       Top = 6
       Width = 277
       Align = alTop
@@ -20836,7 +20836,7 @@ object Form1: TForm1
     Left = 195
     Height = 24
     Top = 433
-    Width = 111
+    Width = 107
     Caption = 'Все подписи'
     OnChange = CheckBox1Change
     TabOrder = 29
@@ -20986,7 +20986,7 @@ object Form1: TForm1
     Left = 195
     Height = 24
     Top = 463
-    Width = 115
+    Width = 109
     Caption = 'Независимая'
     Checked = True
     OnChange = CheckBox4Change
